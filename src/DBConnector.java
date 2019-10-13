@@ -1,5 +1,7 @@
 import java.sql.*;
 
+import static processing.core.PApplet.println;
+
 class DBConnector {
 
     private String url;
@@ -23,20 +25,25 @@ class DBConnector {
         }
     }
 
-    public void testingConnection() {
+
+    boolean isAccountExisting(String loginName, String loginPassword) {
 
         try {
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT  * FROM accounts");
-            while(resultSet.next()) {
-                System.out.println("Usernames");
-                System.out.println(resultSet.getString("username"));
-            }
+
+            String query = "select username, passcode from accounts where username = '" + loginName + "' AND passcode ='" + loginPassword + "'";
+
+            statement.executeQuery(query);
+            resultSet = statement.getResultSet();
+
+            if (resultSet.next()) return true;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        println("Account nicht gefunden: " + loginName + ":" + loginPassword);
+        return false;
     }
 
 

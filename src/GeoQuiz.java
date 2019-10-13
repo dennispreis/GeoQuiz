@@ -1,10 +1,11 @@
+import Feedback.FeedbackAble;
+import Feedback.NamePasswordNotFoundFeedBack;
 import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
-import processing.core.PImage;
+import processing.core.PVector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class GeoQuiz extends PApplet {
@@ -12,9 +13,9 @@ public class GeoQuiz extends PApplet {
     //------------------------------------Variables and fields
     private static ControlP5 cp5;
     private static List<Controller> uiElements;
-    private static HashMap<String, PImage> images;
     private static Settings settings;
     private static DBConnector dbConnector;
+    private static List<FeedbackAble> feedbackList;
 
     //------------------------------------Inner classes
     class Settings {
@@ -56,8 +57,8 @@ public class GeoQuiz extends PApplet {
         cp5 = new ControlP5(this);
         dbConnector = new DBConnector();
         uiElements = new ArrayList<>();
+        feedbackList = new ArrayList<>();
         cp5.setFont(settings.getMyFont());
-        images = loadImages();
         switchScreen(Screen.LOGIN_STUDENT);
     }
 
@@ -69,16 +70,24 @@ public class GeoQuiz extends PApplet {
             case LOGIN_ADMIN: //Staff Login
                 showLoginBackground();
                 break;
+            case MAIN_MENU_STUDENT:
+                showLoginBackground();
+                break;
+            case MAIN_MENU_ADMIN:
+                showLoginBackground();
+                break;
         }
+
+        for(FeedbackAble f : feedbackList){
+            f.show();
+        }
+
+        fill(0);
+        textSize(20);
+        text(settings.getScreen().toString(), 20, 100);
     }
 
     //------------------------------------Initialising methods.
-
-    private HashMap<String, PImage> loadImages() {
-        HashMap<String, PImage> tmp = new HashMap<>();
-        tmp.put("login_background", loadImage("background.png"));
-        return tmp;
-    }
 
     //------------------------------------Event methods given by Processing. Includes mouse and key events
 
@@ -148,11 +157,28 @@ public class GeoQuiz extends PApplet {
 
     private void uielementsRemoveAll() {
         uiElements.clear();
-        cp5.getAll().stream().forEach(controllerInterface -> controllerInterface.remove());
+        cp5.getAll().forEach(ControllerInterface::remove);
     }
 
 
     //------------------------------------Anonymous methods for ControlP5-UIElements
+
+    public void Login_Student_Login() {
+
+        String name = cp5.get(Textfield.class, "Login_Student_Name").getText();
+        String password = cp5.get(Textfield.class, "Login_Student_Password").getText();
+
+        if (name.equals("")) {
+            println("name leer");
+        } else if (password.equals("")) {
+            println("password leer");
+        } else if (dbConnector.isAccountExisting(name, password)) {
+            switchScreen(Screen.MAIN_MENU_STUDENT);
+        } else {
+            feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000).setPosition(new PVector(450, 200)).setSize(new PVector(170, 50)));
+        }
+
+    }
 
     public void Login_Student_Admin() {
         switchScreen(Screen.LOGIN_ADMIN);
@@ -161,4 +187,8 @@ public class GeoQuiz extends PApplet {
     public void Login_Admin_Back() {
         switchScreen(Screen.LOGIN_STUDENT);
     }
+
+    //------------------------------------Thread methods
+
+
 }

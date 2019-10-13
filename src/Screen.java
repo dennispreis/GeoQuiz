@@ -1,15 +1,12 @@
 public enum Screen {
 
-    LOGIN_STUDENT(0), MAIN_MENU_STUDENT(1), LOGIN_ADMIN(2), MAIN_MENU_ADMIN(3);
+    LOGIN_STUDENT, MAIN_MENU_STUDENT, LOGIN_ADMIN, MAIN_MENU_ADMIN;
 
-    private int window;
+    Screen(){}
 
-    Screen(int win){
-        this.window = win;
+
+    @Override
+    public String toString() {
+        return this.name();
     }
-
-    int getWindow(){
-        return window;
-    }
-
 }
