@@ -42,10 +42,27 @@ class DBConnector {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        println("Account nicht gefunden: " + loginName + ":" + loginPassword);
+        println("Account not found: " + loginName + ":" + loginPassword);
         return false;
     }
 
+    int getAccountId(String loginName, String loginPassword) {
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+            statement = connection.createStatement();
+
+            String query = "select account_id, username, passcode from accounts where username = '" + loginName + "' AND passcode ='" + loginPassword + "' limit 1";
+
+            statement.executeQuery(query);
+            resultSet = statement.getResultSet();
+
+            if (resultSet.next()) return resultSet.getInt("account_id");
+            return -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
 }
 

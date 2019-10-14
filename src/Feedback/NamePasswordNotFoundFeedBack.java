@@ -4,8 +4,6 @@ import processing.core.PApplet;
 
 public class NamePasswordNotFoundFeedBack extends Feedback {
 
-
-
     public NamePasswordNotFoundFeedBack(PApplet applet, int time) {
         super(applet, time);
     }

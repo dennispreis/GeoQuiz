@@ -3,6 +3,7 @@ import Feedback.NamePasswordNotFoundFeedBack;
 import controlP5.*;
 import processing.core.PApplet;
 import processing.core.PFont;
+import processing.core.PImage;
 import processing.core.PVector;
 
 import java.util.ArrayList;
@@ -12,10 +13,10 @@ public class GeoQuiz extends PApplet {
 
     //------------------------------------Variables and fields
     private static ControlP5 cp5;
-    private static List<Controller> uiElements;
     private static Settings settings;
     private static DBConnector dbConnector;
     private static List<FeedbackAble> feedbackList;
+    private PImage background;
 
     //------------------------------------Inner classes
     class Settings {
@@ -41,7 +42,6 @@ public class GeoQuiz extends PApplet {
             this.screen = win;
         }
     }
-
     //------------------------------------Methods given by Processing
 
     public static void main(String[] args) {
@@ -50,16 +50,16 @@ public class GeoQuiz extends PApplet {
 
     public void settings() {
         size(900, 600);
-    }
+}
 
     public void setup() {
         settings = new Settings();
         cp5 = new ControlP5(this);
         dbConnector = new DBConnector();
-        uiElements = new ArrayList<>();
         feedbackList = new ArrayList<>();
         cp5.setFont(settings.getMyFont());
         switchScreen(Screen.LOGIN_STUDENT);
+        background = loadImage("background.JPG");
     }
 
     public void draw() {
@@ -78,7 +78,7 @@ public class GeoQuiz extends PApplet {
                 break;
         }
 
-        for(FeedbackAble f : feedbackList){
+        for (FeedbackAble f : feedbackList) {
             f.show();
         }
 
@@ -99,7 +99,7 @@ public class GeoQuiz extends PApplet {
 
     //------------------------------------Own Methods.
 
-    void switchScreen(Screen targetScreen) {
+    private void switchScreen(Screen targetScreen) {
         uielementsRemoveAll();
         switch (targetScreen) {
             case LOGIN_STUDENT:
@@ -119,7 +119,8 @@ public class GeoQuiz extends PApplet {
     }
 
     private void showLoginBackground() {
-        background(color(20, 180, 230));
+        // background(color(20, 180, 230));
+        background(background);
         stroke(0);
         strokeWeight(2);
         fill(255, 100);
@@ -132,31 +133,30 @@ public class GeoQuiz extends PApplet {
     //------------------------------------Methods to create/Remove UIElements
 
     private void uielementsCreateStudenLogin() {
-        uiElements.add(cp5.addTextfield("Login_Student_Name").setPosition(200, 200).setSize(200, 50).setColorLabel(0).setAutoClear(false).setLabel("Name"));
-        uiElements.add(cp5.addTextfield("Login_Student_Password").setPosition(200, 300).setSize(200, 50).setColorLabel(0).setPasswordMode(true).setAutoClear(false).setLabel("Password"));
-        uiElements.add(cp5.addButton("Login_Student_Login").setPosition(200, 400).setSize(200, 50).setLabel("Login"));
-        uiElements.add(cp5.addButton("Login_Student_Admin").setPosition(200, 460).setSize(200, 50).setLabel("Staff/Admin"));
+        cp5.addTextfield("Login_Student_Name").setPosition(200, 200).setSize(200, 50).setColorLabel(0).setAutoClear(false).setLabel("Name");
+        cp5.addTextfield("Login_Student_Password").setPosition(200, 300).setSize(200, 50).setColorLabel(0).setPasswordMode(true).setAutoClear(false).setLabel("Password");
+        cp5.addButton("Login_Student_Login").setPosition(200, 400).setSize(200, 50).setLabel("Login");
+        cp5.addButton("Login_Student_Admin").setPosition(200, 460).setSize(200, 50).setLabel("Staff/Admin");
     }
 
     private void uielementsCreateStaffLogin() {
-        uiElements.add(cp5.addTextfield(" Login_Admin_Name").setPosition(200, 200).setSize(200, 50).setColorLabel(0).setAutoClear(false).setLabel("Name"));
-        uiElements.add(cp5.addTextfield("Login_Admin_Password").setPosition(200, 300).setSize(200, 50).setColorLabel(0).setPasswordMode(true).setAutoClear(false).setLabel("Password"));
-        uiElements.add(cp5.addButton("Login_Admin_Login").setPosition(200, 400).setSize(200, 50).setLabel("login"));
-        uiElements.add(cp5.addButton("Login_Admin_Back").setPosition(200, 460).setSize(200, 50).setLabel("Back"));
+        cp5.addTextfield(" Login_Admin_Name").setPosition(200, 200).setSize(200, 50).setColorLabel(0).setAutoClear(false).setLabel("Name");
+        cp5.addTextfield("Login_Admin_Password").setPosition(200, 300).setSize(200, 50).setColorLabel(0).setPasswordMode(true).setAutoClear(false).setLabel("Password");
+        cp5.addButton("Login_Admin_Login").setPosition(200, 400).setSize(200, 50).setLabel("login");
+        cp5.addButton("Login_Admin_Back").setPosition(200, 460).setSize(200, 50).setLabel("Back");
     }
 
     private void uielementsCreateStudentMainMenu() {
-        uiElements.add(cp5.addButton("Test").setPosition(200, 400).setSize(200, 50));
-        uiElements.add(cp5.addButton("Practise").setPosition(200, 200).setSize(200, 50));
-        uiElements.add(cp5.addButton("Profile").setPosition(200, 300).setSize(200, 50));
-        uiElements.add(cp5.addButton("Back").setPosition(20, 20).setSize(50, 50));
+        cp5.addButton("Test").setPosition(200, 400).setSize(200, 50);
+        cp5.addButton("Practise").setPosition(200, 200).setSize(200, 50);
+        cp5.addButton("Profile").setPosition(200, 300).setSize(200, 50);
+        cp5.addButton("Back").setPosition(20, 20).setSize(50, 50);
     }
 
     private void uielementsCreateAdminMainMenu() {
     }
 
     private void uielementsRemoveAll() {
-        uiElements.clear();
         cp5.getAll().forEach(ControllerInterface::remove);
     }
 
@@ -172,7 +172,7 @@ public class GeoQuiz extends PApplet {
             println("name leer");
         } else if (password.equals("")) {
             println("password leer");
-        } else if (dbConnector.isAccountExisting(name, password)) {
+        } else if (dbConnector.getAccountId(name, password) != -1) {
             switchScreen(Screen.MAIN_MENU_STUDENT);
         } else {
             feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000).setPosition(new PVector(450, 200)).setSize(new PVector(170, 50)));
