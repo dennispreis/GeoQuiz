@@ -64,6 +64,24 @@ class DBConnector {
         }
     }
 
+    User createStudentUser(int ID) {
+        try {
+            connection = DriverManager.getConnection(url, user, password);
+            statement = connection.createStatement();
+
+            String query = "select account_id, username from accounts where account_id = '"+ID+"'";
+
+            statement.executeQuery(query);
+            resultSet = statement.getResultSet();
+
+            return new User(resultSet.getInt("account_id"), resultSet.getString("username"), false);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    return null;
+    }
+
 }
 
 
