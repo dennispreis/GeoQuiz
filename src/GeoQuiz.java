@@ -1,11 +1,9 @@
 import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
 import controlP5.*;
-import processing.core.PApplet;
-import processing.core.PFont;
-import processing.core.PImage;
-import processing.core.PVector;
+import processing.core.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,7 +26,7 @@ public class GeoQuiz extends PApplet {
         private Screen screen;
 
         Settings() {
-            myFont = createFont("Times New Romance.ttf", 30);
+            myFont = createFont("Fonts/Times New Romance.ttf", 30);
             screen = Screen.LOGIN_STUDENT;
             textFont(myFont);
         }
@@ -63,14 +61,13 @@ public class GeoQuiz extends PApplet {
         images = loadImages();
         cp5.setFont(settings.getMyFont());
         switchScreen(Screen.LOGIN_STUDENT);
+
+
     }
 
     public void draw() {
         switch (settings.getScreen()) {
             case LOGIN_STUDENT:
-                showLoginBackground();
-                break;
-            case LOGIN_ADMIN:
                 showLoginBackground();
                 break;
             case MAIN_MENU_STUDENT:
@@ -99,7 +96,8 @@ public class GeoQuiz extends PApplet {
     private Map<String, PImage> loadImages() {
         Map<String, PImage> tmp = new HashMap<>();
 
-        tmp.put("Background", loadImage("background.JPG"));
+        tmp.put("Background", loadImage("Images/background.JPG"));
+        tmp.put("Logout", loadImage("Images/logout.png"));
 
         return tmp;
     }
@@ -114,19 +112,15 @@ public class GeoQuiz extends PApplet {
 
     //------------------------------------Own Methods.
 
-    private void createUserInstance(int ID){
-        user = dbConnector.createStudentUser(ID);
-        println(user.getUserName());
+    private void createUserInstance(int ID, boolean isTeacher) {
+        user = isTeacher ? dbConnector.createTeacherUser(ID) : dbConnector.createStudentUser(ID);
     }
 
     private void switchScreen(Screen targetScreen) {
         uielementsRemoveAll();
         switch (targetScreen) {
             case LOGIN_STUDENT:
-                uielementsCreateStudenLogin();
-                break;
-            case LOGIN_ADMIN:
-                uielementsCreateStaffLogin();
+                uielementsCreateLogin();
                 break;
             case MAIN_MENU_STUDENT:
                 uielementsCreateStudentMainMenu();
@@ -139,7 +133,6 @@ public class GeoQuiz extends PApplet {
     }
 
     private void showLoginBackground() {
-        // background(color(20, 180, 230));
         background(images.get("Background"));
         stroke(0);
         strokeWeight(2);
@@ -149,6 +142,8 @@ public class GeoQuiz extends PApplet {
         textSize(60);
         textAlign(CORNER);
         text("GeoQuiz!", 195, 130);
+        textSize(30);
+        textAlign(LEFT, TOP);
     }
 
     private void showStudentProfile() {
@@ -160,26 +155,32 @@ public class GeoQuiz extends PApplet {
 
     //------------------------------------Methods to create/Remove UIElements
 
-    private void uielementsCreateStudenLogin() {
-        cp5.addTextfield("Login_Student_Name").setPosition(200, 200).setSize(200, 50).setColorLabel(0).setAutoClear(false).setLabel("Name");
-        cp5.addTextfield("Login_Student_Password").setPosition(200, 300).setSize(200, 50).setColorLabel(0).setPasswordMode(true).setAutoClear(false).setLabel("Password");
-        cp5.addButton("Login_Student_Login").setPosition(200, 400).setSize(200, 50).setLabel("Login");
-        cp5.addButton("Login_Student_Admin").setPosition(200, 460).setSize(200, 50).setLabel("Staff/Admin");
-        cp5.addButton("SUPERLOGIN").setPosition(200, 540).setSize(200, 50);
-    }
-
-    private void uielementsCreateStaffLogin() {
-        cp5.addTextfield(" Login_Admin_Name").setPosition(200, 200).setSize(200, 50).setColorLabel(0).setAutoClear(false).setLabel("Name");
-        cp5.addTextfield("Login_Admin_Password").setPosition(200, 300).setSize(200, 50).setColorLabel(0).setPasswordMode(true).setAutoClear(false).setLabel("Password");
-        cp5.addButton("Login_Admin_Login").setPosition(200, 400).setSize(200, 50).setLabel("login");
-        cp5.addButton("Login_Admin_Back").setPosition(200, 460).setSize(200, 50).setLabel("Back");
+    private void uielementsCreateLogin() {
+        cp5.addTextfield("Login_Name").setPosition(200, 200).setSize(200, 50).setColorLabel(0).setAutoClear(false).setLabel("Name").getCaptionLabel().setPaddingY(-80);
+        cp5.addTextfield("Login_Password").setPosition(200, 300).setSize(200, 50).setColorLabel(0).setPasswordMode(true).setAutoClear(false).setLabel("Password").getCaptionLabel().setPaddingY(-80);
+        cp5.addButton("Login_Login").setPosition(200, 380).setSize(200, 50).setLabel("Login");
+        cp5.addToggle("Login_Role")
+                .setPosition(202, 440)
+                .setSize(20, 50)
+                .setView((theGraphics, c) -> {
+                    CColor col = c.getColor();
+                    theGraphics.fill(col.getBackground());
+                    theGraphics.rect(-2, -2, c.getWidth()+4, c.getHeight()+4);
+                    theGraphics.fill(col.getForeground());
+                    int h = c.getHeight() / 2;
+                    theGraphics.rect(0, c.getState() ? h : 0, c.getWidth(), h);
+                    //c.getCaptionLabel().draw(theGraphics, 0, 0, c);
+                })
+        ;
+        cp5.addLabel("Student").setPosition(232, 440).setColor(Color.BLACK.getRGB());
+        cp5.addLabel("Teacher").setPosition(232, 460).setColor(Color.BLACK.getRGB());
     }
 
     private void uielementsCreateStudentMainMenu() {
-        cp5.addButton("Main_Menu_Student_Work").setPosition(200, 200).setSize(200, 50).setLabel("Work");
+        cp5.addButton("Main_Menu_Student_Work").setPosition(200, 200).setSize(200, 50).setLabel("Test");
         cp5.addButton("Main_Menu_Student_Practise").setPosition(200, 270).setSize(200, 50).setLabel("Practise");
         cp5.addButton("Main_Menu_Student_Profile").setPosition(200, 340).setSize(200, 50).setLabel("Profile");
-        cp5.addButton("Main_Menu_Student_Logout").setPosition(200, 410).setSize(200, 50).setLabel("Logout");
+        cp5.addButton("Main_Menu_Student_Logout").setPosition(20, 20).setSize(200, 50).setImage(images.get("Logout"));
     }
 
     private void uielementsCreateAdminMainMenu() {
@@ -192,27 +193,26 @@ public class GeoQuiz extends PApplet {
 
     //------------------------------------Anonymous methods for ControlP5-UIElements
 
-    public void Login_Student_Login() {
+    public void Login_Login() {
 
-        String name = cp5.get(Textfield.class, "Login_Student_Name").getText();
-        String password = cp5.get(Textfield.class, "Login_Student_Password").getText();
-        int ID = dbConnector.getAccountId(name, password);
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+        String password = cp5.get(Textfield.class, "Login_Password").getText();
+
+        boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
+
+        int ID = dbConnector.getAccountId(name, password, isTeacher);
 
         if (name.equals("")) {
             println("name leer");
         } else if (password.equals("")) {
             println("password leer");
         } else if (ID != -1) {
-            createUserInstance(ID);
-            switchScreen(Screen.MAIN_MENU_STUDENT);
+            createUserInstance(ID, isTeacher);
+            switchScreen(isTeacher ? Screen.MAIN_MENU_ADMIN : Screen.MAIN_MENU_STUDENT);
         } else {
             feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000).setPosition(new PVector(450, 200)).setSize(new PVector(170, 50)));
         }
 
-    }
-
-    public void Login_Student_Admin() {
-        switchScreen(Screen.LOGIN_ADMIN);
     }
 
     public void Login_Admin_Back() {
@@ -223,13 +223,7 @@ public class GeoQuiz extends PApplet {
         switchScreen(Screen.LOGIN_STUDENT);
     }
 
-    public void Main_Menu_Student_Profile() { switchScreen(Screen.PROFILE_STUDENT); }
-
-    public void SUPERLOGIN() {
-        switchScreen(Screen.MAIN_MENU_STUDENT);
+    public void Main_Menu_Student_Profile() {
+        switchScreen(Screen.PROFILE_STUDENT);
     }
-
-    //------------------------------------Thread methods
-
-
 }

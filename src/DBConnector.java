@@ -46,17 +46,18 @@ class DBConnector {
         return false;
     }
 
-    int getAccountId(String loginName, String loginPassword) {
+    int getAccountId(String loginName, String loginPassword, boolean isTeacher) {
         try {
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
-
-            String query = "select account_id, username, passcode from accounts where username = '" + loginName + "' AND passcode ='" + loginPassword + "' limit 1";
+            String query = (isTeacher ?
+                    "select teacher_id from teacher_accounts where username = '" + loginName + "' AND passcode ='" + loginPassword + "' limit 1" :
+                    "select account_id from accounts where username = '" + loginName + "' AND passcode ='" + loginPassword + "' limit 1");
 
             statement.executeQuery(query);
             resultSet = statement.getResultSet();
-
             if (resultSet.next()) return resultSet.getInt("account_id");
+
             return -1;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,19 +70,22 @@ class DBConnector {
             connection = DriverManager.getConnection(url, user, password);
             statement = connection.createStatement();
 
-            String query = "select account_id, username from accounts where account_id = '"+ID+"'";
+            String query = "select account_id, username from accounts where account_id = " + ID + "";
 
             statement.executeQuery(query);
             resultSet = statement.getResultSet();
-
-            return new User(resultSet.getInt("account_id"), resultSet.getString("username"), false);
+            resultSet.next();
+            return new User(resultSet.getInt("account_id"), resultSet.getString("username"));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    return null;
+        return null;
     }
 
+    public User createTeacherUser(int id) {
+        return null;
+    }
 }
 
 
