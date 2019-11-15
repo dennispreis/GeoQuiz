@@ -1,14 +1,15 @@
+import DTOs.User;
 import java.sql.*;
 
 import static processing.core.PApplet.println;
 
-class DBConnector {
+public class DBConnector {
 
     private String url;
     private String user;
     private String password;
     private String driver;
-
+    
     private Connection connection;
     private ResultSet resultSet;
     private Statement statement;

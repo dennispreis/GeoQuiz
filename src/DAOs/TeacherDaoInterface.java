@@ -5,18 +5,17 @@
  */
 package DAOs;
 
-import java.util.ArrayList;
+import DTOs.Teacher;
 
 /**
  *
- * @author DTOs.User
+ * @author User
  */
-public interface UserDaoInterface
+public interface TeacherDaoInterface
 {
+
     boolean isAccountExisting(String loginName, String loginPassword);
     int getAccountId(String loginName, String loginPassword, boolean isTeacher);
-    String getHash(String loginName);
-    String getDateTime(String loginName);
-    void setDateTime(String loginName, String dateTime);
-    ArrayList<String> getUsernames();
+    Teacher createTeacher(int id);
+
 }

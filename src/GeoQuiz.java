@@ -15,7 +15,13 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-public class GeoQuiz extends PApplet {
+import Feedback.FeedbackAble;
+import Feedback.NamePasswordNotFoundFeedBack;
+import controlP5.*;
+import processing.core.*;
+
+public class GeoQuiz extends PApplet
+{
 
     //------------------------------------Variables and fields
     private static PasswordProcess passwordProcess = new PasswordProcess(12);
@@ -30,13 +36,15 @@ public class GeoQuiz extends PApplet {
     private static ChoosePicture choosePicture;
 
     //------------------------------------Inner classes
-    class Settings {
+    class Settings
+    {
 
         private PFont myFont;
         private Screen screen;
         private Color backgroundColor;
 
-        Settings() {
+        Settings()
+        {
             myFont = createFont("Fonts/Times New Romance.ttf", 30);
             screen = Screen.LOGIN_STUDENT;
             textFont(myFont);
@@ -48,29 +56,35 @@ public class GeoQuiz extends PApplet {
 
         }
 
-        PFont getMyFont() {
+        PFont getMyFont()
+        {
             return myFont;
         }
 
-        Screen getScreen() {
+        Screen getScreen()
+        {
             return screen;
         }
 
-        void setScreen(Screen win) {
+        void setScreen(Screen win)
+        {
             this.screen = win;
         }
     }
     //------------------------------------Methods given by Processing
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         PApplet.main("GeoQuiz", args);
     }
 
-    public void settings() {
+    public void settings()
+    {
         size(900, 600);
     }
 
-    public void setup() {
+    public void setup()
+    {
         settings = new Settings();
         cp5 = new ControlP5(this);
         dbConnectorUser = new MyUserDao();
@@ -90,8 +104,10 @@ public class GeoQuiz extends PApplet {
 
     }
 
-    public void draw() {
-        switch (settings.getScreen()) {
+    public void draw()
+    {
+        switch (settings.getScreen())
+        {
             case LOGIN_STUDENT:
                 showLoginBackground();
                 showTestObjects();
@@ -113,7 +129,8 @@ public class GeoQuiz extends PApplet {
                 break;
         }
 
-        for (FeedbackAble f : feedbackList) {
+        for (FeedbackAble f : feedbackList)
+        {
             f.show();
         }
 
@@ -197,9 +214,11 @@ public class GeoQuiz extends PApplet {
         user = isTeacher ? dbConnectorUser.createTeacherUser(ID) : dbConnectorUser.createStudentUser(ID);
     }
 
-    private void switchScreen(Screen targetScreen) {
+    private void switchScreen(Screen targetScreen)
+    {
         uielementsRemoveAll();
-        switch (targetScreen) {
+        switch (targetScreen)
+        {
             case LOGIN_STUDENT:
                 uielementsCreateLogin();
                 break;
@@ -220,6 +239,7 @@ public class GeoQuiz extends PApplet {
         }
         settings.setScreen(targetScreen);
     }
+
 
     public static PImage getImage(ImageName name) {
         return images.get(name);
@@ -543,6 +563,7 @@ public class GeoQuiz extends PApplet {
         String tmpUser;
 
 
+
         if (isTeacher) {
             for (String user : dbConnectorUser.getTeacherUsernames()) {
                 userPreset = name.equals(user);
@@ -583,15 +604,18 @@ public class GeoQuiz extends PApplet {
 
     }
 
-    public void Login_Admin_Back() {
+    public void Login_Admin_Back()
+    {
         switchScreen(Screen.LOGIN_STUDENT);
     }
 
-    public void Main_Menu_Student_Logout() {
+    public void Main_Menu_Student_Logout()
+    {
         switchScreen(Screen.LOGIN_STUDENT);
     }
 
-    public void Main_Menu_Student_Profile() {
+    public void Main_Menu_Student_Profile()
+    {
         switchScreen(Screen.PROFILE_STUDENT);
     }
 

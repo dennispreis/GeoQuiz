@@ -14,6 +14,7 @@ public class User {
         this.userName = userName;
     }
 
+=======
     public User(int ID, String userName, int avatarIndex) {
         this.ID = ID;
         this.userName = userName;

@@ -7,6 +7,7 @@ package DTOs;
 
 /**
  *
+ * @author User
  * @author DTOs.User
  */
 public class Question

@@ -6,27 +6,30 @@
 package DAOs;
 
 import DTOs.User;
-
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import static processing.core.PApplet.println;
 import java.util.ArrayList;
 
-import static processing.core.PApplet.println;
-
 /**
- * @author DTOs.User
+ *
+ * @author User
  */
-public class MyUserDao extends MySqlDao implements UserDaoInterface {
+public class MyUserDao extends MySqlDao implements UserDaoInterface
+{
 
     private Connection connection;
     private ResultSet resultSet;
     private Statement statement;
 
     @Override
-    public boolean isAccountExisting(String loginName, String loginPassword) {
-        try {
+    public boolean isAccountExisting(String loginName, String loginPassword)
+    {
+        try
+        {
             connection = this.getConnection();
             statement = connection.createStatement();
 
@@ -34,7 +37,6 @@ public class MyUserDao extends MySqlDao implements UserDaoInterface {
 
             statement.executeQuery(query);
             resultSet = statement.getResultSet();
-
             if (resultSet.next()) {
                 return true;
             }
@@ -150,6 +152,7 @@ public class MyUserDao extends MySqlDao implements UserDaoInterface {
         return null;
     }
 
+
     public User createTeacherUser(int id) {
         try {
             connection = this.getConnection();
@@ -209,5 +212,4 @@ public class MyUserDao extends MySqlDao implements UserDaoInterface {
             return new ArrayList<>();
         }
     }
-
 }
