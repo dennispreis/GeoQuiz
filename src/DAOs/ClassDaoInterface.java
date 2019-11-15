@@ -11,5 +11,5 @@ package DAOs;
  */
 public interface ClassDaoInterface
 {
-    
+  //  calculateAverage
 }
