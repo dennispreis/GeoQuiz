@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  *
- * @author User
+ * @author DTOs.User
  */
 public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
 {

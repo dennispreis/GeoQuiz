@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="controlP5">
     <CLASSES>
-      <root url="jar://D:/Developments/controlP5-2.2.6 (1)/controlP5/library/controlP5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/controlP5.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

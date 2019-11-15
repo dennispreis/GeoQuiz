@@ -5,16 +5,18 @@
  */
 package DAOs;
 
-import DTOs.User;
+import java.util.ArrayList;
 
 /**
  *
- * @author User
+ * @author DTOs.User
  */
 public interface UserDaoInterface
 {
     boolean isAccountExisting(String loginName, String loginPassword);
     int getAccountId(String loginName, String loginPassword, boolean isTeacher);
-    User createStudentUser(int ID);
-    public User createTeacherUser(int id);
+    String getHash(String loginName);
+    String getDateTime(String loginName);
+    void setDateTime(String loginName, String dateTime);
+    ArrayList<String> getUsernames();
 }
