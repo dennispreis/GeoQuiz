@@ -1,71 +1,66 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package DTOs;
 
-import Images.ImageName;
+/**
+ *
+ * @author User
+ */
+public class User
+{
 
-public class User {
+    private int id;
+    private String name;
 
-    private int ID;
-    private String userName;
-    private ImageName imageName;
-    private static ProfileHistory profileHistory;
-
-    public User(int ID, String userName) {
-        this.ID = ID;
-        this.userName = userName;
+    
+    public User(int id, String name)
+    {
+        this.id = id;
+        this.name = name;
     }
 
-    public User(int ID, String userName, int avatarIndex) {
-        this.ID = ID;
-        this.userName = userName;
-        imageName = getImageNameFromIndex(avatarIndex);
-        profileHistory = new ProfileHistory();
+    
+    /**
+     * Get the value of id
+     *
+     * @return the value of id
+     */
+    public int getId()
+    {
+        return id;
     }
 
-    public int getID() {
-        return ID;
+    /**
+     * Set the value of id
+     *
+     * @param id new value of id
+     */
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
-    public ProfileHistory getProfileHistory(){
-        return profileHistory;
+    /**
+     * Get the value of name
+     *
+     * @return the value of name
+     */
+    public String getName()
+    {
+        return name;
     }
 
-    public String getUserName() {
-        return userName;
+    /**
+     * Set the value of name
+     *
+     * @param name new value of name
+     */
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
-    public ImageName getAvatarImageName() {
-        return imageName;
-    }
-
-    private ImageName getImageNameFromIndex(int index) {
-        if (index >= 0 && index <= 5) {
-            switch (index) {
-                case 0:
-                    this.imageName = ImageName.AVATAR_DOLPHIN;
-                    break;
-                case 1:
-                    this.imageName = ImageName.AVATAR_EAGLE;
-                    break;
-                case 2:
-                    this.imageName = ImageName.AVATAR_LION;
-                    break;
-                case 3:
-                    this.imageName = ImageName.AVATAR_PENGUIN;
-                    break;
-                case 4:
-                    this.imageName = ImageName.AVATAR_ZEBRA;
-                    break;
-                case 5:
-                    this.imageName = ImageName.AVATAR_COALA;
-                    break;
-            }
-            return this.imageName;
-        } else {
-            return null;
-        }
-    }
-
-    public void setImageName(ImageName name){
-        this.imageName = name;
-    }
 }

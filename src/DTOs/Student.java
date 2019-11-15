@@ -9,34 +9,32 @@ package DTOs;
  *
  * @author User
  */
-public class Student extends UserTJ
+public class Student extends User
 {
 
-    private String class_id;
+    private int class_id;
     private String nickname;
+    private String avatar;
+    private static ProfileHistory profileHistory;
 
     public Student(int id, String name)
     {
         super(id, name);
     }
 
-    public Student(int id, String name, String avatar)
-    {
-        super(id, name, avatar);
-    }
-
-    public Student(String class_id, String nickname, int id, String name)
+    public Student(int class_id, String nickname, int id, String name)
     {
         super(id, name);
         this.class_id = class_id;
         this.nickname = nickname;
     }
 
-    public Student(String class_id, String nickname, int id, String name, String avatar)
+    public Student(int class_id, String nickname, int id, String name, String avatar)
     {
-        super(id, name, avatar);
+        super(id, name);
         this.class_id = class_id;
         this.nickname = nickname;
+        this.avatar = avatar;
     }
 
     /**
@@ -44,7 +42,7 @@ public class Student extends UserTJ
      *
      * @return the value of class_id
      */
-    public String getClass_id()
+    public int getClass_id()
     {
         return class_id;
     }
@@ -54,7 +52,7 @@ public class Student extends UserTJ
      *
      * @param class_id new value of class_id
      */
-    public void setClass_id(String class_id)
+    public void setClass_id(int class_id)
     {
         this.class_id = class_id;
     }
@@ -79,4 +77,19 @@ public class Student extends UserTJ
         this.nickname = nickname;
     }
 
+    public String getAvatar()
+    {
+        return this.avatar;
+    }
+
+    public void setAvatar(String avatar)
+    {
+        this.avatar = avatar;
+    }
+    
+    
+    public ProfileHistory getProfileHistory(){
+        return profileHistory;
+    }
 }
+

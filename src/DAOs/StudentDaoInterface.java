@@ -6,6 +6,7 @@
 package DAOs;
 
 import DTOs.Student;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,10 +14,14 @@ import DTOs.Student;
  */
 public interface StudentDaoInterface
 {
+
     boolean isAccountExisting(String loginName, String loginPassword);
-    int getAccountId(String loginName, String loginPassword, boolean isTeacher);
-    Student createStudent(int id);
-    
-    boolean updateAvatar();
-    boolean updateNickname();
+
+    int getAccountId(String loginName, String loginPassword);
+
+    Student createStudentUser(int id);
+
+    ArrayList<String> getStudentUsernames();
+
+    boolean saveStudent(Student s);
 }

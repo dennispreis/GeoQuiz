@@ -11,18 +11,14 @@ import java.util.ArrayList;
  *
  * @author User
  */
-public class Teacher extends UserTJ
+public class Teacher extends User
 {
     private ArrayList<Class> classList;
     
-    public Teacher(int id, String name, String avatar)
-    {
-        super(id, name, avatar);
-    }
-
     public Teacher(int id, String name)
     {
         super(id, name);
+        classList = new ArrayList<>();
     }
 
 }
