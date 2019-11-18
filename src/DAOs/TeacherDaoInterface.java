@@ -6,6 +6,7 @@
 package DAOs;
 
 import DTOs.Teacher;
+import java.util.ArrayList;
 
 /**
  *
@@ -14,8 +15,19 @@ import DTOs.Teacher;
 public interface TeacherDaoInterface
 {
 
-    boolean isAccountExisting(String loginName, String loginPassword);
-    int getAccountId(String loginName, String loginPassword, boolean isTeacher);
-    Teacher createTeacher(int id);
+ 
+    int getAccountId(String loginName, String loginPassword);
+
+    String getHash(String loginName);
+
+    String getDateTime(String loginName);
+
+    void setDateTime(String loginName, String dateTime);
+
+    public Teacher createTeacherUser(int id);
+     
+    ArrayList<String> getUsernames();
+    
+    public ArrayList<String> getTeacherUsernames();
 
 }

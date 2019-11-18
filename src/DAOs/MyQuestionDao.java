@@ -33,7 +33,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
 
-            String query = "SELECT * FROM questions ORDER BY RAND()";
+            String query = "SELECT * FROM questions ORDER BY RAND() LIMIT 10";
             ps = con.prepareStatement(query);
             //Using a PreparedStatement to execute SQL...
             rs = ps.executeQuery();

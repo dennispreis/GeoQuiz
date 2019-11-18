@@ -1,4 +1,6 @@
-import DAOs.MyUserDao;
+
+import DAOs.MyTeacherDao;
+import DAOs.TeacherDaoInterface;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDateTime;
@@ -8,7 +10,7 @@ public class PasswordProcess {
 
     private int logRounds;
     private int attempts = 0;
-    private MyUserDao dbConnectorUser = new MyUserDao();
+    private TeacherDaoInterface dbConnectorUser = new MyTeacherDao();
     private LocalDateTime currentAttempt = LocalDateTime.now();
 
     public PasswordProcess(int logRounds) {

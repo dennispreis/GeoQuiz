@@ -1,8 +1,12 @@
-import DAOs.MyUserDao;
-import DTOs.User;
+import DAOs.MyStudentDao;
+import DAOs.MyTeacherDao;
+import DAOs.StudentDaoInterface;
+import DAOs.TeacherDaoInterface;
 import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
 import DTOs.HistoryRecord;
+import DTOs.Student;
+import DTOs.User;
 import GameManager.GameManager;
 import GameManager.gameElements.*;
 import Images.ImageName;
@@ -17,6 +21,7 @@ import java.util.List;
 
 import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
+import Images.ImageMap;
 import controlP5.*;
 import processing.core.*;
 
@@ -27,14 +32,15 @@ public class GeoQuiz extends PApplet
     private static PasswordProcess passwordProcess = new PasswordProcess(12);
     private static ControlP5 cp5;
     private static Settings settings;
-    private static MyUserDao dbConnectorUser;
+    private static TeacherDaoInterface ITeacherDao;
+    private static StudentDaoInterface IStudentDao; 
     private static List<FeedbackAble> feedbackList;
     private static Map<ImageName, PImage> images;
     private static User user;
     private static GameManager gameManager;
     private static DragAndDrop dad;
     private static ChoosePicture choosePicture;
-
+    private static ImageMap imageMap;
     //------------------------------------Inner classes
     class Settings
     {
@@ -87,7 +93,8 @@ public class GeoQuiz extends PApplet
     {
         settings = new Settings();
         cp5 = new ControlP5(this);
-        dbConnectorUser = new MyUserDao();
+        IStudentDao = new MyStudentDao();
+        ITeacherDao = new MyTeacherDao();
         feedbackList = new ArrayList<>();
         images = loadImages();
         cp5.setFont(settings.getMyFont());
@@ -101,7 +108,7 @@ public class GeoQuiz extends PApplet
                 new FixRect(this, 200, 200, 50, 50));
 
         choosePicture = new ChoosePicture(this, "String for the question!", images.get(ImageName.PLACEHOLDER_SMALL), images.get(ImageName.PLACEHOLDER_SMALL));
-
+        imageMap = new ImageMap();
     }
 
     public void draw()
@@ -211,7 +218,14 @@ public class GeoQuiz extends PApplet
 
     //------------------------------------Own Methods.
     private void createUserInstance(int ID, boolean isTeacher) {
-        user = isTeacher ? dbConnectorUser.createTeacherUser(ID) : dbConnectorUser.createStudentUser(ID);
+        if(isTeacher)
+        {
+            user = ITeacherDao.createTeacherUser(ID);
+        }
+        else
+        {
+            user = IStudentDao.createStudentUser(ID);
+        }
     }
 
     private void switchScreen(Screen targetScreen)
@@ -278,7 +292,7 @@ public class GeoQuiz extends PApplet
         text("Category", 375, 200);
         text("Level", 500, 200);
         text("Date", 590, 200);
-        HistoryRecord[] history = user.getProfileHistory().getFiveRecords();
+        HistoryRecord[] history = ((Student)user).getProfileHistory().getFiveRecords();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -292,7 +306,8 @@ public class GeoQuiz extends PApplet
         textAlign(LEFT, TOP);
         text("Click to change avatar", 130, 300);
 
-        image(images.get(user.getAvatarImageName()), 100, 100);
+  //      image(images.get(ImageMap.getImageName(((Student)user).getAvatar())), 100, 100);
+        image(images.get(ImageName.AVATAR_LION),100,100);
 
     }
 
@@ -439,7 +454,7 @@ public class GeoQuiz extends PApplet
                 setLabel("Save");
 
         cp5.addTextfield("Profile_Student_Nickname").setPosition(365, 100).setSize(320, 50).
-                setText(user.getUserName()).setLabel("");
+                setText(((Student)user).getNickname()).setLabel("");
 
         cp5.addButton("Profile_Student_Back").setPosition(20, 20).setSize(200, 50).
                 setImage(images.get(ImageName.LOGOUT));
@@ -565,11 +580,11 @@ public class GeoQuiz extends PApplet
 
 
         if (isTeacher) {
-            for (String user : dbConnectorUser.getTeacherUsernames()) {
+            for (String user : ITeacherDao.getTeacherUsernames()) {
                 userPreset = name.equals(user);
             }
         } else {
-            for (String user : dbConnectorUser.getStudentUsernames()) {
+            for (String user : IStudentDao.getStudentUsernames()) {
                 userPreset = name.equals(user);
             }
         }
@@ -580,11 +595,11 @@ public class GeoQuiz extends PApplet
                     .setSize(new PVector(170, 50)));
         } else {
             if (isTeacher) {
-                hashedPassword = dbConnectorUser.getHash(name);
+                hashedPassword = ITeacherDao.getHash(name);
                 System.out.println(passwordProcess.bruteForceCheck(name, password, hashedPassword));
                 if (passwordProcess.bruteForceCheck(name, password, hashedPassword) == 1) {
 
-                    ID = dbConnectorUser.getAccountId(name, hashedPassword, true);
+                    ID = ITeacherDao.getAccountId(name, hashedPassword);
                     createUserInstance(ID, true);
                     switchScreen(Screen.MAIN_MENU_ADMIN);
                 } else if (passwordProcess.bruteForceCheck(name, password, hashedPassword) == -1) {
@@ -593,7 +608,7 @@ public class GeoQuiz extends PApplet
 
             } else {
                 // cp5.get(Button.class, "Password_Management").setVisible(false);
-                ID = dbConnectorUser.getAccountId(name, password, false);
+                ID = IStudentDao.getAccountId(name, password);
 
                 createUserInstance(ID, false);
                 switchScreen(Screen.MAIN_MENU_STUDENT);
@@ -676,26 +691,26 @@ public class GeoQuiz extends PApplet
 
     //IN THIS METHODS SAVE AVATAR PICTURE TO DATABASE
     public void Profile_Avatar_Lion() {
-        user.setImageName(ImageName.AVATAR_LION);
+        ((Student)user).setAvatar(ImageName.AVATAR_LION.name());
     }
 
     public void Profile_Avatar_Eagle() {
-        user.setImageName(ImageName.AVATAR_EAGLE);
+        ((Student)user).setAvatar(ImageName.AVATAR_EAGLE.name());
     }
 
     public void Profile_Avatar_Zebra() {
-        user.setImageName(ImageName.AVATAR_ZEBRA);
+        ((Student)user).setAvatar(ImageName.AVATAR_ZEBRA.name());
     }
 
     public void Profile_Avatar_Dolphin() {
-        user.setImageName(ImageName.AVATAR_DOLPHIN);
+        ((Student)user).setAvatar(ImageName.AVATAR_DOLPHIN.name());
     }
 
     public void Profile_Avatar_Coala() {
-        user.setImageName(ImageName.AVATAR_COALA);
+        ((Student)user).setAvatar(ImageName.AVATAR_COALA.name());
     }
 
     public void Profile_Avatar_Penguin() {
-        user.setImageName(ImageName.AVATAR_PENGUIN);
+        ((Student)user).setAvatar(ImageName.AVATAR_PENGUIN.name());
     }
 }
