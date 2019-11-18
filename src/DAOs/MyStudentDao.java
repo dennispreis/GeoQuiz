@@ -6,7 +6,6 @@
 package DAOs;
 
 import DTOs.Student;
-import DTOs.UserOld;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,7 +81,7 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
             connection = this.getConnection();
             statement = connection.createStatement();
 
-            String query = "select account_id, username,class_id,nickname,avatar from student_accounts where account_id = " + ID + "";
+            String query = "select account_id, username,class_id,nickname,avatar from student_accounts sa JOIN students s ON sa.account_id = s.student_id where account_id = " + ID + "";
 
             statement.executeQuery(query);
             resultSet = statement.getResultSet();

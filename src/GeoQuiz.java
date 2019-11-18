@@ -21,6 +21,7 @@ import java.util.List;
 
 import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
+import Images.ImageMap;
 import controlP5.*;
 import processing.core.*;
 
@@ -39,7 +40,7 @@ public class GeoQuiz extends PApplet
     private static GameManager gameManager;
     private static DragAndDrop dad;
     private static ChoosePicture choosePicture;
-
+    private static ImageMap imageMap;
     //------------------------------------Inner classes
     class Settings
     {
@@ -107,7 +108,7 @@ public class GeoQuiz extends PApplet
                 new FixRect(this, 200, 200, 50, 50));
 
         choosePicture = new ChoosePicture(this, "String for the question!", images.get(ImageName.PLACEHOLDER_SMALL), images.get(ImageName.PLACEHOLDER_SMALL));
-
+        imageMap = new ImageMap();
     }
 
     public void draw()
@@ -305,8 +306,8 @@ public class GeoQuiz extends PApplet
         textAlign(LEFT, TOP);
         text("Click to change avatar", 130, 300);
 
-//        image(images.get(((Student)user).getAvatar()), 100, 100);
-        image(images.get((ImageName.AVATAR_LION)),100,100);
+        image(images.get(ImageMap.getImageName(((Student)user).getAvatar())), 100, 100);
+  //      image(images.get((ImageName.AVATAR_LION)),100,100);
 
     }
 
@@ -690,26 +691,26 @@ public class GeoQuiz extends PApplet
 
     //IN THIS METHODS SAVE AVATAR PICTURE TO DATABASE
     public void Profile_Avatar_Lion() {
-        ((Student)user).setAvatar(ImageName.AVATAR_LION.toString());
+        ((Student)user).setAvatar(ImageName.AVATAR_LION.name());
     }
 
     public void Profile_Avatar_Eagle() {
-        ((Student)user).setAvatar(ImageName.AVATAR_EAGLE.toString());
+        ((Student)user).setAvatar(ImageName.AVATAR_EAGLE.name());
     }
 
     public void Profile_Avatar_Zebra() {
-        ((Student)user).setAvatar(ImageName.AVATAR_ZEBRA.toString());
+        ((Student)user).setAvatar(ImageName.AVATAR_ZEBRA.name());
     }
 
     public void Profile_Avatar_Dolphin() {
-        ((Student)user).setAvatar(ImageName.AVATAR_DOLPHIN.toString());
+        ((Student)user).setAvatar(ImageName.AVATAR_DOLPHIN.name());
     }
 
     public void Profile_Avatar_Coala() {
-        ((Student)user).setAvatar(ImageName.AVATAR_COALA.toString());
+        ((Student)user).setAvatar(ImageName.AVATAR_COALA.name());
     }
 
     public void Profile_Avatar_Penguin() {
-        ((Student)user).setAvatar(ImageName.AVATAR_PENGUIN.toString());
+        ((Student)user).setAvatar(ImageName.AVATAR_PENGUIN.name());
     }
 }
