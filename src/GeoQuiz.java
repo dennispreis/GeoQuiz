@@ -306,8 +306,8 @@ public class GeoQuiz extends PApplet
         textAlign(LEFT, TOP);
         text("Click to change avatar", 130, 300);
 
-        image(images.get(ImageMap.getImageName(((Student)user).getAvatar())), 100, 100);
-  //      image(images.get((ImageName.AVATAR_LION)),100,100);
+  //      image(images.get(ImageMap.getImageName(((Student)user).getAvatar())), 100, 100);
+        image(images.get(ImageName.AVATAR_LION),100,100);
 
     }
 

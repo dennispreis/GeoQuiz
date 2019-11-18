@@ -20,6 +20,8 @@ public class Student extends User
     public Student(int id, String name)
     {
         super(id, name);
+        this.avatar = "AVATAR_LION";
+        this.profileHistory = new ProfileHistory();
     }
 
     public Student(int class_id, String nickname, int id, String name)
@@ -27,6 +29,8 @@ public class Student extends User
         super(id, name);
         this.class_id = class_id;
         this.nickname = nickname;
+        this.avatar = "AVATAR_LION";
+        this.profileHistory = new ProfileHistory();
     }
 
     public Student(int class_id, String nickname, int id, String name, String avatar)
@@ -35,6 +39,7 @@ public class Student extends User
         this.class_id = class_id;
         this.nickname = nickname;
         this.avatar = avatar;
+        this.profileHistory = new ProfileHistory();
     }
 
     /**
