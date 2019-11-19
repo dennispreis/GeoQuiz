@@ -1,3 +1,4 @@
+
 import DAOs.MyStudentDao;
 import DAOs.MyTeacherDao;
 import DAOs.StudentDaoInterface;
@@ -21,8 +22,10 @@ import java.util.List;
 
 import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
+import Feedback.PasscodeNotFoundFeedback;
 import Images.ImageMap;
 import controlP5.*;
+import java.time.LocalDateTime;
 import processing.core.*;
 
 public class GeoQuiz extends PApplet
@@ -33,7 +36,7 @@ public class GeoQuiz extends PApplet
     private static ControlP5 cp5;
     private static Settings settings;
     private static TeacherDaoInterface ITeacherDao;
-    private static StudentDaoInterface IStudentDao; 
+    private static StudentDaoInterface IStudentDao;
     private static List<FeedbackAble> feedbackList;
     private static Map<ImageName, PImage> images;
     private static User user;
@@ -41,6 +44,7 @@ public class GeoQuiz extends PApplet
     private static DragAndDrop dad;
     private static ChoosePicture choosePicture;
     private static ImageMap imageMap;
+
     //------------------------------------Inner classes
     class Settings
     {
@@ -57,7 +61,8 @@ public class GeoQuiz extends PApplet
             backgroundColor = new Color(230, 87, 116);
         }
 
-        Color getBackgroundColor() {
+        Color getBackgroundColor()
+        {
             return backgroundColor;
 
         }
@@ -99,11 +104,13 @@ public class GeoQuiz extends PApplet
         images = loadImages();
         cp5.setFont(settings.getMyFont());
         switchScreen(Screen.LOGIN_STUDENT);
-
+        passwordProcess = new PasswordProcess(12);
+        passwordProcess.setCurrentAttempt(LocalDateTime.now());
         dad = new DragAndDrop(this,
-                new DragAndDropElement[]{
-                        new DragAndDropElement(this).setPosition(100, 20).setText("1"),
-                        new DragAndDropElement(this).setPosition(150, 20).setText("2")
+                new DragAndDropElement[]
+                {
+                    new DragAndDropElement(this).setPosition(100, 20).setText("1"),
+                    new DragAndDropElement(this).setPosition(150, 20).setText("2")
                 },
                 new FixRect(this, 200, 200, 50, 50));
 
@@ -115,14 +122,27 @@ public class GeoQuiz extends PApplet
     {
         switch (settings.getScreen())
         {
+
             case LOGIN_STUDENT:
                 showLoginBackground();
-                showTestObjects();
+//                showTestObjects();
                 break;
             case MAIN_MENU_STUDENT:
                 showStudentMainMenu();
                 break;
             case MAIN_MENU_ADMIN:
+                showLoginBackground();
+                break;
+            case CHANGE_PASSWORD_ADMIN_PASSCODE:
+                showChangePasswordPasscodeBackground();
+                break;
+            case CHANGE_PASSWORD_ADMIN:
+                showChangePasswordBackground();
+                break;
+            case CHANGE_PASSWORD_STUDENT_ADMIN:
+                showChangePasswordBackground();
+                break;
+            case VIEW_STUDENT_PROGRESS_ADMIN:
                 showLoginBackground();
                 break;
             case PROFILE_STUDENT:
@@ -134,6 +154,7 @@ public class GeoQuiz extends PApplet
             case WORK_STUDENT:
                 showStudentWork();
                 break;
+
         }
 
         for (FeedbackAble f : feedbackList)
@@ -149,14 +170,14 @@ public class GeoQuiz extends PApplet
     }
 
     //------------------------------------Initialising methods.
-    private Map<ImageName, PImage> loadImages() {
+    private Map<ImageName, PImage> loadImages()
+    {
         Map<ImageName, PImage> tmp = new HashMap<>();
 
         tmp.put(ImageName.BACKGROUND, loadImage("Images/background.JPG"));
         tmp.put(ImageName.LOGOUT, loadImage("Images/logout.png"));
         tmp.put(ImageName.PLACEHOLDER, loadImage("Images/placeholder.jpg"));
         tmp.put(ImageName.PLACEHOLDER_SMALL, loadImage("Images/placeholder_small.jpg"));
-
 
         tmp.put(ImageName.AVATAR_LION, loadImage("Images/Avatars/lion.png"));
         tmp.put(ImageName.AVATAR_DOLPHIN, loadImage("Images/Avatars/dolphin.png"));
@@ -176,13 +197,17 @@ public class GeoQuiz extends PApplet
     }
 
     //------------------------------------Event methods given by Processing. Includes mouse and key events
-    public void keyPressed() {
+    public void keyPressed()
+    {
     }
 
-    public void mousePressed() {
+    public void mousePressed()
+    {
 
-        for (DragAndDropElement element : dad.getSolutions()) {
-            if (element.isMouseWithIn()) {
+        for (DragAndDropElement element : dad.getSolutions())
+        {
+            if (element.isMouseWithIn())
+            {
                 dad.setDraggingElement(element);
                 dad.setDragging(true);
             }
@@ -190,15 +215,22 @@ public class GeoQuiz extends PApplet
 
     }
 
-    public void mouseReleased() {
-        if (dad.isDragging()) {
-            if (dad.isMouseInAnswerRect()) {
-                if (!dad.getAnswerRect().isOccupied() && dad.getDraggingElement() != null) {
+    public void mouseReleased()
+    {
+        if (dad.isDragging())
+        {
+            if (dad.isMouseInAnswerRect())
+            {
+                if (!dad.getAnswerRect().isOccupied() && dad.getDraggingElement() != null)
+                {
                     dad.getDraggingElement().setPosition(dad.getAnswerRect().getX(), dad.getAnswerRect().getY());
                     dad.getAnswerRect().setOccupied(true);
                 }
-            } else {
-                if (dad.getDraggingElement() != null) {
+            }
+            else
+            {
+                if (dad.getDraggingElement() != null)
+                {
                     dad.getDraggingElement().setPosition(dad.getDraggingElement().getPosition().x, dad.getDraggingElement().getPosition().y);
                     dad.getAnswerRect().setOccupied(false);
                 }
@@ -206,19 +238,22 @@ public class GeoQuiz extends PApplet
         }
         dad.setDraggingElement(null);
 
-
-        if (choosePicture.getButton_left().isMouseWithIn()) {
+        if (choosePicture.getButton_left().isMouseWithIn())
+        {
             choosePicture.getButton_left().setChoosen(true);
             choosePicture.getButton_right().setChoosen(false);
-        } else if (choosePicture.getButton_right().isMouseWithIn()) {
+        }
+        else if (choosePicture.getButton_right().isMouseWithIn())
+        {
             choosePicture.getButton_left().setChoosen(false);
             choosePicture.getButton_right().setChoosen(true);
         }
     }
 
     //------------------------------------Own Methods.
-    private void createUserInstance(int ID, boolean isTeacher) {
-        if(isTeacher)
+    private void createUserInstance(int ID, boolean isTeacher)
+    {
+        if (isTeacher)
         {
             user = ITeacherDao.createTeacherUser(ID);
         }
@@ -242,6 +277,18 @@ public class GeoQuiz extends PApplet
             case MAIN_MENU_ADMIN:
                 uielementsCreateAdminMainMenu();
                 break;
+            case CHANGE_PASSWORD_ADMIN_PASSCODE:
+                uielementsCreateAdminPasscode();
+                break;
+            case CHANGE_PASSWORD_ADMIN:
+                uielementsCreateAdminChangePassword();
+                break;
+            case CHANGE_PASSWORD_STUDENT_ADMIN:
+                //uielementsCreateAdminChangeStudentPassword();
+                break;
+            case VIEW_STUDENT_PROGRESS_ADMIN:
+                //uielementsCreateAdminViewStudentProgress();
+                break;
             case PROFILE_STUDENT:
                 uielementsCreateStudentProfile();
                 break;
@@ -254,25 +301,26 @@ public class GeoQuiz extends PApplet
         settings.setScreen(targetScreen);
     }
 
-
-    public static PImage getImage(ImageName name) {
+    public static PImage getImage(ImageName name)
+    {
         return images.get(name);
     }
 
     //------------------------------------Show Methods
-
-    private void showTestObjects() {
-
-        if (dad.isDragging() && dad.getDraggingElement() != null) {
-            dad.getDraggingElement().updatePos(mouseX, mouseY);
-        }
-        dad.show();
-
-        choosePicture.show();
-
-    }
-
-    private void showLoginBackground() {
+//    private void showTestObjects()
+//    {
+//
+//        if (dad.isDragging() && dad.getDraggingElement() != null)
+//        {
+//            dad.getDraggingElement().updatePos(mouseX, mouseY);
+//        }
+//        dad.show();
+//
+//        choosePicture.show();
+//
+//    }
+    private void showLoginBackground()
+    {
         background(settings.getBackgroundColor().getRGB());
         textSize(60);
         textAlign(CENTER, TOP);
@@ -282,7 +330,8 @@ public class GeoQuiz extends PApplet
         textAlign(CENTER, TOP);
     }
 
-    private void showStudentProfile() {
+    private void showStudentProfile()
+    {
         background(settings.getBackgroundColor().getRGB());
         textSize(20);
         fill(255);
@@ -292,12 +341,14 @@ public class GeoQuiz extends PApplet
         text("Category", 375, 200);
         text("Level", 500, 200);
         text("Date", 590, 200);
-        HistoryRecord[] history = ((Student)user).getProfileHistory().getFiveRecords();
+        HistoryRecord[] history = ((Student) user).getProfileHistory().getFiveRecords();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        for (int i = 0; i < history.length; i++) {
-            if (history[i] != null) {
+        for (int i = 0; i < history.length; i++)
+        {
+            if (history[i] != null)
+            {
                 text(history[i].getCategory().name(), 375, 225 + 30 * i);
                 text(history[i].getLevel().name(), 500, 225 + 30 * i);
                 text((formatter.format(history[0].getDate())), 590, 225 + 30 * i);
@@ -306,12 +357,13 @@ public class GeoQuiz extends PApplet
         textAlign(LEFT, TOP);
         text("Click to change avatar", 130, 300);
 
-  //      image(images.get(ImageMap.getImageName(((Student)user).getAvatar())), 100, 100);
-        image(images.get(ImageName.AVATAR_LION),100,100);
+        //      image(images.get(ImageMap.getImageName(((Student)user).getAvatar())), 100, 100);
+        image(images.get(ImageName.AVATAR_LION), 100, 100);
 
     }
 
-    private void showStudentMainMenu() {
+    private void showStudentMainMenu()
+    {
         background(settings.getBackgroundColor().getRGB());
         textSize(20);
         textAlign(CENTER, TOP);
@@ -321,7 +373,8 @@ public class GeoQuiz extends PApplet
         text("Profile", 700, 420);
     }
 
-    private void showStudentPractise() {
+    private void showStudentPractise()
+    {
         background(settings.getBackgroundColor().getRGB());
 
         textSize(30);
@@ -339,12 +392,36 @@ public class GeoQuiz extends PApplet
 
     }
 
-    private void showStudentWork() {
+    private void showStudentWork()
+    {
         background(settings.getBackgroundColor().getRGB());
     }
 
+    private void showChangePasswordBackground()
+    {
+        background(settings.getBackgroundColor().getRGB());
+        textSize(60);
+        textAlign(CENTER, TOP);
+        fill(255);
+        text("Change Password", 450, 100);
+        textSize(30);
+        textAlign(CENTER, TOP);
+    }
+
+    private void showChangePasswordPasscodeBackground()
+    {
+        background(settings.getBackgroundColor().getRGB());
+        textSize(60);
+        textAlign(CENTER, TOP);
+        fill(255);
+        text("Passcode Check", 450, 100);
+        textSize(30);
+        textAlign(CENTER, TOP);
+    }
+
     //------------------------------------Methods to create/Remove UIElements
-    private void uielementsCreateLogin() {
+    private void uielementsCreateLogin()
+    {
 
         cp5.addButton("Magic").setPosition(570, 420).setSize(100, 50);
 //---------
@@ -390,7 +467,6 @@ public class GeoQuiz extends PApplet
                 .getCaptionLabel()
                 .setPaddingY(-90);
 
-
         cp5.addButton("Login_Login")
                 .setPosition(355, 420)
                 .setSize(200, 50)
@@ -398,7 +474,8 @@ public class GeoQuiz extends PApplet
 
     }
 
-    private void uielementsCreateStudentMainMenu() {
+    private void uielementsCreateStudentMainMenu()
+    {
         cp5.addButton("Main_Menu_Student_Work").
                 setPosition(100, 200).
                 setSize(200, 200).
@@ -420,26 +497,97 @@ public class GeoQuiz extends PApplet
                 setImage(images.get(ImageName.LOGOUT));
     }
 
-    private void uielementsCreateAdminMainMenu() {
-        cp5.addButton("Main_Menu_Student_Work").
-                setPosition(200, 200).
-                setSize(200, 50).
-                setLabel("Test");
-        cp5.addButton("Main_Menu_Student_Practise").
-                setPosition(200, 270).
-                setSize(200, 50).
-                setLabel("Practise");
-        cp5.addButton("Main_Menu_Student_Profile").
-                setPosition(200, 340).
-                setSize(200, 50).
-                setLabel("Profile");
+    private void uielementsCreateAdminMainMenu()
+    {
+        cp5.addButton("Change_Password")
+                .setPosition(255, 220)
+                .setSize(400, 50)
+                .setLabel("Change Password");
+        cp5.addButton("Change_Password_Student")
+                .setPosition(255, 320)
+                .setSize(400, 50)
+                .setLabel("Change Student Password");
+        cp5.addButton("View_Student_Progress")
+                .setPosition(255, 420)
+                .setSize(400, 50)
+                .setLabel("View Student Progress");
+        cp5.addButton("Main_Menu_Student_Logout")
+                .setPosition(20, 20)
+                .setSize(200, 50)
+                .setImage(images.get(ImageName.LOGOUT));
+    }
+
+    private void uielementsCreateAdminPasscode()
+    {
+        Color col = Color.decode("#7974fc");
+
+        cp5.addGroup("Passcode_Check")
+                .setBackgroundColor(color(1, 160))
+                .setPosition(300, 200)
+                .setSize(300, 300)
+                .hideBar();
+
+        cp5.addTextfield("Passcode")
+                .setGroup("Passcode_Check")
+                .setPosition(45, 140)
+                .setSize(220, 40)
+                .setColorBackground(col.getRGB())
+                .setColorForeground(Color.WHITE.getRGB())
+                .setPasswordMode(true)
+                .setAutoClear(false)
+                .setLabel("Passcode")
+                .getCaptionLabel()
+                .setPaddingY(-90);
+
+        cp5.addButton("Change_Password_Check")
+                .setGroup("Passcode_Check")
+                .setPosition(45, 240)
+                .setSize(220, 40)
+                .setLabel("Check");
+
         cp5.addButton("Main_Menu_Student_Logout").
                 setPosition(20, 20).
                 setSize(200, 50).
                 setImage(images.get(ImageName.LOGOUT));
+
     }
 
-    private void uielementsCreateStudentProfile() {
+    private void uielementsCreateAdminChangePassword()
+    {
+        Color col = Color.decode("#7974fc");
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+
+        cp5.addTextfield("Change_Password_Name")
+                .setText(name)
+                .lock()
+                .setPosition(355, 220)
+                .setSize(200, 50)
+                .setColorBackground(col.getRGB())
+                .setColorForeground(Color.WHITE.getRGB())
+                .setAutoClear(false)
+                .setLabel("Name")
+                .getCaptionLabel()
+                .setPaddingY(-90);
+
+        cp5.addTextfield("Change_Password_Password")
+                .setPosition(355, 320)
+                .setSize(200, 50)
+                .setColorBackground(col.getRGB())
+                .setColorForeground(Color.WHITE.getRGB())
+                .setPasswordMode(true)
+                .setAutoClear(false)
+                .setLabel("Password")
+                .getCaptionLabel()
+                .setPaddingY(-90);
+
+        cp5.addButton("Change_Password_Change")
+                .setPosition(355, 420)
+                .setSize(200, 50)
+                .setLabel("Change");
+    }
+
+    private void uielementsCreateStudentProfile()
+    {
         cp5.addToggle("Profile_Student_Avatar_Change").setPosition(100, 300).setSize(25, 25).
                 setLabel("");
 
@@ -454,7 +602,7 @@ public class GeoQuiz extends PApplet
                 setLabel("Save");
 
         cp5.addTextfield("Profile_Student_Nickname").setPosition(365, 100).setSize(320, 50).
-                setText(((Student)user).getNickname()).setLabel("");
+                setText(((Student) user).getNickname()).setLabel("");
 
         cp5.addButton("Profile_Student_Back").setPosition(20, 20).setSize(200, 50).
                 setImage(images.get(ImageName.LOGOUT));
@@ -504,12 +652,10 @@ public class GeoQuiz extends PApplet
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_8").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_8").hide());
 
-
         cp5.addButton("Profile_Student_Achievement_9").setPosition(800, 500).setSize(50, 50).
                 setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_9").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_9").hide());
-
 
         cp5.addLabel("Achievement_Label_0").setPosition(0, 0).setSize(100, 100).setText("Achievement_0").hide();
         cp5.addLabel("Achievement_Label_1").setPosition(0, 0).setText("Achievement_1").hide();
@@ -523,7 +669,8 @@ public class GeoQuiz extends PApplet
         cp5.addLabel("Achievement_Label_9").setPosition(0, 0).setText("Achievement_9").hide();
     }
 
-    private void uielementsCreateStudentPractise() {
+    private void uielementsCreateStudentPractise()
+    {
         cp5.addButton("Practise_Student_Back").setPosition(20, 20).setSize(200, 50).
                 setImage(images.get(ImageName.LOGOUT));
 
@@ -537,77 +684,113 @@ public class GeoQuiz extends PApplet
 
     }
 
-    private void uielementsRemoveAll() {
+    private void uielementsRemoveAll()
+    {
         cp5.getAll().forEach(ControllerInterface::hide);
     }
 
     //------------------------------------Anonymous methods for ControlP5-UIElements
-
-    public void Magic() {
-        Textfield myT = (Textfield) cp5.get("Login_Name");
-        myT.setText("max");
-        myT = (Textfield) cp5.get("Login_Password");
-        myT.setText("123456");
+    public void Magic()
+    {
+        boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
+        if (isTeacher)
+        {
+            Textfield myT = (Textfield) cp5.get("Login_Name");
+            myT.setText("peter");
+            myT = (Textfield) cp5.get("Login_Password");
+            myT.setText("password");
+        }
+        else
+        {
+            Textfield myT = (Textfield) cp5.get("Login_Name");
+            myT.setText("max");
+            myT = (Textfield) cp5.get("Login_Password");
+            myT.setText("123456");
+        }
     }
 
-    public boolean Login_Role() {
+    public boolean Login_Role()
+    {
 
         boolean isTeacher;
         boolean flg = cp5.get(Toggle.class, "Login_Role").getState();
-        if (flg) {
+        if (flg)
+        {
             cp5.addButton("Password_Management")
                     .setPosition(355, 500)
                     .setSize(200, 100)
-                    .setLabel("Password\nManagement");
+                    .setLabel("Forgot\nPassword");
             isTeacher = true;
-        } else {
+        }
+        else
+        {
             isTeacher = false;
             cp5.getController("Password_Management").setVisible(false);
+            cp5.get(Button.class, "Login_Login").show();
         }
         return isTeacher;
     }
 
-    public void Login_Login() {
+    public void Login_Login()
+    {
 
         String hashedPassword;
         String name = cp5.get(Textfield.class, "Login_Name").getText();
         String password = cp5.get(Textfield.class, "Login_Password").getText();
         boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
         boolean userPreset = false;
+        int bruteForceResult;
         int ID = -1;
-        String tmpUser;
-
-
-
-        if (isTeacher) {
-            for (String user : ITeacherDao.getTeacherUsernames()) {
+        if (isTeacher)
+        {
+            for (String user : ITeacherDao.getTeacherUsernames())
+            {
                 userPreset = name.equals(user);
             }
-        } else {
-            for (String user : IStudentDao.getStudentUsernames()) {
+        }
+        else
+        {
+            for (String user : IStudentDao.getStudentUsernames())
+            {
                 userPreset = name.equals(user);
             }
         }
 
-        if (!userPreset || name.isEmpty() || password.isEmpty()) {
+        if (!userPreset || name.isEmpty() || password.isEmpty())
+        {
             feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
                     .setPosition(new PVector(650, 200))
                     .setSize(new PVector(170, 50)));
-        } else {
-            if (isTeacher) {
-                hashedPassword = ITeacherDao.getHash(name);
-                System.out.println(passwordProcess.bruteForceCheck(name, password, hashedPassword));
-                if (passwordProcess.bruteForceCheck(name, password, hashedPassword) == 1) {
+        }
+        else
+        {
+            if (isTeacher)
+            {
 
-                    ID = ITeacherDao.getAccountId(name, hashedPassword);
+                hashedPassword = ITeacherDao.getHash(name);
+                bruteForceResult = passwordProcess.bruteForceCheck(name, password, hashedPassword);
+
+                if (bruteForceResult == 1)
+                {
+
+                    ID = ITeacherDao.getAccountId(name);
                     createUserInstance(ID, true);
                     switchScreen(Screen.MAIN_MENU_ADMIN);
-                } else if (passwordProcess.bruteForceCheck(name, password, hashedPassword) == -1) {
+                }
+                else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5))
+                {
                     cp5.get(Button.class, "Login_Login").hide();
                 }
+                else
+                {
+                    feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
+                            .setPosition(new PVector(650, 200))
+                            .setSize(new PVector(170, 50)));
+                }
 
-            } else {
-                // cp5.get(Button.class, "Password_Management").setVisible(false);
+            }
+            else
+            {
                 ID = IStudentDao.getAccountId(name, password);
 
                 createUserInstance(ID, false);
@@ -616,6 +799,91 @@ public class GeoQuiz extends PApplet
         }
 
         gameManager = new GameManager();
+
+    }
+
+    public void Password_Management()
+    {
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+        boolean userPreset = false;
+
+        for (String user : ITeacherDao.getTeacherUsernames())
+        {
+            userPreset = name.equals(user);
+        }
+
+        if (!userPreset || name.isEmpty())
+        {
+            feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
+                    .setPosition(new PVector(650, 200))
+                    .setSize(new PVector(170, 50)));
+        }
+        else
+        {
+            switchScreen(Screen.CHANGE_PASSWORD_ADMIN_PASSCODE);
+        }
+    }
+
+    public void Change_Password_Check()
+    {
+        try
+        {
+
+            String name = cp5.get(Textfield.class, "Login_Name").getText();
+            String passcodeText = cp5.get(Textfield.class, "Passcode").getText();
+            int passcode;
+
+            if (!passcodeText.isEmpty())
+            {
+                passcode = Integer.parseInt(passcodeText);
+            }
+            else
+            {
+                passcode = -1;
+            }
+
+            if (passcode == ITeacherDao.getPassCode(name))
+            {
+                switchScreen(Screen.CHANGE_PASSWORD_ADMIN);
+            }
+            else
+            {
+                feedbackList.add(new PasscodeNotFoundFeedback(this, 5000)
+                        .setPosition(new PVector(650, 200))
+                        .setSize(new PVector(170, 50)));
+            }
+        }
+        catch (NumberFormatException ex)
+        {
+            feedbackList.add(new PasscodeNotFoundFeedback(this, 5000)
+                    .setPosition(new PVector(650, 200))
+                    .setSize(new PVector(170, 50)));
+
+        }
+    }
+
+    public void Change_Password()
+    {
+        switchScreen(Screen.CHANGE_PASSWORD_ADMIN);
+    }
+
+    public void Change_Password_Change()
+    {
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+        String password = cp5.get(Textfield.class, "Change_Password_Password").getText();
+        String hash = passwordProcess.hash(password);
+
+        if (password.isEmpty())
+        {
+            feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
+                    .setPosition(new PVector(650, 200))
+                    .setSize(new PVector(170, 50)));
+        }
+        else
+        {
+            ITeacherDao.setHash(name, hash);
+            switchScreen(Screen.LOGIN_STUDENT);
+        }
 
     }
 
@@ -634,32 +902,40 @@ public class GeoQuiz extends PApplet
         switchScreen(Screen.PROFILE_STUDENT);
     }
 
-    public void Main_Menu_Student_Work() {
+    public void Main_Menu_Student_Work()
+    {
         switchScreen(Screen.WORK_STUDENT);
     }
 
-    public void Main_Menu_Student_Practise() {
+    public void Main_Menu_Student_Practise()
+    {
         switchScreen(Screen.PRACTISE_STUDENT);
     }
 
-    public void Profile_Student_Back() {
+    public void Profile_Student_Back()
+    {
         switchScreen(Screen.MAIN_MENU_STUDENT);
     }
 
-    public void Profile_Student_Nickname_Change() {
+    public void Profile_Student_Nickname_Change()
+    {
         //SAVE NEW NICKNAME TO DATABASE FROM TEXTFIELD CONTROLLER
         //RENEW THE USERNICKNAME
     }
 
-    public void Profile_Student_Avatar_Change(boolean theFlag) {
-        if (theFlag) {
+    public void Profile_Student_Avatar_Change(boolean theFlag)
+    {
+        if (theFlag)
+        {
             cp5.get("Profile_Avatar_Lion").show();
             cp5.get("Profile_Avatar_Eagle").show();
             cp5.get("Profile_Avatar_Dolphin").show();
             cp5.get("Profile_Avatar_Zebra").show();
             cp5.get("Profile_Avatar_Penguin").show();
             cp5.get("Profile_Avatar_Coala").show();
-        } else {
+        }
+        else
+        {
             cp5.get("Profile_Avatar_Lion").hide();
             cp5.get("Profile_Avatar_Eagle").hide();
             cp5.get("Profile_Avatar_Dolphin").hide();
@@ -669,48 +945,59 @@ public class GeoQuiz extends PApplet
         }
     }
 
-    public void Practise_Student_Back() {
+    public void Practise_Student_Back()
+    {
         switchScreen(Screen.MAIN_MENU_STUDENT);
     }
 
-    public void Practise_Category_Left() {
+    public void Practise_Category_Left()
+    {
         gameManager.decreaseCategory();
     }
 
-    public void Practise_Category_Right() {
+    public void Practise_Category_Right()
+    {
         gameManager.increaseCategory();
     }
 
-    public void Practise_Level_Left() {
+    public void Practise_Level_Left()
+    {
         gameManager.decreaseLevel();
     }
 
-    public void Practise_Level_Right() {
+    public void Practise_Level_Right()
+    {
         gameManager.increaseLevel();
     }
 
     //IN THIS METHODS SAVE AVATAR PICTURE TO DATABASE
-    public void Profile_Avatar_Lion() {
-        ((Student)user).setAvatar(ImageName.AVATAR_LION.name());
+    public void Profile_Avatar_Lion()
+    {
+        ((Student) user).setAvatar(ImageName.AVATAR_LION.name());
     }
 
-    public void Profile_Avatar_Eagle() {
-        ((Student)user).setAvatar(ImageName.AVATAR_EAGLE.name());
+    public void Profile_Avatar_Eagle()
+    {
+        ((Student) user).setAvatar(ImageName.AVATAR_EAGLE.name());
     }
 
-    public void Profile_Avatar_Zebra() {
-        ((Student)user).setAvatar(ImageName.AVATAR_ZEBRA.name());
+    public void Profile_Avatar_Zebra()
+    {
+        ((Student) user).setAvatar(ImageName.AVATAR_ZEBRA.name());
     }
 
-    public void Profile_Avatar_Dolphin() {
-        ((Student)user).setAvatar(ImageName.AVATAR_DOLPHIN.name());
+    public void Profile_Avatar_Dolphin()
+    {
+        ((Student) user).setAvatar(ImageName.AVATAR_DOLPHIN.name());
     }
 
-    public void Profile_Avatar_Coala() {
-        ((Student)user).setAvatar(ImageName.AVATAR_COALA.name());
+    public void Profile_Avatar_Coala()
+    {
+        ((Student) user).setAvatar(ImageName.AVATAR_COALA.name());
     }
 
-    public void Profile_Avatar_Penguin() {
-        ((Student)user).setAvatar(ImageName.AVATAR_PENGUIN.name());
+    public void Profile_Avatar_Penguin()
+    {
+        ((Student) user).setAvatar(ImageName.AVATAR_PENGUIN.name());
     }
 }
