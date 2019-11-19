@@ -7,6 +7,7 @@ package DAOs;
 
 import DTOs.Student;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -93,7 +94,7 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
             String avatar = resultSet.getString("avatar");
             String nickname = resultSet.getString("nickname");
 
-            return new Student(class_id,nickname,id, name, avatar);
+            return new Student(class_id, nickname, id, name, avatar);
 
         } catch (SQLException e)
         {
@@ -130,7 +131,61 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
     @Override
     public boolean saveStudent(Student s)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        boolean success = false;
+        try
+        {
+            connection = this.getConnection();
+
+            String query = "UPDATE students SET class_id = ?, student_name = ? , nickname = ? , avatar = ? WHERE student_id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, s.getClass_id());
+            ps.setString(2, s.getName());
+            ps.setString(3, s.getNickname());
+            ps.setString(4, s.getAvatar());
+            ps.setInt(5, s.getId());
+            ps.executeQuery(query);
+            success = (ps.executeUpdate() == 1);
+        } catch (SQLException e)
+        {
+        }
+        return success;
     }
 
+    @Override
+    public boolean saveStudentNickName(Student s)
+    {
+        boolean success = false;
+        try
+        {
+            connection = this.getConnection();
+
+            String query = "UPDATE students SET nickname = ? WHERE student_id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, s.getNickname());
+            ps.setInt(2, s.getId());
+            success = (ps.executeUpdate() == 1);
+        } catch (SQLException e)
+        {
+        }
+        return success;
+    }
+
+    @Override
+    public boolean saveStudentAvatar(Student s)
+    {
+        boolean success = false;
+        try
+        {
+            connection = this.getConnection();
+            String query = "UPDATE students SET avatar = ? WHERE student_id = ?";
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, s.getAvatar());
+            ps.setInt(2, s.getId());
+            success = (ps.executeUpdate() == 1);
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return success;
+    }
 }
