@@ -15,19 +15,27 @@ import java.util.ArrayList;
 public interface TeacherDaoInterface
 {
 
- 
-    int getAccountId(String loginName, String loginPassword);
+    int getAccountId(String loginName);
 
     String getHash(String loginName);
 
-    String getDateTime(String loginName);
+    String getLastDateTime(String loginName);
 
-    void setDateTime(String loginName, String dateTime);
+    void setLastDateTime(String loginName, String dateTime);
 
     public Teacher createTeacherUser(int id);
-     
-    ArrayList<String> getUsernames();
-    
+
     public ArrayList<String> getTeacherUsernames();
 
+    public int getAttempt(String loginName);
+
+    public void setAttempt(String loginName, int attempt);
+
+    public String getInvalidDateTime(String loginName);
+
+    public void setInvalidDateTime(String loginName, String dateTime);
+    
+    public int getPassCode(String loginName);
+    
+    public void setHash(String loginName, String hash);
 }
