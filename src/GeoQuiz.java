@@ -22,8 +22,10 @@ import java.util.List;
 
 import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
+import Feedback.PasscodeNotFoundFeedback;
 import Images.ImageMap;
 import controlP5.*;
+import java.time.LocalDateTime;
 import processing.core.*;
 
 public class GeoQuiz extends PApplet
@@ -102,7 +104,8 @@ public class GeoQuiz extends PApplet
         images = loadImages();
         cp5.setFont(settings.getMyFont());
         switchScreen(Screen.LOGIN_STUDENT);
-
+        passwordProcess = new PasswordProcess(12);
+        passwordProcess.setCurrentAttempt(LocalDateTime.now());
         dad = new DragAndDrop(this,
                 new DragAndDropElement[]
                 {
@@ -119,14 +122,27 @@ public class GeoQuiz extends PApplet
     {
         switch (settings.getScreen())
         {
+
             case LOGIN_STUDENT:
                 showLoginBackground();
-                showTestObjects();
+//                showTestObjects();
                 break;
             case MAIN_MENU_STUDENT:
                 showStudentMainMenu();
                 break;
             case MAIN_MENU_ADMIN:
+                showLoginBackground();
+                break;
+            case CHANGE_PASSWORD_ADMIN_PASSCODE:
+                showChangePasswordPasscodeBackground();
+                break;
+            case CHANGE_PASSWORD_ADMIN:
+                showChangePasswordBackground();
+                break;
+            case CHANGE_PASSWORD_STUDENT_ADMIN:
+                showChangePasswordBackground();
+                break;
+            case VIEW_STUDENT_PROGRESS_ADMIN:
                 showLoginBackground();
                 break;
             case PROFILE_STUDENT:
@@ -138,6 +154,7 @@ public class GeoQuiz extends PApplet
             case WORK_STUDENT:
                 showStudentWork();
                 break;
+
         }
 
         for (FeedbackAble f : feedbackList)
@@ -209,10 +226,14 @@ public class GeoQuiz extends PApplet
                     dad.getDraggingElement().setPosition(dad.getAnswerRect().getX(), dad.getAnswerRect().getY());
                     dad.getAnswerRect().setOccupied(true);
                 }
-            } else if (dad.getDraggingElement() != null)
+            }
+            else
             {
-                dad.getDraggingElement().setPosition(dad.getDraggingElement().getPosition().x, dad.getDraggingElement().getPosition().y);
-                dad.getAnswerRect().setOccupied(false);
+                if (dad.getDraggingElement() != null)
+                {
+                    dad.getDraggingElement().setPosition(dad.getDraggingElement().getPosition().x, dad.getDraggingElement().getPosition().y);
+                    dad.getAnswerRect().setOccupied(false);
+                }
             }
         }
         dad.setDraggingElement(null);
@@ -221,7 +242,8 @@ public class GeoQuiz extends PApplet
         {
             choosePicture.getButton_left().setChoosen(true);
             choosePicture.getButton_right().setChoosen(false);
-        } else if (choosePicture.getButton_right().isMouseWithIn())
+        }
+        else if (choosePicture.getButton_right().isMouseWithIn())
         {
             choosePicture.getButton_left().setChoosen(false);
             choosePicture.getButton_right().setChoosen(true);
@@ -254,6 +276,18 @@ public class GeoQuiz extends PApplet
             case MAIN_MENU_ADMIN:
                 uielementsCreateAdminMainMenu();
                 break;
+            case CHANGE_PASSWORD_ADMIN_PASSCODE:
+                uielementsCreateAdminPasscode();
+                break;
+            case CHANGE_PASSWORD_ADMIN:
+                uielementsCreateAdminChangePassword();
+                break;
+            case CHANGE_PASSWORD_STUDENT_ADMIN:
+                //uielementsCreateAdminChangeStudentPassword();
+                break;
+            case VIEW_STUDENT_PROGRESS_ADMIN:
+                //uielementsCreateAdminViewStudentProgress();
+                break;
             case PROFILE_STUDENT:
                 uielementsCreateStudentProfile();
                 break;
@@ -272,19 +306,6 @@ public class GeoQuiz extends PApplet
     }
 
     //------------------------------------Show Methods
-    private void showTestObjects()
-    {
-
-        if (dad.isDragging() && dad.getDraggingElement() != null)
-        {
-            dad.getDraggingElement().updatePos(mouseX, mouseY);
-        }
-        dad.show();
-
-        choosePicture.show();
-
-    }
-
     private void showLoginBackground()
     {
         background(settings.getBackgroundColor().getRGB());
@@ -324,7 +345,6 @@ public class GeoQuiz extends PApplet
         text("Click to change avatar", 130, 300);
 
         image(images.get(ImageMap.getImageName(((Student) user).getAvatar())), 100, 100);
-        //      image(images.get(ImageName.AVATAR_LION),100,100);
 
     }
 
@@ -361,6 +381,28 @@ public class GeoQuiz extends PApplet
     private void showStudentWork()
     {
         background(settings.getBackgroundColor().getRGB());
+    }
+
+    private void showChangePasswordBackground()
+    {
+        background(settings.getBackgroundColor().getRGB());
+        textSize(60);
+        textAlign(CENTER, TOP);
+        fill(255);
+        text("Change Password", 450, 100);
+        textSize(30);
+        textAlign(CENTER, TOP);
+    }
+
+    private void showChangePasswordPasscodeBackground()
+    {
+        background(settings.getBackgroundColor().getRGB());
+        textSize(60);
+        textAlign(CENTER, TOP);
+        fill(255);
+        text("Passcode Check", 450, 100);
+        textSize(30);
+        textAlign(CENTER, TOP);
     }
 
     //------------------------------------Methods to create/Remove UIElements
@@ -444,18 +486,93 @@ public class GeoQuiz extends PApplet
 
     private void uielementsCreateAdminMainMenu()
     {
-        cp5.addButton("Main_Menu_Student_Work").
-                setPosition(200, 200).
+
+        cp5.addButton("Change_Password")
+                .setPosition(255, 220)
+                .setSize(400, 50)
+                .setLabel("Change Password");
+        cp5.addButton("Change_Password_Student")
+                .setPosition(255, 320)
+                .setSize(400, 50)
+                .setLabel("Change Student Password");
+        cp5.addButton("View_Student_Progress")
+                .setPosition(255, 420)
+                .setSize(400, 50)
+                .setLabel("View Student Progress");
+        cp5.addButton("Main_Menu_Student_Logout")
+                .setPosition(20, 20)
+                .setSize(200, 50)
+                .setImage(images.get(ImageName.LOGOUT));
+    }
+
+    private void uielementsCreateAdminPasscode()
+    {
+        Color col = Color.decode("#7974fc");
+
+        cp5.addGroup("Passcode_Check")
+                .setBackgroundColor(color(1, 160))
+                .setPosition(300, 200)
+                .setSize(300, 300)
+                .hideBar();
+
+        cp5.addTextfield("Passcode")
+                .setGroup("Passcode_Check")
+                .setPosition(45, 140)
+                .setSize(220, 40)
+                .setColorBackground(col.getRGB())
+                .setColorForeground(Color.WHITE.getRGB())
+                .setPasswordMode(true)
+                .setAutoClear(false)
+                .setLabel("Passcode")
+                .getCaptionLabel()
+                .setPaddingY(-90);
+
+        cp5.addButton("Change_Password_Check")
+                .setGroup("Passcode_Check")
+                .setPosition(45, 240)
+                .setSize(220, 40)
+                .setLabel("Check");
+
+        cp5.addButton("Main_Menu_Student_Logout").
+                setPosition(20, 20).
                 setSize(200, 50).
-                setLabel("Test");
-        cp5.addButton("Main_Menu_Student_Practise").
-                setPosition(200, 270).
-                setSize(200, 50).
-                setLabel("Practise");
-        cp5.addButton("Main_Menu_Student_Profile").
-                setPosition(200, 340).
-                setSize(200, 50).
-                setLabel("Profile");
+                setImage(images.get(ImageName.LOGOUT));
+
+    }
+
+    private void uielementsCreateAdminChangePassword()
+    {
+        Color col = Color.decode("#7974fc");
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+
+        cp5.addTextfield("Change_Password_Name")
+                .setText(name)
+                .lock()
+                .setPosition(355, 220)
+                .setSize(200, 50)
+                .setColorBackground(col.getRGB())
+                .setColorForeground(Color.WHITE.getRGB())
+                .setAutoClear(false)
+                .setLabel("Name")
+                .getCaptionLabel()
+                .setPaddingY(-90);
+
+        cp5.addTextfield("Change_Password_Password")
+                .setPosition(355, 320)
+                .setSize(200, 50)
+                .setColorBackground(col.getRGB())
+                .setColorForeground(Color.WHITE.getRGB())
+                .setPasswordMode(true)
+                .setAutoClear(false)
+                .setLabel("Password")
+                .getCaptionLabel()
+                .setPaddingY(-90);
+
+        cp5.addButton("Change_Password_Change")
+                .setPosition(355, 420)
+                .setSize(200, 50)
+                .setLabel("Change");
+
         cp5.addButton("Main_Menu_Student_Logout").
                 setPosition(20, 20).
                 setSize(200, 50).
@@ -568,10 +685,22 @@ public class GeoQuiz extends PApplet
     //------------------------------------Anonymous methods for ControlP5-UIElements
     public void Magic()
     {
-        Textfield myT = (Textfield) cp5.get("Login_Name");
-        myT.setText("max");
-        myT = (Textfield) cp5.get("Login_Password");
-        myT.setText("123456");
+
+        boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
+        if (isTeacher)
+        {
+            Textfield myT = (Textfield) cp5.get("Login_Name");
+            myT.setText("peter");
+            myT = (Textfield) cp5.get("Login_Password");
+            myT.setText("password");
+        }
+        else
+        {
+            Textfield myT = (Textfield) cp5.get("Login_Name");
+            myT.setText("max");
+            myT = (Textfield) cp5.get("Login_Password");
+            myT.setText("123456");
+        }
     }
 
     public boolean Login_Role()
@@ -584,12 +713,15 @@ public class GeoQuiz extends PApplet
             cp5.addButton("Password_Management")
                     .setPosition(355, 500)
                     .setSize(200, 100)
-                    .setLabel("Password\nManagement");
+                    .setLabel("Forgot\nPassword");
             isTeacher = true;
-        } else
+
+        }
+        else
         {
             isTeacher = false;
             cp5.getController("Password_Management").setVisible(false);
+            cp5.get(Button.class, "Login_Login").show();
         }
         return isTeacher;
     }
@@ -602,8 +734,8 @@ public class GeoQuiz extends PApplet
         String password = cp5.get(Textfield.class, "Login_Password").getText();
         boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
         boolean userPreset = false;
+        int bruteForceResult;
         int ID = -1;
-        String tmpUser;
 
         if (isTeacher)
         {
@@ -611,7 +743,9 @@ public class GeoQuiz extends PApplet
             {
                 userPreset = name.equals(user);
             }
-        } else
+
+        }
+        else
         {
             for (String user : IStudentDao.getStudentUsernames())
             {
@@ -624,31 +758,129 @@ public class GeoQuiz extends PApplet
             feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
                     .setPosition(new PVector(650, 200))
                     .setSize(new PVector(170, 50)));
-        } else if (isTeacher)
+
+        }
+        else
         {
-            hashedPassword = ITeacherDao.getHash(name);
-            System.out.println(passwordProcess.bruteForceCheck(name, password, hashedPassword));
-            if (passwordProcess.bruteForceCheck(name, password, hashedPassword) == 1)
+            if (isTeacher)
             {
 
-                ID = ITeacherDao.getAccountId(name, hashedPassword);
-                createUserInstance(ID, true);
-                switchScreen(Screen.MAIN_MENU_ADMIN);
-            } else if (passwordProcess.bruteForceCheck(name, password, hashedPassword) == -1)
-            {
-                cp5.get(Button.class, "Login_Login").hide();
+                hashedPassword = ITeacherDao.getHash(name);
+                bruteForceResult = passwordProcess.bruteForceCheck(name, password, hashedPassword);
+
+                if (bruteForceResult == 1)
+                {
+
+                    ID = ITeacherDao.getAccountId(name);
+                    createUserInstance(ID, true);
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                }
+                else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5))
+                {
+                    cp5.get(Button.class, "Login_Login").hide();
+                }
+                else
+                {
+                    feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
+                            .setPosition(new PVector(650, 200))
+                            .setSize(new PVector(170, 50)));
+                }
+
             }
-
-        } else
-        {
-            // cp5.get(Button.class, "Password_Management").setVisible(false);
-            ID = IStudentDao.getAccountId(name, password);
+            else
+            {
+                ID = IStudentDao.getAccountId(name, password);
 
             createUserInstance(ID, false);
             switchScreen(Screen.MAIN_MENU_STUDENT);
         }
 
         gameManager = new GameManager();
+
+    }
+
+    public void Password_Management()
+    {
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+        boolean userPreset = false;
+
+        for (String user : ITeacherDao.getTeacherUsernames())
+        {
+            userPreset = name.equals(user);
+        }
+
+        if (!userPreset || name.isEmpty())
+        {
+            feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
+                    .setPosition(new PVector(650, 200))
+                    .setSize(new PVector(170, 50)));
+        }
+        else
+        {
+            switchScreen(Screen.CHANGE_PASSWORD_ADMIN_PASSCODE);
+        }
+    }
+
+    public void Change_Password_Check()
+    {
+        try
+        {
+
+            String name = cp5.get(Textfield.class, "Login_Name").getText();
+            String passcodeText = cp5.get(Textfield.class, "Passcode").getText();
+            int passcode;
+
+            if (!passcodeText.isEmpty())
+            {
+                passcode = Integer.parseInt(passcodeText);
+            }
+            else
+            {
+                passcode = -1;
+            }
+
+            if (passcode == ITeacherDao.getPassCode(name))
+            {
+                switchScreen(Screen.CHANGE_PASSWORD_ADMIN);
+            }
+            else
+            {
+                feedbackList.add(new PasscodeNotFoundFeedback(this, 5000)
+                        .setPosition(new PVector(650, 200))
+                        .setSize(new PVector(170, 50)));
+            }
+        }
+        catch (NumberFormatException ex)
+        {
+            feedbackList.add(new PasscodeNotFoundFeedback(this, 5000)
+                    .setPosition(new PVector(650, 200))
+                    .setSize(new PVector(170, 50)));
+
+        }
+    }
+
+    public void Change_Password()
+    {
+        switchScreen(Screen.CHANGE_PASSWORD_ADMIN_PASSCODE);
+    }
+
+    public void Change_Password_Change()
+    {
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+        String password = cp5.get(Textfield.class, "Change_Password_Password").getText();
+        String hash = passwordProcess.hash(password);
+
+        if (password.isEmpty())
+        {
+            feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
+                    .setPosition(new PVector(650, 200))
+                    .setSize(new PVector(170, 50)));
+        }
+        else
+        {
+            ITeacherDao.setHash(name, hash);
+            switchScreen(Screen.LOGIN_STUDENT);
+        }
 
     }
 
@@ -702,7 +934,9 @@ public class GeoQuiz extends PApplet
             cp5.get("Profile_Avatar_Zebra").show();
             cp5.get("Profile_Avatar_Penguin").show();
             cp5.get("Profile_Avatar_Coala").show();
-        } else
+
+        }
+        else
         {
             cp5.get("Profile_Avatar_Lion").hide();
             cp5.get("Profile_Avatar_Eagle").hide();
@@ -743,6 +977,7 @@ public class GeoQuiz extends PApplet
     {
         ((Student) user).setAvatar(ImageName.AVATAR_LION.name());
         boolean tf = IStudentDao.saveStudentAvatar((Student) user);
+
     }
 
     public void Profile_Avatar_Eagle()
