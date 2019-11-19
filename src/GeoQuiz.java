@@ -357,8 +357,8 @@ public class GeoQuiz extends PApplet
         textAlign(LEFT, TOP);
         text("Click to change avatar", 130, 300);
 
-        //      image(images.get(ImageMap.getImageName(((Student)user).getAvatar())), 100, 100);
-        image(images.get(ImageName.AVATAR_LION), 100, 100);
+        image(images.get(ImageMap.getImageName(((Student) user).getAvatar())), 100, 100);
+        // image(images.get(ImageName.AVATAR_LION), 100, 100);
 
     }
 
@@ -584,6 +584,11 @@ public class GeoQuiz extends PApplet
                 .setPosition(355, 420)
                 .setSize(200, 50)
                 .setLabel("Change");
+
+        cp5.addButton("Main_Menu_Student_Logout").
+                setPosition(20, 20).
+                setSize(200, 50).
+                setImage(images.get(ImageName.LOGOUT));
     }
 
     private void uielementsCreateStudentProfile()
@@ -864,7 +869,7 @@ public class GeoQuiz extends PApplet
 
     public void Change_Password()
     {
-        switchScreen(Screen.CHANGE_PASSWORD_ADMIN);
+        switchScreen(Screen.CHANGE_PASSWORD_ADMIN_PASSCODE);
     }
 
     public void Change_Password_Change()
