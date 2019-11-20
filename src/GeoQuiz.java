@@ -6,6 +6,9 @@ import DAOs.TeacherDaoInterface;
 import DTOs.HistoryRecord;
 import DTOs.Student;
 import DTOs.User;
+import Fonts.Feedback.FeedbackAble;
+import Fonts.Feedback.NamePasswordNotFoundFeedBack;
+import Fonts.Feedback.PasscodeNotFoundFeedback;
 import GameManager.GameManager;
 import GameManager.gameElements.*;
 import Images.ImageName;
@@ -18,9 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-import Feedback.FeedbackAble;
-import Feedback.NamePasswordNotFoundFeedBack;
-import Feedback.PasscodeNotFoundFeedback;
 import Images.ImageMap;
 import java.time.LocalDateTime;
 
@@ -102,10 +102,10 @@ public class GeoQuiz extends PApplet
         passwordProcess.setCurrentAttempt(LocalDateTime.now());
         dragAndDrop = new DragAndDrop(this,
                 new DragAndDropElement[]
-                {
-                    new DragAndDropElement(this).setPosition(100, 20).setText("1"),
-                    new DragAndDropElement(this).setPosition(150, 20).setText("2")
-                },
+                        {
+                                new DragAndDropElement(this).setPosition(100, 20).setText("1"),
+                                new DragAndDropElement(this).setPosition(150, 20).setText("2")
+                        },
                 new FixRect(this, 200, 200, 50, 50));
         imageMap = new ImageMap(this);
         choosePicture = new ChoosePicture(this, "String for the question!", imageMap.getImage(ImageName.PLACEHOLDER_SMALL), imageMap.getImage(ImageName.PLACEHOLDER_SMALL));
@@ -375,13 +375,13 @@ public class GeoQuiz extends PApplet
                 .setPosition(10, 10)
                 .setSize(20, 70)
                 .setView((theGraphics, c)
-                        -> 
-                        {
-                            theGraphics.fill(Color.BLACK.getRGB());
-                            theGraphics.rect(-2, -2, c.getWidth() + 4, c.getHeight() + 4);
-                            theGraphics.fill(Color.WHITE.getRGB());
-                            int h = c.getHeight() / 2;
-                            theGraphics.rect(0, c.getState() ? h : 0, c.getWidth(), h);
+                        ->
+                {
+                    theGraphics.fill(Color.BLACK.getRGB());
+                    theGraphics.rect(-2, -2, c.getWidth() + 4, c.getHeight() + 4);
+                    theGraphics.fill(Color.WHITE.getRGB());
+                    int h = c.getHeight() / 2;
+                    theGraphics.rect(0, c.getState() ? h : 0, c.getWidth(), h);
                 });
 
         cp5.addLabel("Student")
