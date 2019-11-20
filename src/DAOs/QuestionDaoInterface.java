@@ -6,6 +6,7 @@
 package DAOs;
 
 import DTOs.Question;
+
 import java.util.List;
 
 /**
@@ -19,6 +20,6 @@ public interface QuestionDaoInterface
     public List<Question> getPracticeByRegion(String region);
     public List<Question> getPracticeByLevel();
     public boolean addQuestion(Question q);
-    public boolean updateQuestion(int id,String field,String value);
+    public boolean updateQuestion(int id, String field, String value);
     public boolean deleteQuestion(int id);
 }

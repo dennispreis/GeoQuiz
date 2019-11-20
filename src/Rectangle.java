@@ -3,7 +3,7 @@ import processing.core.PVector;
 
 import java.awt.*;
 
-public class Rectangle implements Dragable{
+public class Rectangle implements Dragable {
 
     private PApplet p;
     private PVector position;

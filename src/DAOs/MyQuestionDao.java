@@ -6,6 +6,7 @@
 package DAOs;
 
 import DTOs.Question;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -243,7 +244,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 }
             } catch (SQLException e)
             {
-                System.out.println("Delete Question" + e.getMessage());
+                System.out.println("Delete Questions" + e.getMessage());
             }
         }
         return success;
@@ -280,7 +281,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 }
             } catch (SQLException e)
             {
-                System.out.println("Delete Question" + e.getMessage());
+                System.out.println("Delete Questions" + e.getMessage());
             }
         }
         return success;
