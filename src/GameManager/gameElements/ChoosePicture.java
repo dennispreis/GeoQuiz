@@ -2,19 +2,18 @@ package GameManager.gameElements;
 import processing.core.PApplet;
 import processing.core.PImage;
 
+import static processing.core.PConstants.CENTER;
 import static processing.core.PConstants.CORNER;
 
 public class ChoosePicture implements GameElement {
 
     private PApplet applet;
-    private String question;
     private myImageButton button_left, button_right;
 
-    public ChoosePicture(PApplet applet, String question, PImage image, PImage image2){
+    public ChoosePicture(PApplet applet, PImage image, PImage image2){
         this.applet = applet;
-        this.question = question;
-        button_left = new myImageButton(applet, 100, 100, image);
-        button_right = new myImageButton(applet, 200, 100, image2);
+        button_left = new myImageButton(applet, 300, 350, image);
+        button_right = new myImageButton(applet, 600, 350, image2);
     }
 
     public myImageButton getButton_left(){
@@ -51,9 +50,10 @@ public class ChoosePicture implements GameElement {
         }
 
         public void show(){
+            applet.imageMode(CENTER);
             applet.image(imageName, x, y);
             if(this.choosen){
-                applet.rectMode(CORNER);
+                applet.rectMode(CENTER);
                 applet.noFill();
                 applet.stroke(0);
                 applet.strokeWeight(4);
@@ -70,7 +70,7 @@ public class ChoosePicture implements GameElement {
         }
 
         public boolean isMouseWithIn(){
-            return (applet.mouseX > x && applet.mouseX < x + xS && applet.mouseY > y && applet.mouseY < y + yS);
+            return (applet.mouseX > x-xS/2 && applet.mouseX < x + xS/2 && applet.mouseY > y-yS/2 && applet.mouseY < y + yS/2);
         }
     }
 

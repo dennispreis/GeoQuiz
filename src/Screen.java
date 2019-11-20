@@ -1,3 +1,4 @@
+package main;
 
 public enum Screen
 {
@@ -10,5 +11,7 @@ public enum Screen
     CHANGE_PASSWORD_STUDENT_ADMIN,
     VIEW_STUDENT_PROGRESS_ADMIN,
     PRACTISE_STUDENT,
-    WORK_STUDENT
+    WORK_STUDENT,
+    PROFILE_SHOW_BACKGROUND,
+    PLAYING
 }

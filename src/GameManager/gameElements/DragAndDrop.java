@@ -48,6 +48,9 @@ public class DragAndDrop implements GameElement{
     }
 
     public void show() {
+
+
+
         for (DragAndDropElement element : solutions) {
             element.show();
         }
