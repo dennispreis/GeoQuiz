@@ -887,6 +887,7 @@ public class GeoQuiz extends PApplet
         else
         {
             ITeacherDao.setHash(name, hash);
+            ITeacherDao.setAttempt(name, 0);
             switchScreen(Screen.LOGIN_STUDENT);
         }
 
