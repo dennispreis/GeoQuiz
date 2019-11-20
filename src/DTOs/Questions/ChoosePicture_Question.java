@@ -3,7 +3,7 @@ package DTOs.Questions;
 import DTOs.Question;
 import GameManager.gameElements.ChoosePicture;
 import Images.ImageName;
-import main.GeoQuiz;
+import Main.GeoQuiz;
 import processing.core.PApplet;
 
 import static processing.core.PConstants.CENTER;
