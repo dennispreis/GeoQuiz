@@ -3,8 +3,6 @@ import DAOs.MyStudentDao;
 import DAOs.MyTeacherDao;
 import DAOs.StudentDaoInterface;
 import DAOs.TeacherDaoInterface;
-import Feedback.FeedbackAble;
-import Feedback.NamePasswordNotFoundFeedBack;
 import DTOs.HistoryRecord;
 import DTOs.Student;
 import DTOs.User;
@@ -24,9 +22,7 @@ import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
 import Feedback.PasscodeNotFoundFeedback;
 import Images.ImageMap;
-import controlP5.*;
 import java.time.LocalDateTime;
-import processing.core.*;
 
 public class GeoQuiz extends PApplet
 {
@@ -38,10 +34,9 @@ public class GeoQuiz extends PApplet
     private static TeacherDaoInterface ITeacherDao;
     private static StudentDaoInterface IStudentDao;
     private static List<FeedbackAble> feedbackList;
-    private static Map<ImageName, PImage> images;
     private static User user;
     private static GameManager gameManager;
-    private static DragAndDrop dad;
+    private static DragAndDrop dragAndDrop;
     private static ChoosePicture choosePicture;
     private static ImageMap imageMap;
 
@@ -101,21 +96,20 @@ public class GeoQuiz extends PApplet
         IStudentDao = new MyStudentDao();
         ITeacherDao = new MyTeacherDao();
         feedbackList = new ArrayList<>();
-        images = loadImages();
         cp5.setFont(settings.getMyFont());
         switchScreen(Screen.LOGIN_STUDENT);
         passwordProcess = new PasswordProcess(12);
         passwordProcess.setCurrentAttempt(LocalDateTime.now());
-        dad = new DragAndDrop(this,
+        dragAndDrop = new DragAndDrop(this,
                 new DragAndDropElement[]
                 {
                     new DragAndDropElement(this).setPosition(100, 20).setText("1"),
                     new DragAndDropElement(this).setPosition(150, 20).setText("2")
                 },
                 new FixRect(this, 200, 200, 50, 50));
-
-        choosePicture = new ChoosePicture(this, "String for the question!", images.get(ImageName.PLACEHOLDER_SMALL), images.get(ImageName.PLACEHOLDER_SMALL));
-        imageMap = new ImageMap();
+        imageMap = new ImageMap(this);
+        choosePicture = new ChoosePicture(this, "String for the question!", imageMap.getImage(ImageName.PLACEHOLDER_SMALL), imageMap.getImage(ImageName.PLACEHOLDER_SMALL));
+        imageMap = new ImageMap(this);
     }
 
     public void draw()
@@ -170,32 +164,6 @@ public class GeoQuiz extends PApplet
     }
 
     //------------------------------------Initialising methods.
-    private Map<ImageName, PImage> loadImages()
-    {
-        Map<ImageName, PImage> tmp = new HashMap<>();
-
-        tmp.put(ImageName.BACKGROUND, loadImage("Images/background.JPG"));
-        tmp.put(ImageName.LOGOUT, loadImage("Images/logout.png"));
-        tmp.put(ImageName.PLACEHOLDER, loadImage("Images/placeholder.jpg"));
-        tmp.put(ImageName.PLACEHOLDER_SMALL, loadImage("Images/placeholder_small.jpg"));
-
-        tmp.put(ImageName.AVATAR_LION, loadImage("Images/Avatars/lion.png"));
-        tmp.put(ImageName.AVATAR_DOLPHIN, loadImage("Images/Avatars/dolphin.png"));
-        tmp.put(ImageName.AVATAR_ZEBRA, loadImage("Images/Avatars/zebra.png"));
-        tmp.put(ImageName.AVATAR_EAGLE, loadImage("Images/Avatars/eagle.png"));
-        tmp.put(ImageName.AVATAR_PENGUIN, loadImage("Images/Avatars/penguin.png"));
-        tmp.put(ImageName.AVATAR_COALA, loadImage("Images/Avatars/coala.png"));
-
-        tmp.put(ImageName.AVATAR_LION_SMALL, loadImage("Images/Avatars/small/lion_small.png"));
-        tmp.put(ImageName.AVATAR_DOLPHIN_SMALL, loadImage("Images/Avatars/small/dolphin_small.png"));
-        tmp.put(ImageName.AVATAR_ZEBRA_SMALL, loadImage("Images/Avatars/small/zebra_small.png"));
-        tmp.put(ImageName.AVATAR_EAGLE_SMALL, loadImage("Images/Avatars/small/eagle_small.png"));
-        tmp.put(ImageName.AVATAR_PENGUIN_SMALL, loadImage("Images/Avatars/small/penguin_small.png"));
-        tmp.put(ImageName.AVATAR_COALA_SMALL, loadImage("Images/Avatars/small/coala_small.png"));
-
-        return tmp;
-    }
-
     //------------------------------------Event methods given by Processing. Includes mouse and key events
     public void keyPressed()
     {
@@ -204,12 +172,12 @@ public class GeoQuiz extends PApplet
     public void mousePressed()
     {
 
-        for (DragAndDropElement element : dad.getSolutions())
+        for (DragAndDropElement element : dragAndDrop.getSolutions())
         {
             if (element.isMouseWithIn())
             {
-                dad.setDraggingElement(element);
-                dad.setDragging(true);
+                dragAndDrop.setDraggingElement(element);
+                dragAndDrop.setDragging(true);
             }
         }
 
@@ -217,26 +185,26 @@ public class GeoQuiz extends PApplet
 
     public void mouseReleased()
     {
-        if (dad.isDragging())
+        if (dragAndDrop.isDragging())
         {
-            if (dad.isMouseInAnswerRect())
+            if (dragAndDrop.isMouseInAnswerRect())
             {
-                if (!dad.getAnswerRect().isOccupied() && dad.getDraggingElement() != null)
+                if (!dragAndDrop.getAnswerRect().isOccupied() && dragAndDrop.getDraggingElement() != null)
                 {
-                    dad.getDraggingElement().setPosition(dad.getAnswerRect().getX(), dad.getAnswerRect().getY());
-                    dad.getAnswerRect().setOccupied(true);
+                    dragAndDrop.getDraggingElement().setPosition(dragAndDrop.getAnswerRect().getX(), dragAndDrop.getAnswerRect().getY());
+                    dragAndDrop.getAnswerRect().setOccupied(true);
                 }
             }
             else
             {
-                if (dad.getDraggingElement() != null)
+                if (dragAndDrop.getDraggingElement() != null)
                 {
-                    dad.getDraggingElement().setPosition(dad.getDraggingElement().getPosition().x, dad.getDraggingElement().getPosition().y);
-                    dad.getAnswerRect().setOccupied(false);
+                    dragAndDrop.getDraggingElement().setPosition(dragAndDrop.getDraggingElement().getPosition().x, dragAndDrop.getDraggingElement().getPosition().y);
+                    dragAndDrop.getAnswerRect().setOccupied(false);
                 }
             }
         }
-        dad.setDraggingElement(null);
+        dragAndDrop.setDraggingElement(null);
 
         if (choosePicture.getButton_left().isMouseWithIn())
         {
@@ -301,24 +269,7 @@ public class GeoQuiz extends PApplet
         settings.setScreen(targetScreen);
     }
 
-    public static PImage getImage(ImageName name)
-    {
-        return images.get(name);
-    }
-
     //------------------------------------Show Methods
-//    private void showTestObjects()
-//    {
-//
-//        if (dad.isDragging() && dad.getDraggingElement() != null)
-//        {
-//            dad.getDraggingElement().updatePos(mouseX, mouseY);
-//        }
-//        dad.show();
-//
-//        choosePicture.show();
-//
-//    }
     private void showLoginBackground()
     {
         background(settings.getBackgroundColor().getRGB());
@@ -357,8 +308,8 @@ public class GeoQuiz extends PApplet
         textAlign(LEFT, TOP);
         text("Click to change avatar", 130, 300);
 
-        image(images.get(ImageMap.getImageName(((Student) user).getAvatar())), 100, 100);
-        // image(images.get(ImageName.AVATAR_LION), 100, 100);
+        image(imageMap.getImage(imageMap.getImageName(((Student) user).getAvatar())), 100, 100);
+        // image(imageMap.getImage(ImageName.AVATAR_LION), 100, 100);
 
     }
 
@@ -386,8 +337,8 @@ public class GeoQuiz extends PApplet
         text(gameManager.getLevel().name(), 600, 350);
 
         imageMode(CENTER);
-        image(images.get(ImageName.PLACEHOLDER), 300, 150);
-        image(images.get(ImageName.PLACEHOLDER), 600, 150);
+        image(imageMap.getImage(ImageName.PLACEHOLDER), 300, 150);
+        image(imageMap.getImage(ImageName.PLACEHOLDER), 600, 150);
         imageMode(CORNER);
 
     }
@@ -480,21 +431,34 @@ public class GeoQuiz extends PApplet
                 setPosition(100, 200).
                 setSize(200, 200).
                 setLabel("Test").
-                setImage(images.get(ImageName.PLACEHOLDER));
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER));
         cp5.addButton("Main_Menu_Student_Practise").
                 setPosition(350, 200).
                 setSize(200, 200).
                 setLabel("Practise").
-                setImage(images.get(ImageName.PLACEHOLDER));
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER));
         cp5.addButton("Main_Menu_Student_Profile").
                 setPosition(600, 200).
                 setSize(200, 200).
                 setLabel("Profile").
-                setImage(images.get(ImageName.PLACEHOLDER));
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER));
         cp5.addButton("Main_Menu_Student_Logout").
                 setPosition(20, 20).
                 setSize(200, 50).
-                setImage(images.get(ImageName.LOGOUT));
+                setImage(imageMap.getImage(ImageName.LOGOUT));
+    }
+
+    private void uielementsCreateStudentDrageDrop()
+    {
+
+        if (dragAndDrop.isDragging() && dragAndDrop.getDraggingElement() != null)
+        {
+            dragAndDrop.getDraggingElement().updatePos(mouseX, mouseY);
+        }
+        dragAndDrop.show();
+
+        choosePicture.show();
+
     }
 
     private void uielementsCreateAdminMainMenu()
@@ -514,7 +478,7 @@ public class GeoQuiz extends PApplet
         cp5.addButton("Main_Menu_Student_Logout")
                 .setPosition(20, 20)
                 .setSize(200, 50)
-                .setImage(images.get(ImageName.LOGOUT));
+                .setImage(imageMap.getImage(ImageName.LOGOUT));
     }
 
     private void uielementsCreateAdminPasscode()
@@ -548,7 +512,7 @@ public class GeoQuiz extends PApplet
         cp5.addButton("Main_Menu_Student_Logout").
                 setPosition(20, 20).
                 setSize(200, 50).
-                setImage(images.get(ImageName.LOGOUT));
+                setImage(imageMap.getImage(ImageName.LOGOUT));
 
     }
 
@@ -588,7 +552,7 @@ public class GeoQuiz extends PApplet
         cp5.addButton("Main_Menu_Student_Logout").
                 setPosition(20, 20).
                 setSize(200, 50).
-                setImage(images.get(ImageName.LOGOUT));
+                setImage(imageMap.getImage(ImageName.LOGOUT));
     }
 
     private void uielementsCreateStudentProfile()
@@ -596,12 +560,12 @@ public class GeoQuiz extends PApplet
         cp5.addToggle("Profile_Student_Avatar_Change").setPosition(100, 300).setSize(25, 25).
                 setLabel("");
 
-        cp5.addButton("Profile_Avatar_Lion").setPosition(100, 350).setSize(50, 50).setImage(images.get(ImageName.AVATAR_LION_SMALL)).hide();
-        cp5.addButton("Profile_Avatar_Dolphin").setPosition(160, 350).setSize(50, 50).setImage(images.get(ImageName.AVATAR_DOLPHIN_SMALL)).hide();
-        cp5.addButton("Profile_Avatar_Eagle").setPosition(220, 350).setSize(50, 50).setImage(images.get(ImageName.AVATAR_EAGLE_SMALL)).hide();
-        cp5.addButton("Profile_Avatar_Zebra").setPosition(100, 410).setSize(50, 50).setImage(images.get(ImageName.AVATAR_ZEBRA_SMALL)).hide();
-        cp5.addButton("Profile_Avatar_Coala").setPosition(160, 410).setSize(50, 50).setImage(images.get(ImageName.AVATAR_COALA_SMALL)).hide();
-        cp5.addButton("Profile_Avatar_Penguin").setPosition(220, 410).setSize(50, 50).setImage(images.get(ImageName.AVATAR_PENGUIN_SMALL)).hide();
+        cp5.addButton("Profile_Avatar_Lion").setPosition(100, 350).setSize(50, 50).setImage(imageMap.getImage(ImageName.AVATAR_LION_SMALL)).hide();
+        cp5.addButton("Profile_Avatar_Dolphin").setPosition(160, 350).setSize(50, 50).setImage(imageMap.getImage(ImageName.AVATAR_DOLPHIN_SMALL)).hide();
+        cp5.addButton("Profile_Avatar_Eagle").setPosition(220, 350).setSize(50, 50).setImage(imageMap.getImage(ImageName.AVATAR_EAGLE_SMALL)).hide();
+        cp5.addButton("Profile_Avatar_Zebra").setPosition(100, 410).setSize(50, 50).setImage(imageMap.getImage(ImageName.AVATAR_ZEBRA_SMALL)).hide();
+        cp5.addButton("Profile_Avatar_Coala").setPosition(160, 410).setSize(50, 50).setImage(imageMap.getImage(ImageName.AVATAR_COALA_SMALL)).hide();
+        cp5.addButton("Profile_Avatar_Penguin").setPosition(220, 410).setSize(50, 50).setImage(imageMap.getImage(ImageName.AVATAR_PENGUIN_SMALL)).hide();
 
         cp5.addButton("Profile_Student_Nickname_Change").setPosition(700, 100).setSize(100, 50).
                 setLabel("Save");
@@ -610,55 +574,55 @@ public class GeoQuiz extends PApplet
                 setText(((Student) user).getNickname()).setLabel("");
 
         cp5.addButton("Profile_Student_Back").setPosition(20, 20).setSize(200, 50).
-                setImage(images.get(ImageName.LOGOUT));
+                setImage(imageMap.getImage(ImageName.LOGOUT));
 
         cp5.addButton("Profile_Student_Achievement_0").setPosition(80, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_0").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_0").hide());
 
         cp5.addButton("Profile_Student_Achievement_1").setPosition(160, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_1").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_1").hide());
 
         cp5.addButton("Profile_Student_Achievement_2").setPosition(240, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_2").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_2").hide());
 
         cp5.addButton("Profile_Student_Achievement_3").setPosition(320, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_3").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_3").hide());
 
         cp5.addButton("Profile_Student_Achievement_4").setPosition(400, 500).
-                setSize(50, 50).setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setSize(50, 50).setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_4").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_4").hide());
 
         cp5.addButton("Profile_Student_Achievement_5").setPosition(480, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_5").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_5").hide());
 
         cp5.addButton("Profile_Student_Achievement_6").setPosition(560, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_6").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_6").hide());
 
         cp5.addButton("Profile_Student_Achievement_7").setPosition(640, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_7").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_7").hide());
 
         cp5.addButton("Profile_Student_Achievement_8").setPosition(720, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_8").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_8").hide());
 
         cp5.addButton("Profile_Student_Achievement_9").setPosition(800, 500).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL)).
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL)).
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_9").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_9").hide());
 
@@ -677,15 +641,15 @@ public class GeoQuiz extends PApplet
     private void uielementsCreateStudentPractise()
     {
         cp5.addButton("Practise_Student_Back").setPosition(20, 20).setSize(200, 50).
-                setImage(images.get(ImageName.LOGOUT));
+                setImage(imageMap.getImage(ImageName.LOGOUT));
 
         cp5.addButton("Practise_Student_Go").setPosition(825, 275).setSize(50, 50).
-                setImage(images.get(ImageName.PLACEHOLDER_SMALL));
+                setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL));
 
-        cp5.addButton("Practise_Category_Left").setPosition(180, 275).setSize(50, 50).setImage(images.get(ImageName.PLACEHOLDER_SMALL));
-        cp5.addButton("Practise_Category_Right").setPosition(370, 275).setSize(50, 50).setImage(images.get(ImageName.PLACEHOLDER_SMALL));
-        cp5.addButton("Practise_Level_Left").setPosition(500, 275).setSize(50, 50).setImage(images.get(ImageName.PLACEHOLDER_SMALL));
-        cp5.addButton("Practise_Level_Right").setPosition(650, 275).setSize(50, 50).setImage(images.get(ImageName.PLACEHOLDER_SMALL));
+        cp5.addButton("Practise_Category_Left").setPosition(180, 275).setSize(50, 50).setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL));
+        cp5.addButton("Practise_Category_Right").setPosition(370, 275).setSize(50, 50).setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL));
+        cp5.addButton("Practise_Level_Left").setPosition(500, 275).setSize(50, 50).setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL));
+        cp5.addButton("Practise_Level_Right").setPosition(650, 275).setSize(50, 50).setImage(imageMap.getImage(ImageName.PLACEHOLDER_SMALL));
 
     }
 
