@@ -24,4 +24,9 @@ public interface StudentDaoInterface
     ArrayList<String> getStudentUsernames();
 
     boolean saveStudent(Student s);
+    
+    boolean saveStudentNickName(Student s);
+    
+    boolean saveStudentAvatar(Student s);
+    
 }
