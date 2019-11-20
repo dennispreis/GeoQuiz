@@ -6,8 +6,9 @@ import processing.core.PVector;
 import java.awt.*;
 
 import static processing.core.PConstants.CENTER;
+import static processing.core.PConstants.CORNER;
 
-public class DragAndDropElement implements Dragable {
+public class DragAndDropElement implements Dragable, GameElement {
 
     private PApplet p;
     private PVector position;
@@ -21,12 +22,13 @@ public class DragAndDropElement implements Dragable {
         this.p = p;
         position = new PVector(0, 0);
         draggingPosition = position;
-        size = new PVector(50, 50);
+        size = new PVector(100, 50);
         col = new Color(400);
         text = "";
     }
 
     public void show() {
+        p.rectMode(CORNER);
         p.stroke(0);
         p.strokeWeight(this.isMouseWithIn() || this.isDragging ? 8 : 3);
         p.fill(col.getRGB());

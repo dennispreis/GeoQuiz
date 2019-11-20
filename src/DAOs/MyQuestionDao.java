@@ -50,8 +50,8 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 String a_3 = rs.getString("answer_three");
                 String a_4 = rs.getString("answer_four");
                 String c_a = rs.getString("correct_answer");
-                Question u = new Question(id, question_type, type, region, q_t, a_1, a_2, a_3, a_4, c_a);
-                questions.add(u);
+               // Question u = new Question(null, id, question_type, type, region, q_t, a_1, a_2, a_3, a_4, c_a);
+               // questions.add(u);
             }
         } catch (SQLException e)
         {
@@ -110,8 +110,8 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 String a_3 = rs.getString("answer_three");
                 String a_4 = rs.getString("answer_four");
                 String c_a = rs.getString("correct_answer");
-                Question u = new Question(id, question_type, type, region, q_t, a_1, a_2, a_3, a_4, c_a);
-                questions.add(u);
+              //  Question u = new Question(null id, question_type, type, region, q_t, a_1, a_2, a_3, a_4, c_a);
+              //  questions.add(u);
             }
         } catch (SQLException e)
         {
@@ -170,8 +170,8 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 String a_3 = rs.getString("answer_three");
                 String a_4 = rs.getString("answer_four");
                 String c_a = rs.getString("correct_answer");
-                Question u = new Question(id, question_type, type, region, q_t, a_1, a_2, a_3, a_4, c_a);
-                questions.add(u);
+                //Question u = new Question(null, id, question_type, type, region, q_t, a_1, a_2, a_3, a_4, c_a);
+               // questions.add(u);
             }
         } catch (SQLException e)
         {
