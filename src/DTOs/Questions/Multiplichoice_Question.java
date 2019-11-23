@@ -4,9 +4,10 @@ import DTOs.Question;
 import processing.core.PApplet;
 public class Multiplichoice_Question extends Question {
 
-    public Multiplichoice_Question(PApplet applet, int id, String question_type, String type, String region, String question_text, String correct_answer)
+    public Multiplichoice_Question(PApplet applet, int id, String type, String region, String question_text, String correct_answer,String a1,String a2,String a3,String a4)
     {
-        super(applet, id, question_type, type, region, question_text, correct_answer);
+        super(applet, id, type, region, question_text, correct_answer);
+        
     }
 
     @Override

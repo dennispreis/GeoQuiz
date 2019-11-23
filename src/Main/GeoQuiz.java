@@ -87,7 +87,7 @@ public class GeoQuiz extends PApplet
 
     public static void main(String[] args)
     {
-        PApplet.main("main.GeoQuiz", args);
+        PApplet.main("Main.GeoQuiz", args);
     }
 
     public void settings()

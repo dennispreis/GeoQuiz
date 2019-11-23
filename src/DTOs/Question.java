@@ -14,16 +14,14 @@ import processing.core.PApplet;
 public abstract class Question {
     public PApplet applet;
     private int id;
-    private String question_type;
     private String type;
     private String region;
     private String question_text;
     private String correct_answer;
 
-    public Question(PApplet applet, int id, String question_type, String type, String region, String question_text, String correct_answer) {
+    public Question(PApplet applet, int id, String type, String region, String question_text, String correct_answer) {
         this.applet = applet;
         this.id = id;
-        this.question_type = question_type;
         this.type = type;
         this.region = region;
         this.question_text = question_text;
@@ -48,24 +46,6 @@ public abstract class Question {
      */
     public void setId(int id) {
         this.id = id;
-    }
-
-    /**
-     * Get the value of question_type
-     *
-     * @return the value of question_type
-     */
-    public String getQuestion_type() {
-        return question_type;
-    }
-
-    /**
-     * Set the value of question_type
-     *
-     * @param question_type new value of question_type
-     */
-    public void setQuestion_type(String question_type) {
-        this.question_type = question_type;
     }
 
     /**

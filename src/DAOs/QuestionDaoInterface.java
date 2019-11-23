@@ -6,8 +6,18 @@
 package DAOs;
 
 import DTOs.Question;
+import DTOs.Questions.ChoosePicture_Question;
+import DTOs.Questions.DragAndDrop_Question;
+import DTOs.Questions.Multiplichoice_Question;
+import DTOs.Questions.TrueOrFalse_Question;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import java.util.List;
+import processing.core.PApplet;
 
 /**
  *
@@ -15,11 +25,17 @@ import java.util.List;
  */
 public interface QuestionDaoInterface
 {
-    public List<Question> getPractice();
-    public List<Question> getPracticeByType(String type);
-    public List<Question> getPracticeByRegion(String region);
-    public List<Question> getPracticeByLevel();
+    public List<Question> getRandQuestion(PApplet applet);
+
+    public List<Question> getQuestionByType(PApplet applet, String type);
+
+    public List<Question> getQuestionByRegion(PApplet applet, String region);
+
+    public List<Question> getQuestionByTypeRegion(PApplet applet, String type, String region);
+
     public boolean addQuestion(Question q);
+
     public boolean updateQuestion(int id, String field, String value);
+
     public boolean deleteQuestion(int id);
 }

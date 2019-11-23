@@ -5,6 +5,9 @@
  */
 package DTOs;
 
+import DAOs.MyPracticeDao;
+import DAOs.PracticeDaoInterface;
+
 /**
  *
  * @author User
@@ -16,12 +19,13 @@ public class Student extends User
     private String nickname;
     private String avatar;
     private static ProfileHistory profileHistory;
+    static PracticeDaoInterface IPracticeDao = new MyPracticeDao();
 
     public Student(int id, String name)
     {
         super(id, name);
         this.avatar = "AVATAR_LION";
-        this.profileHistory = new ProfileHistory();
+        this.profileHistory = IPracticeDao.getProfileHistory(id);
     }
 
     public Student(int class_id, String nickname, int id, String name)
@@ -30,7 +34,7 @@ public class Student extends User
         this.class_id = class_id;
         this.nickname = nickname;
         this.avatar = "AVATAR_LION";
-        this.profileHistory = new ProfileHistory();
+        this.profileHistory = IPracticeDao.getProfileHistory(id);
     }
 
     public Student(int class_id, String nickname, int id, String name, String avatar)
@@ -39,7 +43,7 @@ public class Student extends User
         this.class_id = class_id;
         this.nickname = nickname;
         this.avatar = avatar;
-        this.profileHistory = new ProfileHistory();
+        this.profileHistory = IPracticeDao.getProfileHistory(id);
     }
 
     /**
