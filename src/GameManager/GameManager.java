@@ -1,20 +1,24 @@
 package GameManager;
 
-
 import DTOs.Question;
 import DTOs.Questions.ChoosePicture_Question;
 import DTOs.Questions.DragAndDrop_Question;
+import DTOs.Questions.Multiplichoice_Question;
 import DTOs.Questions.TrueOrFalse_Question;
+import GameManager.gameElements.DragAndDrop;
 import processing.core.PApplet;
+
+import static processing.core.PConstants.CENTER;
 
 public class GameManager {
 
+    private PApplet applet;
     private Category category;
     private Level level;
     private Question[] questions;
     private Question actualQuestion;
-    private PApplet applet;
     private int actuallQuestionIndex;
+    private int score, maxScore;
 
     public GameManager(PApplet applet) {
         this.applet = applet;
@@ -34,15 +38,23 @@ public class GameManager {
                         "Which of these is Paris?",
                         "answerText"),
                 new TrueOrFalse_Question(applet, 2,
-                "TrueOrFalse",
+                        "TrueOrFalse",
                         "QuestionType",
                         "Region",
-                        "Which of this countries are in europa?",
+                        "Which country is in europe?",
                         "answerText"
-                        )
+                ),
+                new Multiplichoice_Question(applet, 3,
+                        "Multipliechoice",
+                        "QuestionType",
+                        "Region",
+                        "Which cities are in Ireland?",
+                        "answerText")
         };
         actuallQuestionIndex = 0;
         actualQuestion = questions[actuallQuestionIndex];
+        score = 0;
+        maxScore = questions.length;
     }
 
     public void show() {
@@ -71,6 +83,10 @@ public class GameManager {
         return level;
     }
 
+    public Question[] getQuestions() {
+        return questions;
+    }
+
     public void setLevel(Level level) {
         this.level = level;
     }
@@ -83,16 +99,58 @@ public class GameManager {
         this.category = category;
     }
 
-    public void nextQuestion() {
-        if (actuallQuestionIndex != questions.length-1) {
+    public void reset() {
+        this.score = 0;
+        for (Question q : questions) {
+            q.reset();
+        }
+
+    }
+
+    public boolean nextQuestion() {
+        if (actuallQuestionIndex != questions.length - 1) {
             actuallQuestionIndex++;
             actualQuestion = questions[actuallQuestionIndex];
+            return true;
         }
+        return false;
     }
 
     public void setActuallQuestionIndex(int idx) {
         actuallQuestionIndex = idx;
         actualQuestion = questions[actuallQuestionIndex];
 
+    }
+
+    public void showPractiseFeedback() {
+        applet.textSize(50);
+        applet.textAlign(CENTER, CENTER);
+        applet.text("Score : " + score + " / " + maxScore, applet.width / 2, applet.height / 2);
+    }
+
+    public void loadPractiseFeedback() {
+        for (Question q : questions) {
+            if (q instanceof DragAndDrop_Question) {
+                DragAndDrop_Question dad_question = (DragAndDrop_Question) q;
+                //Get Text from AnswerElement
+                if (dad_question.getDragAndDrop().getAnswerRect().isOccupied()) {
+                    if (dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText().equals("Dublin"))
+                        score++;
+                }
+            } else if (q instanceof Multiplichoice_Question) {
+                Multiplichoice_Question mp_question = (Multiplichoice_Question) q;
+                //Get right array index and check if isActive()
+                if (mp_question.getCheckBox().getElements()[0].isActive() && mp_question.getCheckBox().getElements()[2].isActive())
+                    score++;
+            } else if (q instanceof TrueOrFalse_Question) {
+                TrueOrFalse_Question tof_question = (TrueOrFalse_Question) q;
+                //Get array index and check for isActive()
+                if (tof_question.getRadioButton().getElements()[0].isActive()) score++;
+            } else if (q instanceof ChoosePicture_Question) {
+                ChoosePicture_Question cp_question = (ChoosePicture_Question) q;
+                //Get left or right picture and check if isChoosen()
+                if (cp_question.getChoosePicture().getButton_left().isChoosen()) score++;
+            }
+        }
     }
 }

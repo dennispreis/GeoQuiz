@@ -3,7 +3,7 @@ package DTOs.Questions;
 import DTOs.Question;
 import GameManager.gameElements.ChoosePicture;
 import Images.ImageName;
-import Main.GeoQuiz;
+import main.GeoQuiz;
 import processing.core.PApplet;
 
 import static processing.core.PConstants.CENTER;
@@ -15,6 +15,11 @@ public class ChoosePicture_Question extends Question {
     public ChoosePicture_Question(PApplet applet, int id, String question_type, String type, String region, String question_text, String correct_answer) {
         super(applet, id, question_type, type, region, question_text, correct_answer);
         choosePicture = new ChoosePicture(applet, GeoQuiz.getImage(ImageName.PLACEHOLDER), GeoQuiz.getImage(ImageName.PLACEHOLDER));
+    }
+
+    public void reset(){
+        choosePicture.getButton_right().setChoosen(false);
+        choosePicture.getButton_left().setChoosen(false);
     }
 
     public void show() {

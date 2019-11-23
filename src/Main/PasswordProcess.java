@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 import DAOs.MyTeacherDao;
 import org.mindrot.jbcrypt.BCrypt;

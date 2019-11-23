@@ -5,6 +5,7 @@
  */
 package DTOs;
 
+import com.sun.deploy.net.proxy.pac.PACFunctions;
 import processing.core.PApplet;
 
 /**
@@ -29,6 +30,8 @@ public abstract class Question {
         this.question_text = question_text;
         this.correct_answer = correct_answer;
     }
+
+    public abstract void reset();
 
     public abstract void show();
 

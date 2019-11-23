@@ -42,6 +42,7 @@ public enum ImageName {
     BACKGROUND_RED,
     BACKGROUND_BROWN,
     BACKGROUD_LILA,
+    BACKGROUND_PLAY,
 
     //AVATAR IMAGES
     AVATAR_LION,

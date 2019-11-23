@@ -7,6 +7,7 @@ public class FixRect {
     private PApplet applet;
     private float x, y;
     private float xS, yS;
+    private DragAndDropElement dragAndDropElement;
 
     private boolean isOccupied;
 
@@ -17,6 +18,7 @@ public class FixRect {
         this.xS = xS;
         this.yS = yS;
         this.isOccupied = false;
+        dragAndDropElement = null;
     }
 
     public boolean isOccupied() {
@@ -25,6 +27,14 @@ public class FixRect {
 
     public void setOccupied(boolean occupied) {
         isOccupied = occupied;
+    }
+
+    public void setDragAndDropElement(DragAndDropElement ele){
+        this.dragAndDropElement = ele;
+    }
+
+    public DragAndDropElement getDragAndDropElement(){
+        return this.dragAndDropElement;
     }
 
     float getXsize() {

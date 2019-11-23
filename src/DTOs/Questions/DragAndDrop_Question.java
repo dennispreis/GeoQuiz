@@ -25,6 +25,16 @@ public class DragAndDrop_Question extends Question {
                 new FixRect(applet, 400, 150, 100, 50));
     }
 
+    public void reset(){
+        dragAndDrop.getAnswerRect().setDragAndDropElement(null);
+        dragAndDrop.getSolutions()[0].setPosition(250, 300);
+        dragAndDrop.getSolutions()[1].setPosition(400, 300);
+        dragAndDrop.getSolutions()[2].setPosition(550, 300);
+        dragAndDrop.setDraggingElement(null);
+        dragAndDrop.setDragging(false);
+        dragAndDrop.getAnswerRect().setOccupied(false);
+    }
+
     public void show() {
         dragAndDrop.show();
         applet.rectMode(CENTER);
