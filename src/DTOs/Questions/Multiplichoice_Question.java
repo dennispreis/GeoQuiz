@@ -9,15 +9,15 @@ import static processing.core.PConstants.CENTER;
 
 public class Multiplichoice_Question extends Question {
 
-
+    private myCheckBox checkBox;
+    
     public Multiplichoice_Question(PApplet applet, int id, String type, String region, String question_text, String correct_answer,String a1,String a2,String a3,String a4)
     {
         super(applet, id, type, region, question_text, correct_answer);
-        
-    private myCheckBox checkBox;
-
-    public Multiplichoice_Question(PApplet applet, int id, String question_type, String type, String region, String question_text, String correct_answer) {
-        super(applet, id, question_type, type, region, question_text, correct_answer);
+        this.checkBox = new myCheckBox(applet);
+    }
+    public Multiplichoice_Question(PApplet applet, int id, String type, String region, String question_text, String correct_answer) {
+        super(applet, id, type, region, question_text, correct_answer);
         this.checkBox = new myCheckBox(applet);
     }
 
@@ -43,4 +43,6 @@ public class Multiplichoice_Question extends Question {
         applet.text(getQuestion_text(), applet.width / 2, 100);
         checkBox.show();
     }
+    
+    
 }

@@ -1,4 +1,4 @@
-package main;
+package Main;
 
 public interface Dragable {
 

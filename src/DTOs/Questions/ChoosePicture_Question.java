@@ -2,8 +2,9 @@ package DTOs.Questions;
 
 import DTOs.Question;
 import GameManager.gameElements.ChoosePicture;
+import Images.ImageMap;
 import Images.ImageName;
-import main.GeoQuiz;
+import Main.GeoQuiz;
 import processing.core.PApplet;
 
 import static processing.core.PConstants.CENTER;
@@ -24,7 +25,7 @@ public class ChoosePicture_Question extends Question
     {
         super(applet, id, type, region, question_text, correct_answer);
         //    choosePicture = new ChoosePicture(applet, GeoQuiz.getImage(ImageName.PLACEHOLDER), GeoQuiz.getImage(ImageName.PLACEHOLDER));
-        choosePicture = new ChoosePicture(applet, GeoQuiz.getImage(ImageName.PLACEHOLDER), GeoQuiz.getImage(ImageName.PLACEHOLDER));
+        choosePicture = new ChoosePicture(applet, GeoQuiz.getImage(ImageMap.getImageName(a3)), GeoQuiz.getImage(ImageMap.getImageName(a4)));
     }
 
     public void reset(){
