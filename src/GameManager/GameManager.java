@@ -13,8 +13,7 @@ public class GameManager
 {
 
     private PaperDaoInterface IPaperDao;
-
-   private PApplet applet;
+    private PApplet applet;
     private Category category;
     private Level level;
     private Question[] questions;
@@ -38,33 +37,29 @@ public class GameManager
 //            questions[i] = questionsTmp.get(i);
 //        }
 //        System.out.println(questions.length);
-
-        questions = new Question[]{
-                new DragAndDrop_Question(applet, 0,
-                        "DragAndDrop",
-                        "QuestionType",
-                        "Region",
-                        "What is the Capital of Ireland?",
-                        "Dublin"),
-                new ChoosePicture_Question(applet, 1,
-                        "ChoosePicture",
-                        "QuestionType",
-                        "Region",
-                        "Which of these is Paris?",
-                        "answerText"),
-                new TrueOrFalse_Question(applet, 2,
-                        "TrueOrFalse",
-                        "QuestionType",
-                        "Region",
-                        "Which country is in europe?",
-                        "answerText"
-                ),
-                new Multiplichoice_Question(applet, 3,
-                        "Multipliechoice",
-                        "QuestionType",
-                        "Region",
-                        "Which cities are in Ireland?",
-                        "answerText")
+        questions = new Question[]
+        {
+            new DragAndDrop_Question(applet, 0,
+            "RIVER",
+            "CAPITAL",
+            "What is the Capital of Ireland?",
+            "Dublin"),
+            new ChoosePicture_Question(applet, 1,
+            "MOUNTAIN",
+            "Region",
+            "Which of these is Paris?",
+            "1"),
+            new TrueOrFalse_Question(applet, 2,
+            "Capital",
+            "Region",
+            "Which country is in europe?",
+            "TRUE"
+            ),
+            new Multiplichoice_Question(applet, 3,
+            "General",
+            "Region",
+            "Which cities are in Ireland?",
+            "1")
         };
         System.out.println(questions.length);
         actuallQuestionIndex = 0;
@@ -107,11 +102,13 @@ public class GameManager
         return level;
     }
 
-    public Question[] getQuestions() {
+    public Question[] getQuestions()
+    {
         return questions;
     }
 
-    public void setLevel(Level level) {
+    public void setLevel(Level level)
+    {
         this.level = level;
     }
 
@@ -125,16 +122,20 @@ public class GameManager
         this.category = category;
     }
 
-    public void reset() {
+    public void reset()
+    {
         this.score = 0;
-        for (Question q : questions) {
+        for (Question q : questions)
+        {
             q.reset();
         }
 
     }
 
-    public boolean nextQuestion() {
-        if (actuallQuestionIndex != questions.length - 1) {
+    public boolean nextQuestion()
+    {
+        if (actuallQuestionIndex != questions.length - 1)
+        {
             actuallQuestionIndex++;
             actualQuestion = questions[actuallQuestionIndex];
             return true;
@@ -148,34 +149,74 @@ public class GameManager
         actualQuestion = questions[actuallQuestionIndex];
     }
 
-    public void showPractiseFeedback() {
+    public void showPractiseFeedback()
+    {
         applet.textSize(50);
         applet.textAlign(CENTER, CENTER);
         applet.text("Score : " + score + " / " + maxScore, applet.width / 2, applet.height / 2);
     }
 
-    public void loadPractiseFeedback() {
-        for (Question q : questions) {
-            if (q instanceof DragAndDrop_Question) {
+    public void loadPractiseFeedback()
+    {
+        for (Question q : questions)
+        {
+            if (q instanceof DragAndDrop_Question)
+            {
                 DragAndDrop_Question dad_question = (DragAndDrop_Question) q;
                 //Get Text from AnswerElement
-                if (dad_question.getDragAndDrop().getAnswerRect().isOccupied()) {
-                    if (dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText().equals("Dublin"))
+                if (dad_question.getDragAndDrop().getAnswerRect().isOccupied())
+                {
+                    if (dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText().equals(dad_question.getCorrect_answer()))
+                    {
                         score++;
+                    }
                 }
-            } else if (q instanceof Multiplichoice_Question) {
+            } else if (q instanceof Multiplichoice_Question)
+            {
                 Multiplichoice_Question mp_question = (Multiplichoice_Question) q;
                 //Get right array index and check if isActive()
-                if (mp_question.getCheckBox().getElements()[0].isActive() && mp_question.getCheckBox().getElements()[2].isActive())
+                System.out.println(mp_question.getCorrect_answer());
+
+                if (mp_question.getCheckBox().getElements()[Integer.parseInt(mp_question.getCorrect_answer())-1].isActive())
+                {
                     score++;
-            } else if (q instanceof TrueOrFalse_Question) {
+                }
+//                if (mp_question.getCheckBox().getElements()[0].isActive() && mp_question.getCheckBox().getElements()[2].isActive())
+//                {
+//                    score++;
+//                }
+            } else if (q instanceof TrueOrFalse_Question)
+            {
                 TrueOrFalse_Question tof_question = (TrueOrFalse_Question) q;
                 //Get array index and check for isActive()
-                if (tof_question.getRadioButton().getElements()[0].isActive()) score++;
-            } else if (q instanceof ChoosePicture_Question) {
+                int tmp;
+                if ("TRUE".equals(tof_question.getCorrect_answer()))
+                {
+                    tmp = 0;
+                } else
+                {
+                    tmp = 1;
+                }
+
+                if (tof_question.getRadioButton().getElements()[tmp].isActive())
+                {
+                    score++;
+                }
+            } else if (q instanceof ChoosePicture_Question)
+            {
                 ChoosePicture_Question cp_question = (ChoosePicture_Question) q;
                 //Get left or right picture and check if isChoosen()
-                if (cp_question.getChoosePicture().getButton_left().isChoosen()) score++;
+                if (cp_question.getCorrect_answer() == "1")
+                {
+                    if (cp_question.getChoosePicture().getButton_left().isChoosen())
+                    {
+                        score++;
+                    }
+                } else if (cp_question.getChoosePicture().getButton_right().isChoosen())
+                {
+                    score++;
+                }
+
             }
         }
     }

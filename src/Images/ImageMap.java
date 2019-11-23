@@ -32,6 +32,7 @@ public class ImageMap {
         imageMap.put("AVATAR_EAGLE", AVATAR_EAGLE);
         imageMap.put("AVATAR_DOLPHIN", AVATAR_DOLPHIN);
         imageMap.put("AVATAR_COALA", AVATAR_COALA);
+        imageMap.put("PLACEHOLDER", PLACEHOLDER);
 
     }
 
