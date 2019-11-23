@@ -5,7 +5,6 @@
  */
 package DTOs;
 
-import com.sun.deploy.net.proxy.pac.PACFunctions;
 import processing.core.PApplet;
 
 /**
