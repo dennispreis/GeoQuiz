@@ -61,7 +61,7 @@ public class ChoosePicture implements GameElement {
             }
         }
 
-        public boolean getChoosen(){
+        public boolean isChoosen(){
             return this.choosen;
         }
 

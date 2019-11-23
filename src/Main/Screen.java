@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 public enum Screen
 {
@@ -13,5 +13,6 @@ public enum Screen
     PRACTISE_STUDENT,
     WORK_STUDENT,
     PROFILE_SHOW_BACKGROUND,
-    PLAYING
+    PLAYING,
+    PRACTISE_STUDENT_GAME_FEEDBACK
 }

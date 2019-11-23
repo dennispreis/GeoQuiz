@@ -28,6 +28,8 @@ public abstract class Question {
         this.correct_answer = correct_answer;
     }
 
+    public abstract void reset();
+
     public abstract void show();
 
     /**

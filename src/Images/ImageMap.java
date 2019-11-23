@@ -82,6 +82,8 @@ public class ImageMap {
         images.put(ImageName.BACKGROUND_GREEN, applet.loadImage("Images/Background/background_green.png"));
         images.put(ImageName.BACKGROUND_BROWN, applet.loadImage("Images/Background/background_brown.png"));
         images.put(ImageName.BACKGROUND_RED, applet.loadImage("Images/Background/background_red.png"));
+        images.put(ImageName.BACKGROUND_PLAY, applet.loadImage("Images/Background/background_play.jpg"));
+
 
         images.put(ImageName.CATEGORY_CITIES, applet.loadImage("Images/Category/cities.png"));
         images.put(ImageName.CATEGORY_MOUNTAINS, applet.loadImage("Images/Category/mountains.png"));
