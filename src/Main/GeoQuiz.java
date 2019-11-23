@@ -80,8 +80,10 @@ public class GeoQuiz extends PApplet {
     }
     //------------------------------------Methods given by Processing
 
-    public static void main(String[] args) {
-        PApplet.main("main.GeoQuiz", args);
+    public static void main(String[] args)
+    {
+        PApplet.main("Main.GeoQuiz", args);
+
     }
 
     public void settings() {

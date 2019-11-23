@@ -10,7 +10,7 @@ public class HistoryRecord {
     private Level level;
     private Date date;
 
-    HistoryRecord(Category category, Level level, Date date) {
+    public HistoryRecord(Category category, Level level, Date date) {
         this.category = category;
         this.level = level;
         this.date = date;

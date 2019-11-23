@@ -1,29 +1,44 @@
 package GameManager;
 
+import DAOs.MyPaperDao;
+import DAOs.PaperDaoInterface;
 import DTOs.Question;
-import DTOs.Questions.ChoosePicture_Question;
-import DTOs.Questions.DragAndDrop_Question;
-import DTOs.Questions.Multiplichoice_Question;
-import DTOs.Questions.TrueOrFalse_Question;
-import GameManager.gameElements.DragAndDrop;
+import DTOs.Questions.*;
+import java.util.List;
 import processing.core.PApplet;
-
+import GameManager.gameElements.DragAndDrop;
 import static processing.core.PConstants.CENTER;
 
-public class GameManager {
+public class GameManager
+{
 
-    private PApplet applet;
+    private PaperDaoInterface IPaperDao;
+
+   private PApplet applet;
     private Category category;
     private Level level;
     private Question[] questions;
     private Question actualQuestion;
     private int actuallQuestionIndex;
+    private List<Question> questionsTmp;
     private int score, maxScore;
 
-    public GameManager(PApplet applet) {
+    public GameManager(PApplet applet)
+    {
+        this.IPaperDao = new MyPaperDao();
         this.applet = applet;
         this.category = Category.MOUNTAINS;
         this.level = Level.EASY;
+
+//        questionsTmp = IPaperDao.getRandPaper(applet);
+//        System.out.println(questionsTmp.size());
+//        questions = new Question[questionsTmp.size()];
+//        for (int i = 0; i < questionsTmp.size(); i++)
+//        {
+//            questions[i] = questionsTmp.get(i);
+//        }
+//        System.out.println(questions.length);
+
         questions = new Question[]{
                 new DragAndDrop_Question(applet, 0,
                         "DragAndDrop",
@@ -51,35 +66,44 @@ public class GameManager {
                         "Which cities are in Ireland?",
                         "answerText")
         };
+        System.out.println(questions.length);
         actuallQuestionIndex = 0;
         actualQuestion = questions[actuallQuestionIndex];
+//        actualQuestion = questions.get(actuallQuestionIndex);
         score = 0;
         maxScore = questions.length;
     }
 
-    public void show() {
+    public void show()
+    {
         actualQuestion.show();
     }
 
-    public Question getActualQuestion() {
+    public Question getActualQuestion()
+    {
         return actualQuestion;
     }
 
-    public void increaseLevel() {
+    public void increaseLevel()
+    {
     }
 
-    public void decreaseLevel() {
+    public void decreaseLevel()
+    {
     }
 
-    public void increaseCategory() {
+    public void increaseCategory()
+    {
 
     }
 
-    public void decreaseCategory() {
+    public void decreaseCategory()
+    {
 
     }
 
-    public Level getLevel() {
+    public Level getLevel()
+    {
         return level;
     }
 
@@ -91,11 +115,13 @@ public class GameManager {
         this.level = level;
     }
 
-    public Category getCategory() {
+    public Category getCategory()
+    {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(Category category)
+    {
         this.category = category;
     }
 
@@ -116,10 +142,10 @@ public class GameManager {
         return false;
     }
 
-    public void setActuallQuestionIndex(int idx) {
+    public void setActuallQuestionIndex(int idx)
+    {
         actuallQuestionIndex = idx;
         actualQuestion = questions[actuallQuestionIndex];
-
     }
 
     public void showPractiseFeedback() {
