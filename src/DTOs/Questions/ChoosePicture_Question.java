@@ -24,8 +24,10 @@ public class ChoosePicture_Question extends Question
     public ChoosePicture_Question(PApplet applet, int id, String type, String region, String question_text, String correct_answer, String a1, String a2, String a3, String a4)
     {
         super(applet, id, type, region, question_text, correct_answer);
-        //    choosePicture = new ChoosePicture(applet, GeoQuiz.getImage(ImageName.PLACEHOLDER), GeoQuiz.getImage(ImageName.PLACEHOLDER));
-        choosePicture = new ChoosePicture(applet, GeoQuiz.getImage(ImageMap.getImageName(a3)), GeoQuiz.getImage(ImageMap.getImageName(a4)));
+        
+        
+            choosePicture = new ChoosePicture(applet, GeoQuiz.getImage(ImageName.PLACEHOLDER), GeoQuiz.getImage(ImageName.PLACEHOLDER));
+       // choosePicture = new ChoosePicture(applet, GeoQuiz.getImage(ImageMap.getImageName(a3)), GeoQuiz.getImage(ImageMap.getImageName(a4)));
     }
 
     public void reset(){

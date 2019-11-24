@@ -29,39 +29,39 @@ public class GameManager
         this.category = Category.MOUNTAINS;
         this.level = Level.EASY;
 
-//        questionsTmp = IPaperDao.getRandPaper(applet);
-//        System.out.println(questionsTmp.size());
-//        questions = new Question[questionsTmp.size()];
-//        for (int i = 0; i < questionsTmp.size(); i++)
-//        {
-//            questions[i] = questionsTmp.get(i);
-//        }
-//        System.out.println(questions.length);
-        questions = new Question[]
+        questionsTmp = IPaperDao.getRandPaper(applet);
+        System.out.println(questionsTmp.size());
+        questions = new Question[questionsTmp.size()];
+        for (int i = 0; i < questionsTmp.size(); i++)
         {
-            new DragAndDrop_Question(applet, 0,
-            "RIVER",
-            "CAPITAL",
-            "What is the Capital of Ireland?",
-            "Dublin"),
-            new ChoosePicture_Question(applet, 1,
-            "MOUNTAIN",
-            "Region",
-            "Which of these is Paris?",
-            "1"),
-            new TrueOrFalse_Question(applet, 2,
-            "Capital",
-            "Region",
-            "Which country is in europe?",
-            "TRUE"
-            ),
-            new Multiplichoice_Question(applet, 3,
-            "General",
-            "Region",
-            "Which cities are in Ireland?",
-            "1")
-        };
-        System.out.println(questions.length);
+            questions[i] = questionsTmp.get(i);
+        }
+//        System.out.println(questions.length);
+//        questions = new Question[]
+//        {
+//            new DragAndDrop_Question(applet, 0,
+//            "RIVER",
+//            "CAPITAL",
+//            "What is the Capital of Ireland?",
+//            "Dublin"),
+//            new ChoosePicture_Question(applet, 1,
+//            "MOUNTAIN",
+//            "Region",
+//            "Which of these is Paris?",
+//            "1"),
+//            new TrueOrFalse_Question(applet, 2,
+//            "Capital",
+//            "Region",
+//            "Which country is in europe?",
+//            "TRUE"
+//            ),
+//            new Multiplichoice_Question(applet, 3,
+//            "General",
+//            "Region",
+//            "Which cities are in Ireland?",
+//            "1")
+//        };
+//        System.out.println(questions.length);
         actuallQuestionIndex = 0;
         actualQuestion = questions[actuallQuestionIndex];
 //        actualQuestion = questions.get(actuallQuestionIndex);
@@ -206,7 +206,7 @@ public class GameManager
             {
                 ChoosePicture_Question cp_question = (ChoosePicture_Question) q;
                 //Get left or right picture and check if isChoosen()
-                if (cp_question.getCorrect_answer() == "1")
+                if ("1".equals(cp_question.getCorrect_answer()))
                 {
                     if (cp_question.getChoosePicture().getButton_left().isChoosen())
                     {
