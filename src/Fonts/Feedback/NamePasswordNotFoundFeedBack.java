@@ -17,8 +17,8 @@ public class NamePasswordNotFoundFeedBack extends Feedback {
             applet.fill(0);
             applet.textSize(20);
             applet.textAlign(CORNER);
-            applet.text("Name or Password", position.x+5, position.y+size.y/2);
-            applet.text("not found!", position.x+5, position.y+size.y-5);
+            applet.text("Name or Password", position.x-80, position.y+2);
+            applet.text("not found!", position.x-80, position.y+20);
         }
     }
 

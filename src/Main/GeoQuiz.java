@@ -11,6 +11,7 @@ import DTOs.Questions.DragAndDrop_Question;
 import DTOs.Questions.Multiplichoice_Question;
 import DTOs.Questions.TrueOrFalse_Question;
 import DTOs.Student;
+import DTOs.Teacher;
 import DTOs.User;
 import Fonts.Feedback.FeedbackAble;
 import Fonts.Feedback.NamePasswordNotFoundFeedBack;
@@ -134,7 +135,7 @@ public class GeoQuiz extends PApplet
                 showStudentMainMenu();
                 break;
             case MAIN_MENU_ADMIN:
-                showLoginBackground();
+                showTeacherMainMenu();
                 break;
             case CHANGE_PASSWORD_ADMIN_PASSCODE:
                 showChangePasswordPasscodeBackground();
@@ -166,7 +167,7 @@ public class GeoQuiz extends PApplet
             case PRACTISE_STUDENT_GAME_FEEDBACK:
                 showPractiseGameFeedback();
                 break;
-
+      
         }
 
         for (FeedbackAble f : feedbackList)
@@ -178,7 +179,6 @@ public class GeoQuiz extends PApplet
         textSize(20);
         textAlign(RIGHT);
         text(settings.getScreen().toString(), width - 10, 580);
-
     }
 
     //------------------------------------Event methods given by Processing. Includes mouse and key events
@@ -800,6 +800,7 @@ public class GeoQuiz extends PApplet
 
     private void uielementsRemoveAll()
     {
+        feedbackList.removeAll(feedbackList);
         cp5.getAll().forEach(ControllerInterface::hide);
     }
 
@@ -847,7 +848,6 @@ public class GeoQuiz extends PApplet
 
     public void Login_Login()
     {
-
         String hashedPassword;
         String name = cp5.get(Textfield.class, "Login_Name").getText();
         String password = cp5.get(Textfield.class, "Login_Password").getText();
@@ -874,7 +874,7 @@ public class GeoQuiz extends PApplet
         if (!userPreset || name.isEmpty() || password.isEmpty())
         {
             feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
-                    .setPosition(new PVector(650, 200))
+                    .setPosition(new PVector(750, 350))
                     .setSize(new PVector(170, 50)));
 
         } else
@@ -897,16 +897,24 @@ public class GeoQuiz extends PApplet
                 } else
                 {
                     feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
-                            .setPosition(new PVector(650, 200))
+                            .setPosition(new PVector(750, 350))
                             .setSize(new PVector(170, 50)));
                 }
 
             } else
             {
                 ID = IStudentDao.getAccountId(name, password);
+                if (ID == -1)
+                {
+                    feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
+                            .setPosition(new PVector(750, 350))
+                            .setSize(new PVector(170, 50)));
+                } else
+                {
+                    createUserInstance(ID, false);
 
-                createUserInstance(ID, false);
-                switchScreen(Screen.MAIN_MENU_STUDENT);
+                    switchScreen(Screen.MAIN_MENU_STUDENT);
+                }
             }
 
             gameManager = new GameManager(this);
@@ -927,7 +935,7 @@ public class GeoQuiz extends PApplet
         if (!userPreset || name.isEmpty())
         {
             feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
-                    .setPosition(new PVector(650, 200))
+                    .setPosition(new PVector(750, 350))
                     .setSize(new PVector(170, 50)));
         } else
         {
@@ -958,13 +966,13 @@ public class GeoQuiz extends PApplet
             } else
             {
                 feedbackList.add(new PasscodeNotFoundFeedback(this, 5000)
-                        .setPosition(new PVector(650, 200))
+                        .setPosition(new PVector(750, 350))
                         .setSize(new PVector(170, 50)));
             }
         } catch (NumberFormatException ex)
         {
             feedbackList.add(new PasscodeNotFoundFeedback(this, 5000)
-                    .setPosition(new PVector(650, 200))
+                    .setPosition(new PVector(750, 350))
                     .setSize(new PVector(170, 50)));
 
         }
@@ -984,7 +992,7 @@ public class GeoQuiz extends PApplet
         if (password.isEmpty())
         {
             feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
-                    .setPosition(new PVector(650, 200))
+                    .setPosition(new PVector(750, 350))
                     .setSize(new PVector(170, 50)));
         } else
         {
@@ -993,6 +1001,25 @@ public class GeoQuiz extends PApplet
             switchScreen(Screen.LOGIN_STUDENT);
         }
 
+    }
+
+    private void showTeacherMainMenu()
+    {
+        String name = ((Teacher) user).getName();
+        String withUpper = name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
+
+        background(imageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CENTER);
+        rect(width / 2, height / 2, 500, 400);
+        textSize(60);
+        textAlign(CENTER, TOP);
+        fill(255);
+        text("Welcome " + withUpper + "!", 450, 100);
+        textSize(30);
+        textAlign(CENTER, TOP);
     }
 
     public void Login_Admin_Back()
