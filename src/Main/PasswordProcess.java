@@ -83,11 +83,11 @@ public class PasswordProcess
 
         if (verifyHash(password, hash))
         {
+            String last = LocalDateTime.now()
+                    .minusNanos(LocalDateTime.now().getNano()).toString();
             dbConnectorUser.setAttempt(username, 0);
-            dbConnectorUser.setLastDateTime(username, LocalDateTime.now()
-                    .minusNanos(LocalDateTime.now().getNano()).toString());
-            dbConnectorUser.setInvalidDateTime(username, LocalDateTime.now()
-                    .minusNanos(LocalDateTime.now().getNano()).toString());
+            dbConnectorUser.setLastDateTime(username, last);
+            dbConnectorUser.setInvalidDateTime(username, last);
 
             return 1;
         }
@@ -95,9 +95,10 @@ public class PasswordProcess
         {
             if (lastSession.isBefore(invalidTime) && attempts < 5)
             {
+                String last = LocalDateTime.now()
+                        .minusNanos(LocalDateTime.now().getNano()).toString();
                 attempts++;
-                dbConnectorUser.setLastDateTime(username, LocalDateTime.now()
-                        .minusNanos(LocalDateTime.now().getNano()).toString());
+                dbConnectorUser.setLastDateTime(username, last);
 
                 dbConnectorUser.setAttempt(username, attempts);
 
