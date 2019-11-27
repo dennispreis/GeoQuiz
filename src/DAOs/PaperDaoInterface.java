@@ -5,6 +5,7 @@
  */
 package DAOs;
 
+import DTOs.Paper;
 import DTOs.Question;
 import java.util.List;
 import processing.core.PApplet;
@@ -16,11 +17,11 @@ import processing.core.PApplet;
 public interface PaperDaoInterface
 {
 
-    public List<Question> getRandPaper(PApplet applet);
+    public Paper getRandPaper(PApplet applet);
 
-    public List<Question> getPaperByType(PApplet applet,String type);
+    public Paper getPaperByType(PApplet applet,String type);
 
-    public List<Question> getPaperByRegion(PApplet applet,String region);
+    public Paper getPaperByRegion(PApplet applet,String region);
 
-    public List<Question> getPaperByTypeRegion(PApplet applet,String type,String region);
+    public Paper getPaperByTypeRegion(PApplet applet,String type,String region);
 }

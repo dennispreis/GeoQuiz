@@ -6,16 +6,6 @@
 package DAOs;
 
 import DTOs.Question;
-import DTOs.Questions.ChoosePicture_Question;
-import DTOs.Questions.DragAndDrop_Question;
-import DTOs.Questions.Multiplichoice_Question;
-import DTOs.Questions.TrueOrFalse_Question;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 import java.util.List;
 import processing.core.PApplet;
 
