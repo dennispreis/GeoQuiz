@@ -17,13 +17,13 @@ import processing.core.PApplet;
 public interface PracticeDaoInterface
 {
 
-    public List<Question> getPractice(PApplet applet);
+    public List<Question> getPractice(PApplet applet,int id,String category,String level);
 
-    public List<Question> getPracticeByType(PApplet applet, String type);
+    public List<Question> getPracticeByType(PApplet applet, String type,int id,String category,String level);
 
-    public List<Question> getPracticeByRegion(PApplet applet, String region);
+    public List<Question> getPracticeByRegion(PApplet applet, String region,int id,String category,String level);
 
-    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region);
+    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region,int id,String category,String level);
 
     public ProfileHistory getProfileHistory(int id);
     

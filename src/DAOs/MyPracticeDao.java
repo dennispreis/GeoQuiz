@@ -6,6 +6,7 @@
 package DAOs;
 
 import DTOs.HistoryRecord;
+import DTOs.Paper;
 import DTOs.ProfileHistory;
 import DTOs.Question;
 import GameManager.Category;
@@ -29,30 +30,47 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
 {
     CategoryMap cm = new CategoryMap();
     LevelMap lm = new LevelMap();
-    private QuestionDaoInterface IQuestionDao = new MyQuestionDao();
+    private PaperDaoInterface IPaperDao = new MyPaperDao();
 
     @Override
-    public List<Question> getPractice(PApplet applet)
+    public List<Question> getPractice(PApplet applet,int id,String category,String level)
     {
-        return IQuestionDao.getRandQuestion(applet);
+        Connection con = null;
+        PreparedStatement ps = null;
+        Paper p = IPaperDao.getRandPaper(applet);
+        try{
+            con = this.getConnection();
+            String query = "INSERT INTO practices (paper_id,student_id,category,level) VALUES (?,?,?,?)";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, p.getId());
+            ps.setInt(2, id);
+            ps.setString(3, category);
+            ps.setString(4, level);
+            ps.executeUpdate();
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        return p.getQuestions();
     }
 
     @Override
-    public List<Question> getPracticeByType(PApplet applet, String type)
+    public List<Question> getPracticeByType(PApplet applet, String type,int id,String category,String level)
     {
-        return IQuestionDao.getQuestionByType(applet, type);
+        return IPaperDao.getPaperByType(applet, type).getQuestions();
     }
 
     @Override
-    public List<Question> getPracticeByRegion(PApplet applet, String region)
+    public List<Question> getPracticeByRegion(PApplet applet, String region,int id,String category,String level)
     {
-        return IQuestionDao.getQuestionByRegion(applet, region);
+        return IPaperDao.getPaperByRegion(applet, region).getQuestions();
     }
 
     @Override
-    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region)
+    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region,int id,String category,String level)
     {
-        return IQuestionDao.getQuestionByTypeRegion(applet, type, region);
+        return IPaperDao.getPaperByTypeRegion(applet, type, region).getQuestions();
     }
 
     @Override
