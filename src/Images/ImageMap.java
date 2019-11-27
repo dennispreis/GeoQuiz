@@ -15,14 +15,15 @@ import processing.core.*;
 /**
  * @author Tunjing
  */
-public class ImageMap {
+public class ImageMap
+{
 
     private static PApplet applet;
     private static Map<String, ImageName> imageMap = new HashMap<>();
     private static Map<ImageName, PImage> images = new HashMap<>();
 
-
-    public ImageMap(PApplet applet) {
+    public ImageMap(PApplet applet)
+    {
         this.applet = applet;
 
         images = loadImages();
@@ -36,19 +37,23 @@ public class ImageMap {
 
     }
 
-    public static PImage getImage(ImageName name) {
+    public static PImage getImage(ImageName name)
+    {
         return images.get(name);
     }
 
-    public static ImageName getImageName(String s) {
+    public static ImageName getImageName(String s)
+    {
         return imageMap.get(s);
     }
 
-    public static String getImageString(ImageName im) {
+    public static String getImageString(ImageName im)
+    {
         return im.name();
     }
 
-    private static Map<ImageName, PImage> loadImages() {
+    private static Map<ImageName, PImage> loadImages()
+    {
 
         images.put(ImageName.LOGOUT, applet.loadImage("Images/logout.png"));
         images.put(ImageName.PLACEHOLDER, applet.loadImage("Images/placeholder.jpg"));
@@ -69,7 +74,6 @@ public class ImageMap {
         images.put(ImageName.AVATAR_COALA_SMALL, applet.loadImage("Images/Avatar/small/coala_small.png"));
 
         //---------- Insert into imageMap
-
         images.put(ImageName.BACKGROUND_0, applet.loadImage("Images/Background/background_0.png"));
         images.put(ImageName.BACKGROUND_1, applet.loadImage("Images/Background/background_1.png"));
         images.put(ImageName.BACKGROUND_2, applet.loadImage("Images/Background/background_2.png"));
@@ -84,7 +88,6 @@ public class ImageMap {
         images.put(ImageName.BACKGROUND_BROWN, applet.loadImage("Images/Background/background_brown.png"));
         images.put(ImageName.BACKGROUND_RED, applet.loadImage("Images/Background/background_red.png"));
         images.put(ImageName.BACKGROUND_PLAY, applet.loadImage("Images/Background/background_play.jpg"));
-
 
         images.put(ImageName.CATEGORY_CITIES, applet.loadImage("Images/Category/cities.png"));
         images.put(ImageName.CATEGORY_MOUNTAINS, applet.loadImage("Images/Category/mountains.png"));
@@ -103,6 +106,16 @@ public class ImageMap {
         images.put(ImageName.ARROW_LEFT, applet.loadImage("Images/arrow_left.png"));
         images.put(ImageName.ARROW_RIGHT, applet.loadImage("Images/arrow_right.png"));
 
+        images.put(ImageName.ACHIEVEMENTS_ONE, applet.loadImage("Images/Achievements/achiev_1.png"));
+        images.put(ImageName.ACHIEVEMENTS_TWO, applet.loadImage("Images/Achievements/achiev_2.png"));
+        images.put(ImageName.ACHIEVEMENTS_THREE, applet.loadImage("Images/Achievements/achiev_3.png"));
+        images.put(ImageName.ACHIEVEMENTS_FOUR, applet.loadImage("Images/Achievements/achiev_4.png"));
+        images.put(ImageName.ACHIEVEMENTS_FIVE, applet.loadImage("Images/Achievements/achiev_5.png"));
+        images.put(ImageName.ACHIEVEMENTS_SIX, applet.loadImage("Images/Achievements/achiev_6.png"));
+        images.put(ImageName.ACHIEVEMENTS_SEVEN, applet.loadImage("Images/Achievements/achiev_7.png"));
+        images.put(ImageName.ACHIEVEMENTS_EIGHT, applet.loadImage("Images/Achievements/achiev_8.png"));
+        images.put(ImageName.ACHIEVEMENTS_NINE, applet.loadImage("Images/Achievements/achiev_9.png"));
+        images.put(ImageName.ACHIEVEMENTS_TEN, applet.loadImage("Images/Achievements/achiev_10.png"));
 
         return images;
     }
