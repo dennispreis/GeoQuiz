@@ -1,7 +1,9 @@
 package GameManager;
 
 import DAOs.MyPaperDao;
+import DAOs.MyPracticeDao;
 import DAOs.PaperDaoInterface;
+import DAOs.PracticeDaoInterface;
 import DTOs.Question;
 import DTOs.Questions.*;
 import java.util.List;
@@ -12,7 +14,7 @@ import static processing.core.PConstants.CENTER;
 public class GameManager
 {
 
-    private PaperDaoInterface IPaperDao;
+    private PracticeDaoInterface IPracticeDao;
     private PApplet applet;
     private Category category;
     private Level level;
@@ -21,15 +23,16 @@ public class GameManager
     private int actuallQuestionIndex;
     private List<Question> questionsTmp;
     private int score, maxScore;
-
+    private int id;
+    
     public GameManager(PApplet applet)
     {
-        this.IPaperDao = new MyPaperDao();
+        this.IPracticeDao = new MyPracticeDao();
         this.applet = applet;
         this.category = Category.MOUNTAINS;
         this.level = Level.EASY;
 
-        questionsTmp = IPaperDao.getRandPaper(applet);
+        questionsTmp = IPracticeDao.getPractice(applet,1,"tmp","tmp");
         System.out.println(questionsTmp.size());
         questions = new Question[questionsTmp.size()];
         for (int i = 0; i < questionsTmp.size(); i++)
@@ -65,6 +68,26 @@ public class GameManager
         actuallQuestionIndex = 0;
         actualQuestion = questions[actuallQuestionIndex];
 //        actualQuestion = questions.get(actuallQuestionIndex);
+        score = 0;
+        maxScore = questions.length;
+    }
+
+    public GameManager(PApplet applet, int id,String category,String level)
+    {
+        this.IPracticeDao = new MyPracticeDao();
+        this.applet = applet;
+        this.category = Category.MOUNTAINS;
+        this.level = Level.EASY;
+        this.id = id;
+        questionsTmp = IPracticeDao.getPractice(applet,id,"tmp","tmp");
+        System.out.println(questionsTmp.size());
+        questions = new Question[questionsTmp.size()];
+        for (int i = 0; i < questionsTmp.size(); i++)
+        {
+            questions[i] = questionsTmp.get(i);
+        }
+        actuallQuestionIndex = 0;
+        actualQuestion = questions[actuallQuestionIndex];
         score = 0;
         maxScore = questions.length;
     }
@@ -177,7 +200,7 @@ public class GameManager
                 //Get right array index and check if isActive()
                 System.out.println(mp_question.getCorrect_answer());
 
-                if (mp_question.getCheckBox().getElements()[Integer.parseInt(mp_question.getCorrect_answer())-1].isActive())
+                if (mp_question.getCheckBox().getElements()[Integer.parseInt(mp_question.getCorrect_answer()) - 1].isActive())
                 {
                     score++;
                 }

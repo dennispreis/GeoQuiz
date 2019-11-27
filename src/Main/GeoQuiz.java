@@ -917,7 +917,7 @@ public class GeoQuiz extends PApplet
                 }
             }
 
-            gameManager = new GameManager(this);
+            gameManager = new GameManager(this,user.getId(),"MOUNTAIN","EASY");
 
         }
     }

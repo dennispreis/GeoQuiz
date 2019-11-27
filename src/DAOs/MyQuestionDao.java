@@ -68,7 +68,6 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 rs2 = ps.executeQuery();
                 if (rs2.next())
                 {
-                    System.out.println("Here GG");
                     String a1 = rs2.getString("answer_one");
                     String a2 = rs2.getString("answer_two");
                     String a3 = rs2.getString("answer_three");
@@ -78,7 +77,6 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 } else
                 {
 
-                    System.out.println("Here GG2");
                     String query5 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_mc WHERE question_id = ?";
                     ps = con.prepareStatement(query5);
                     ps.setInt(1, id);
@@ -94,8 +92,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                     } else
                     {
 
-                        System.out.println("Here GG3");
-                        String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
+                             String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
                         ps = con.prepareStatement(query6);
                         ps.setInt(1, id);
                         rs2 = ps.executeQuery();
@@ -110,7 +107,6 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                         } else
                         {
 
-                            System.out.println("Here All GG3");
                             String query7 = "SELECT question_id FROM questions_tf WHERE question_id = ?";
                             ps = con.prepareStatement(query7);
                             ps.setInt(1, id);
