@@ -5,6 +5,7 @@ import DAOs.MyTeacherDao;
 import DAOs.StudentDaoInterface;
 import DAOs.TeacherDaoInterface;
 import DTOs.HistoryRecord;
+import DTOs.ProfileHistory;
 import DTOs.Question;
 import DTOs.Questions.ChoosePicture_Question;
 import DTOs.Questions.DragAndDrop_Question;
@@ -669,27 +670,23 @@ public class GeoQuiz extends PApplet
 
     private void tableGeneration()
     {
-        HistoryRecord[] history = ((Student) user).getProfileHistory().getFiveRecords();
-
+    //    HistoryRecord[] history = ((Student) user).getProfileHistory().getFiveRecords();
+        ProfileHistory history = ((Student)user).getProfileHistory();
+        System.out.println(history.getHistoryRecord().size());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        String data[] = new String[history.length];
-
-        for (int i = 0; i < history.length; i++)
+        String[][] rowData = new String[history.getHistoryRecord().size()][3]; 
+        for (int i = 0; i < history.getHistoryRecord().size(); i++)
         {
-            if (history[i] != null)
+            if (history.getHistoryRecord().get(i) != null)
             {
-                data[i] = history[i].getCategory().name();
-                data[i] = history[i].getLevel().name();
-                data[i] = formatter.format(history[0].getDate());
-
+                rowData[i][0] = history.getHistoryRecord().get(i).getCategory().name();
+                rowData[i][1] = history.getHistoryRecord().get(i).getLevel().name();
+                rowData[i][2] = formatter.format(history.getHistoryRecord().get(i).getDate());
             }
         }
         JFrame frame = new JFrame();
-        String rowData[][] =
-        {
-            data
-        };
+        
 
         Object columnNames[] =
         {

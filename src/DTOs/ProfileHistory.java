@@ -29,7 +29,7 @@ public class ProfileHistory
         };
         historyRecordsList = new ArrayList<>();
     }
-
+    
     public List<HistoryRecord> getHistoryRecord()
     {
         return this.historyRecordsList;

@@ -21,5 +21,6 @@ public class CategoryMap
         categoryMap.put("CITIES", CITIES);
         categoryMap.put("MOUNTAINS", MOUNTAINS);
         categoryMap.put("RIVERS", RIVERS);
+        categoryMap.put("tmp", tmp);
     };
 }

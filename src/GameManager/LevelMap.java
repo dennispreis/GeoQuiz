@@ -23,6 +23,7 @@ public class LevelMap
         levelMap.put("EASY", EASY);
         levelMap.put("MEDIUM", MEDIUM);
         levelMap.put("HARD", HARD);
+        levelMap.put("tmp", tmp);
     }
 ;
 }
