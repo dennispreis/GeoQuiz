@@ -29,8 +29,15 @@ import java.util.*;
 import java.util.List;
 
 import Images.ImageMap;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 
 import java.time.LocalDateTime;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 public class GeoQuiz extends PApplet
 {
@@ -401,30 +408,7 @@ public class GeoQuiz extends PApplet
     private void showStudentProfile()
     {
         background(imageMap.getImage(ImageName.BACKGROUND_GREEN));
-        textSize(20);
-        fill(255, 120);
-        rectMode((CORNER));
-        rect(365, 175, 325, 200);
-        textAlign(CORNER);
-        stroke(255);
-        fill(0);
-        line(365, 205, 686, 205);
-        text("Category", 375, 200);
-        text("Level", 500, 200);
-        text("Date", 590, 200);
-        HistoryRecord[] history = ((Student) user).getProfileHistory().getFiveRecords();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        for (int i = 0; i < history.length; i++)
-        {
-            if (history[i] != null)
-            {
-                text(history[i].getCategory().name(), 375, 225 + 30 * i);
-                text(history[i].getLevel().name(), 500, 225 + 30 * i);
-                text((formatter.format(history[0].getDate())), 590, 225 + 30 * i);
-            }
-        }
         textAlign(LEFT, TOP);
         text("Click to change avatar", 130, 300);
 
@@ -511,7 +495,7 @@ public class GeoQuiz extends PApplet
     private void uielementsCreateLogin()
     {
 
-        //cp5.addButton("Magic").setPosition(570, 420).setSize(100, 50);
+        cp5.addButton("Magic").setPosition(570, 420).setSize(100, 50);
 //---------
         cp5.addToggle("Login_Role")
                 .setPosition(10, 10)
@@ -683,8 +667,54 @@ public class GeoQuiz extends PApplet
                 setImage(imageMap.getImage(ImageName.LOGOUT));
     }
 
+    private void tableGeneration()
+    {
+        HistoryRecord[] history = ((Student) user).getProfileHistory().getFiveRecords();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        String data[] = new String[history.length];
+
+        for (int i = 0; i < history.length; i++)
+        {
+            if (history[i] != null)
+            {
+                data[i] = history[i].getCategory().name();
+                data[i] = history[i].getLevel().name();
+                data[i] = formatter.format(history[0].getDate());
+
+            }
+        }
+        JFrame frame = new JFrame();
+        String rowData[][] =
+        {
+            data
+        };
+
+        Object columnNames[] =
+        {
+            "Category", "Level", "Date"
+        };
+
+        JTable table = new JTable(rowData, columnNames);
+
+        frame.setLocation(555, 260);
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        frame.setUndecorated(true);
+        frame.setSize(330, 250);
+        frame.setVisible(true);
+        frame.setResizable(false);
+
+    }
+
     private void uielementsCreateStudentProfile()
     {
+
+        tableGeneration();
+
         cp5.addToggle("Profile_Student_Avatar_Change").setPosition(100, 300).setSize(25, 25).
                 setLabel("");
 
@@ -809,31 +839,35 @@ public class GeoQuiz extends PApplet
         cp5.getAll().forEach(ControllerInterface::hide);
     }
 
-    //------------------------------------Anonymous methods for ControlP5-UIElements
-//    public void Magic()
-//    {
-//
-//        boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
-//        if (isTeacher)
-//        {
-//            Textfield myT = (Textfield) cp5.get("Login_Name");
-//            myT.setText("peter");
-//            myT = (Textfield) cp5.get("Login_Password");
-//            myT.setText("password");
-//        }
-//        else
-//        {
-//            Textfield myT = (Textfield) cp5.get("Login_Name");
-//            myT.setText("max");
-//            myT = (Textfield) cp5.get("Login_Password");
-//            myT.setText("123456");
-//        }
-//    }
+//    ------------------------------------Anonymous methods for ControlP5-UIElements
+    public void Magic()
+    {
+
+        boolean isTeacher = cp5.get(Toggle.class,
+                "Login_Role").getState();
+        if (isTeacher)
+        {
+            Textfield myT = (Textfield) cp5.get("Login_Name");
+            myT.setText("peter");
+            myT = (Textfield) cp5.get("Login_Password");
+            myT.setText("password");
+        }
+        else
+        {
+            Textfield myT = (Textfield) cp5.get("Login_Name");
+            myT.setText("max");
+            myT = (Textfield) cp5.get("Login_Password");
+            myT.setText("123456");
+        }
+    }
+
     public boolean Login_Role()
     {
 
         boolean isTeacher;
-        boolean flg = cp5.get(Toggle.class, "Login_Role").getState();
+
+        boolean flg = cp5.get(Toggle.class,
+                "Login_Role").getState();
         if (flg)
         {
             cp5.addButton("Password_Management")
@@ -847,7 +881,9 @@ public class GeoQuiz extends PApplet
         {
             isTeacher = false;
             cp5.getController("Password_Management").setVisible(false);
-            cp5.get(Button.class, "Login_Login").show();
+            cp5
+                    .get(Button.class,
+                            "Login_Login").show();
         }
         return isTeacher;
     }
@@ -855,9 +891,13 @@ public class GeoQuiz extends PApplet
     public void Login_Login()
     {
         String hashedPassword;
-        String name = cp5.get(Textfield.class, "Login_Name").getText();
-        String password = cp5.get(Textfield.class, "Login_Password").getText();
-        boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
+        String name = cp5.get(Textfield.class,
+                "Login_Name").getText();
+        String password = cp5.get(Textfield.class,
+                "Login_Password").getText();
+
+        boolean isTeacher = cp5.get(Toggle.class,
+                "Login_Role").getState();
         boolean userPreset = false;
         int bruteForceResult;
         int ID = -1;
@@ -899,10 +939,12 @@ public class GeoQuiz extends PApplet
                     ID = ITeacherDao.getAccountId(name);
                     createUserInstance(ID, true);
                     switchScreen(Screen.MAIN_MENU_ADMIN);
+
                 }
                 else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5))
                 {
-                    cp5.get(Button.class, "Login_Login").hide();
+                    cp5.get(Button.class,
+                            "Login_Login").hide();
                 }
                 else
                 {
@@ -936,7 +978,8 @@ public class GeoQuiz extends PApplet
 
     public void Password_Management()
     {
-        String name = cp5.get(Textfield.class, "Login_Name").getText();
+        String name = cp5.get(Textfield.class,
+                "Login_Name").getText();
         boolean userPreset = false;
 
         for (String user : ITeacherDao.getTeacherUsernames())
@@ -961,8 +1004,10 @@ public class GeoQuiz extends PApplet
         try
         {
 
-            String name = cp5.get(Textfield.class, "Login_Name").getText();
-            String passcodeText = cp5.get(Textfield.class, "Passcode").getText();
+            String name = cp5.get(Textfield.class,
+                    "Login_Name").getText();
+            String passcodeText = cp5.get(Textfield.class,
+                    "Passcode").getText();
             int passcode;
 
             if (!passcodeText.isEmpty())
@@ -1001,8 +1046,10 @@ public class GeoQuiz extends PApplet
 
     public void Change_Password_Change()
     {
-        String name = cp5.get(Textfield.class, "Login_Name").getText();
-        String password = cp5.get(Textfield.class, "Change_Password_Password").getText();
+        String name = cp5.get(Textfield.class,
+                "Login_Name").getText();
+        String password = cp5.get(Textfield.class,
+                "Change_Password_Password").getText();
         String hash = passwordProcess.hash(password);
 
         if (password.isEmpty())
