@@ -29,10 +29,6 @@ public class TrueOrFalse_Question extends Question {
     @Override
     public void show() {
         applet.rectMode(CENTER);
-        applet.fill(100, 175);
-        applet.stroke(0);
-        applet.strokeWeight(2);
-        applet.rect(applet.width / 2, 100, 500, 50);
         applet.textAlign(CENTER, CENTER);
         applet.fill(255);
         applet.textSize(30);

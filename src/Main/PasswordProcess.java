@@ -36,7 +36,7 @@ public class PasswordProcess
 
     private boolean verifyHash(String password, String hash)
     {
-        return BCrypt.checkpw(password, hash);
+            return BCrypt.checkpw(password, hash);
     }
 
     public int bruteForceCheck(String username, String password, String hash)
@@ -101,7 +101,7 @@ public class PasswordProcess
                 dbConnectorUser.setLastDateTime(username, last);
 
                 dbConnectorUser.setAttempt(username, attempts);
-
+                
                 return 0;
             }
             else if (lastSession.isBefore(invalidTime) && !(attempts < 5))
