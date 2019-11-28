@@ -679,9 +679,9 @@ public class GeoQuiz extends PApplet
         {
             if (history[i] != null)
             {
-                data[i] = history[i].getCategory().name();
-                data[i] = history[i].getLevel().name();
-                data[i] = formatter.format(history[0].getDate());
+                data[0] = history[0].getCategory().name();
+                data[1] = history[1].getLevel().name();
+                data[2] = formatter.format(history[0].getDate());
 
             }
         }
