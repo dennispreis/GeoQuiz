@@ -24,8 +24,6 @@ public class ChoosePicture implements GameElement {
         return button_right;
     }
 
-
-
     public void show(){
         button_left.show();
         button_right.show();

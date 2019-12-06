@@ -77,5 +77,4 @@ public class DragAndDropElement implements Dragable, GameElement {
                 && p.mouseY > this.position.y && p.mouseY < this.position.y + this.size.y);
     }
 
-
 }

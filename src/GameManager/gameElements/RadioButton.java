@@ -8,25 +8,16 @@ public class RadioButton implements GameElement {
     private RadioButtonElement[] elements;
     private RadioButtonElement activeElement;
 
-//    public RadioButton(PApplet applet) {
-//        this.applet = applet;
-//        elements = new RadioButtonElement[]{
-//                new RadioButtonElement(applet, "Portugal", 300, 300),
-//                new RadioButtonElement(applet, "China", 300, 400),
-//                new RadioButtonElement(applet, "Mexico", 300, 500)
-//        };
-//        activeElement = null;
-//    }
-
     public RadioButton(PApplet applet) {
         this.applet = applet;
         elements = new RadioButtonElement[]{
-                new RadioButtonElement(applet, "TRUE", 300, 300),
-                new RadioButtonElement(applet, "FALSE", 300, 400)
+                new RadioButtonElement(applet, "Portugal", 300, 300),
+                new RadioButtonElement(applet, "China", 300, 400),
+                new RadioButtonElement(applet, "Mexico", 300, 500)
         };
         activeElement = null;
     }
-    
+
     public void selectElement(RadioButtonElement ele) {
         if (this.activeElement == null) {
             this.activeElement = ele;
