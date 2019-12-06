@@ -27,5 +27,5 @@ public interface PracticeDaoInterface
 
     public ProfileHistory getProfileHistory(int id);
     
-    
+    public boolean updateScore(int id,int score);
 }

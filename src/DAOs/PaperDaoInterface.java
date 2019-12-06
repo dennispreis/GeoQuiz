@@ -19,9 +19,14 @@ public interface PaperDaoInterface
 
     public Paper getRandPaper(PApplet applet);
 
-    public Paper getPaperByType(PApplet applet,String type);
+    public Paper getPaperByType(PApplet applet, String type);
 
-    public Paper getPaperByRegion(PApplet applet,String region);
+    public Paper getPaperByRegion(PApplet applet, String region);
 
-    public Paper getPaperByTypeRegion(PApplet applet,String type,String region);
+    public Paper getPaperByTypeRegion(PApplet applet, String type, String region);
+
+    public Paper getPaperByID(PApplet appplet, int id);
+
+    public void addNewPaper(List<Question> questionList);
+
 }

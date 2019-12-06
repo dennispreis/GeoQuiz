@@ -5,6 +5,7 @@
  */
 package DAOs;
 
+import DTOs.Paper;
 import DTOs.Question;
 import DTOs.Questions.ChoosePicture_Question;
 import DTOs.Questions.DragAndDrop_Question;
@@ -15,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import processing.core.PApplet;
@@ -92,7 +94,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                     } else
                     {
 
-                             String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
+                        String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
                         ps = con.prepareStatement(query6);
                         ps.setInt(1, id);
                         rs2 = ps.executeQuery();
@@ -535,99 +537,152 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
         return questions;     // may be empty  }
     }
 
-    /**
-     * @Override public List<Question> getPractice() { Connection con = null;
-     * PreparedStatement ps = null; ResultSet rs = null; List<Question>
-     * questions = new ArrayList<>();
-     *
-     * try { //Get connection object using the methods in the super class
-     * (MySqlDao.java)... con = this.getConnection();
-     *
-     * String query = "SELECT * FROM questions ORDER BY RAND() LIMIT 10"; ps =
-     * con.prepareStatement(query); //Using a PreparedStatement to execute
-     * SQL... rs = ps.executeQuery(); while (rs.next()) { int id =
-     * rs.getInt("question_id"); String question_type =
-     * rs.getString("question_type"); String type = rs.getString("type"); String
-     * region = rs.getString("region"); String q_t =
-     * rs.getString("question_text"); String a_1 = rs.getString("answer_one");
-     * String a_2 = rs.getString("answer_two"); String a_3 =
-     * rs.getString("answer_three"); String a_4 = rs.getString("answer_four");
-     * String c_a = rs.getString("correct_answer"); // Question u = new
-     * Question(null, id, question_type, type, region, q_t, a_1, a_2, a_3, a_4,
-     * c_a); // questions.add(u); } } catch (SQLException e) {
-     *
-     * } finally { try { if (rs != null) { rs.close(); } if (ps != null) {
-     * ps.close(); } if (con != null) { freeConnection(con); } } catch
-     * (SQLException e) {
-     *
-     * }
-     * }
-     * return questions; // may be empty }
-     *
-     * @Override public List<Question> getPracticeByType(String typeIn) {
-     * Connection con = null; PreparedStatement ps = null; ResultSet rs = null;
-     * List<Question> questions = new ArrayList<>();
-     *
-     * try { //Get connection object using the methods in the super class
-     * (MySqlDao.java)... con = this.getConnection();
-     *
-     * String query = "SELECT * FROM questions WHERE type = ? ORDER BY RAND()";
-     * ps = con.prepareStatement(query); ps.setString(1, typeIn); //Using a
-     * PreparedStatement to execute SQL... rs = ps.executeQuery(); while
-     * (rs.next()) { int id = rs.getInt("question_id"); String question_type =
-     * rs.getString("question_type"); String type = rs.getString("type"); String
-     * region = rs.getString("region"); String q_t =
-     * rs.getString("question_text"); String a_1 = rs.getString("answer_one");
-     * String a_2 = rs.getString("answer_two"); String a_3 =
-     * rs.getString("answer_three"); String a_4 = rs.getString("answer_four");
-     * String c_a = rs.getString("correct_answer"); // Question u = new
-     * Question(null id, question_type, type, region, q_t, a_1, a_2, a_3, a_4,
-     * c_a); // questions.add(u); } } catch (SQLException e) {
-     *
-     * } finally { try { if (rs != null) { rs.close(); } if (ps != null) {
-     * ps.close(); } if (con != null) { freeConnection(con); } } catch
-     * (SQLException e) {
-     *
-     * }
-     * }
-     * return questions; // may be empty }
-     *
-     * @Override public List<Question> getPracticeByRegion(String regionIn) {
-     * Connection con = null; PreparedStatement ps = null; ResultSet rs = null;
-     * List<Question> questions = new ArrayList<>();
-     *
-     * try { //Get connection object using the methods in the super class
-     * (MySqlDao.java)... con = this.getConnection();
-     *
-     * String query = "SELECT * FROM questions WHERE region = ? ORDER BY
-     * RAND()"; ps = con.prepareStatement(query); ps.setString(1, regionIn);
-     * //Using a PreparedStatement to execute SQL... rs = ps.executeQuery();
-     * while (rs.next()) { int id = rs.getInt("question_id"); String
-     * question_type = rs.getString("question_type"); String type =
-     * rs.getString("type"); String region = rs.getString("region"); String q_t
-     * = rs.getString("question_text"); String a_1 = rs.getString("answer_one");
-     * String a_2 = rs.getString("answer_two"); String a_3 =
-     * rs.getString("answer_three"); String a_4 = rs.getString("answer_four");
-     * String c_a = rs.getString("correct_answer"); //Question u = new
-     * Question(null, id, question_type, type, region, q_t, a_1, a_2, a_3, a_4,
-     * c_a); // questions.add(u); } } catch (SQLException e) {
-     *
-     * } finally { try { if (rs != null) { rs.close(); } if (ps != null) {
-     * ps.close(); } if (con != null) { freeConnection(con); } } catch
-     * (SQLException e) {
-     *
-     * }
-     * }
-     * return questions; // may be empty }
-     *
-     * @Override public List<Question> getPracticeByLevel() { throw new
-     * UnsupportedOperationException("Not supported yet."); //To change body of
-     * generated methods, choose Tools | Templates. }
-     */
+    @Override
+    public Question getQuestionById(PApplet applet, int question_id)
+    {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Question q = null;
+        try
+        {
+            //Get connection object using the methods in the super class (MySqlDao.java)...
+            con = this.getConnection();
+            String query = "SELECT question_id,type_id,region_id,question_text,correct_answer FROM questions WHERE question_id = ? LIMIT 1";
+            ps = con.prepareStatement(query);
+            //Using a PreparedStatement to execute SQL...
+            ps.setInt(1, question_id);
+            rs = ps.executeQuery();
+            while (rs.next())
+            {
+
+                int id = rs.getInt("question_id");
+                int type_id = rs.getInt("type_id");
+                int region_id = rs.getInt("region_id");
+                String q_t = rs.getString("question_text");
+                String c_a = rs.getString("correct_answer");
+
+                String query2 = "SELECT region FROM regions WHERE region_id = ?";
+                ps = con.prepareStatement(query2);
+                ps.setInt(1, region_id);
+                ResultSet rs2 = ps.executeQuery();
+                rs2.next();
+                String region = rs2.getString("region");
+                String query3 = "SELECT type FROM types WHERE type_id = ?";
+                ps = con.prepareStatement(query3);
+                ps.setInt(1, type_id);
+                rs2 = ps.executeQuery();
+                rs2.next();
+                String type = rs2.getString("type");
+                String query4 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_dd WHERE question_id = ?";
+                ps = con.prepareStatement(query4);
+                ps.setInt(1, id);
+                rs2 = ps.executeQuery();
+                if (rs2.next())
+                {
+                    String a1 = rs2.getString("answer_one");
+                    String a2 = rs2.getString("answer_two");
+                    String a3 = rs2.getString("answer_three");
+                    String a4 = rs2.getString("answer_four");
+                    q = new DragAndDrop_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
+
+                } else
+                {
+
+                    String query5 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_mc WHERE question_id = ?";
+                    ps = con.prepareStatement(query5);
+                    ps.setInt(1, id);
+                    rs2 = ps.executeQuery();
+                    if (rs2.next())
+                    {
+                        String a1 = rs2.getString("answer_one");
+                        String a2 = rs2.getString("answer_two");
+                        String a3 = rs2.getString("answer_three");
+                        String a4 = rs2.getString("answer_four");
+                        q = new Multiplichoice_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
+
+                    } else
+                    {
+
+                        String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
+                        ps = con.prepareStatement(query6);
+                        ps.setInt(1, id);
+                        rs2 = ps.executeQuery();
+                        if (rs2.next())
+                        {
+                            String a1 = rs2.getString("answer_one");
+                            String a2 = rs2.getString("answer_two");
+                            String a3 = rs2.getString("answer_one_dir");
+                            String a4 = rs2.getString("answer_two_dir");
+                            q = new ChoosePicture_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
+
+                        } else
+                        {
+
+                            String query7 = "SELECT question_id FROM questions_tf WHERE question_id = ?";
+                            ps = con.prepareStatement(query7);
+                            ps.setInt(1, id);
+                            rs2 = ps.executeQuery();
+                            if (rs2.next())
+                            {
+                                q = new TrueOrFalse_Question(applet, id, type, region, q_t, c_a);
+                            }
+                        }
+                    }
+                }
+
+            }
+        } catch (SQLException e)
+        {
+
+        } finally
+        {
+            try
+            {
+                if (rs != null)
+                {
+                    rs.close();
+                }
+                if (ps != null)
+                {
+                    ps.close();
+                }
+                if (con != null)
+                {
+                    freeConnection(con);
+                }
+            } catch (SQLException e)
+            {
+
+            }
+        }
+        return q;     // may be empty  }
+    }
+
     @Override
     public boolean addQuestion(Question q)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection conn = null;
+        PreparedStatement ps = null;
+        boolean success = false;
+        try
+        {
+
+            conn = this.getConnection();
+            String query = "INSERT INTO questions (question_id) VALUES(?)";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, q.getId());
+            if (ps.executeUpdate() == 1)
+            {
+
+                return true;
+            }
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override

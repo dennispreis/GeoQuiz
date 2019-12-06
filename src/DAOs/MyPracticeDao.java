@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -28,17 +29,19 @@ import processing.core.PApplet;
  */
 public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
 {
+
     CategoryMap cm = new CategoryMap();
     LevelMap lm = new LevelMap();
     private PaperDaoInterface IPaperDao = new MyPaperDao();
 
     @Override
-    public List<Question> getPractice(PApplet applet,int id,String category,String level)
+    public List<Question> getPractice(PApplet applet, int id, String category, String level)
     {
         Connection con = null;
         PreparedStatement ps = null;
         Paper p = IPaperDao.getRandPaper(applet);
-        try{
+        try
+        {
             con = this.getConnection();
             String query = "INSERT INTO practices (paper_id,student_id,category,level) VALUES (?,?,?,?)";
             ps = con.prepareStatement(query);
@@ -47,8 +50,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             ps.setString(3, category);
             ps.setString(4, level);
             ps.executeUpdate();
-        }
-        catch(Exception e)
+        } catch (Exception e)
         {
             e.printStackTrace();
         }
@@ -56,19 +58,19 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
     }
 
     @Override
-    public List<Question> getPracticeByType(PApplet applet, String type,int id,String category,String level)
+    public List<Question> getPracticeByType(PApplet applet, String type, int id, String category, String level)
     {
         return IPaperDao.getPaperByType(applet, type).getQuestions();
     }
 
     @Override
-    public List<Question> getPracticeByRegion(PApplet applet, String region,int id,String category,String level)
+    public List<Question> getPracticeByRegion(PApplet applet, String region, int id, String category, String level)
     {
         return IPaperDao.getPaperByRegion(applet, region).getQuestions();
     }
 
     @Override
-    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region,int id,String category,String level)
+    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region, int id, String category, String level)
     {
         return IPaperDao.getPaperByTypeRegion(applet, type, region).getQuestions();
     }
@@ -85,7 +87,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             {
                 //Get connection object using the methods in the super class (MySqlDao.java)...
                 con = this.getConnection();
-                String query = "SELECT category,level,data_attempt FROM practices WHERE student_id = ?";
+                String query = "SELECT category,level,score,data_attempt FROM practices WHERE student_id = ?";
                 ps = con.prepareStatement(query);
                 ps.setInt(1, id);
                 //Using a PreparedStatement to execute SQL...
@@ -95,10 +97,10 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
 
                     String category = rs.getString("category");
                     String level = rs.getString("level");
+                    int score = rs.getInt("score");
                     Date date_attempt = rs.getDate("data_attempt");
 
-                    
-                    HistoryRecord h = new HistoryRecord(cm.categoryMap.get(category), lm.levelMap.get(level), date_attempt);
+                    HistoryRecord h = new HistoryRecord(cm.categoryMap.get(category), lm.levelMap.get(level), score, date_attempt);
                     ph.getHistoryRecord().add(h);
                 }
             } catch (SQLException e)
@@ -130,4 +132,26 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
 
     }
 
+    @Override
+    public boolean updateScore(int id, int score)
+    {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        boolean success = false;
+        try
+        {
+
+            conn = this.getConnection();
+            String query = "UPDATE INTO practices SET score = ? WHERE practice_id = ?";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, score);
+            ps.setInt(2, id);
+            return (ps.executeUpdate() == 1);
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
