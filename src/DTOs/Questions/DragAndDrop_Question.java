@@ -4,6 +4,7 @@ import DTOs.Question;
 import GameManager.gameElements.DragAndDrop;
 import GameManager.gameElements.DragAndDropElement;
 import GameManager.gameElements.FixRect;
+import Main.GeoQuiz;
 import processing.core.PApplet;
 
 import static processing.core.PConstants.CENTER;

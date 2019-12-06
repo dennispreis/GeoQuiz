@@ -13,21 +13,17 @@ import java.util.ArrayList;
 import static processing.core.PApplet.println;
 
 /**
- *
  * @author User
  */
-public class MyStudentDao extends MySqlDao implements StudentDaoInterface
-{
+public class MyStudentDao extends MySqlDao implements StudentDaoInterface {
 
     private Connection connection;
     private ResultSet resultSet;
     private Statement statement;
 
     @Override
-    public boolean isAccountExisting(String loginName, String loginPassword)
-    {
-        try
-        {
+    public boolean isAccountExisting(String loginName, String loginPassword) {
+        try {
             connection = this.getConnection();
             statement = connection.createStatement();
 
@@ -35,13 +31,11 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
 
             statement.executeQuery(query);
             resultSet = statement.getResultSet();
-            if (resultSet.next())
-            {
+            if (resultSet.next()) {
                 return true;
             }
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         println("Account not found: " + loginName + ":" + loginPassword);
@@ -49,34 +43,28 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
     }
 
     @Override
-    public int getAccountId(String loginName, String loginPassword)
-    {
-        try
-        {
+    public int getAccountId(String loginName, String loginPassword) {
+        try {
             connection = this.getConnection();
             statement = connection.createStatement();
             String query = ("SELECT account_id FROM student_accounts WHERE username = '" + loginName + "' AND passcode ='" + loginPassword + "' limit 1");
 
             statement.executeQuery(query);
             resultSet = statement.getResultSet();
-            if (resultSet.next())
-            {
+            if (resultSet.next()) {
                 return resultSet.getInt("account_id");
             }
 
             return -1;
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             return -1;
         }
     }
 
     @Override
-    public Student createStudentUser(int ID)
-    {
-        try
-        {
+    public Student createStudentUser(int ID) {
+        try {
             connection = this.getConnection();
             statement = connection.createStatement();
 
@@ -94,19 +82,16 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
 
             return new Student(class_id, nickname, id, name, avatar);
 
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     @Override
-    public ArrayList<String> getStudentUsernames()
-    {
+    public ArrayList<String> getStudentUsernames() {
         ArrayList<String> userArray = new ArrayList<>();
-        try
-        {
+        try {
             connection = this.getConnection();
             statement = connection.createStatement();
             String query = "SELECT username FROM student_accounts";
@@ -114,24 +99,20 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
             statement.executeQuery(query);
             resultSet = statement.getResultSet();
 
-            while (resultSet.next())
-            {
+            while (resultSet.next()) {
                 userArray.add(resultSet.getString("username"));
             }
             return userArray;
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
 
     @Override
-    public boolean saveStudent(Student s)
-    {
+    public boolean saveStudent(Student s) {
         boolean success = false;
-        try
-        {
+        try {
             connection = this.getConnection();
 
             String query = "UPDATE students SET class_id = ?, student_name = ? , nickname = ? , avatar = ? WHERE student_id = ?";
@@ -143,18 +124,15 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
             ps.setInt(5, s.getId());
             ps.executeQuery(query);
             success = (ps.executeUpdate() == 1);
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
         }
         return success;
     }
 
     @Override
-    public boolean saveStudentNickName(Student s)
-    {
+    public boolean saveStudentNickName(Student s) {
         boolean success = false;
-        try
-        {
+        try {
             connection = this.getConnection();
 
             String query = "UPDATE students SET nickname = ? WHERE student_id = ?";
@@ -162,26 +140,22 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface
             ps.setString(1, s.getNickname());
             ps.setInt(2, s.getId());
             success = (ps.executeUpdate() == 1);
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
         }
         return success;
     }
 
     @Override
-    public boolean saveStudentAvatar(Student s)
-    {
+    public boolean saveStudentAvatar(Student s) {
         boolean success = false;
-        try
-        {
+        try {
             connection = this.getConnection();
             String query = "UPDATE students SET avatar = ? WHERE student_id = ?";
             PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, s.getAvatar());
             ps.setInt(2, s.getId());
             success = (ps.executeUpdate() == 1);
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return success;

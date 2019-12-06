@@ -44,7 +44,7 @@ public class myCheckBoxElement {
         applet.textSize(30);
         applet.textAlign(LEFT, CENTER);
         applet.text(this.text, x + xS * 2, y);
-        if(this.isActive){
+        if (this.isActive) {
             applet.textAlign(CENTER, CENTER);
             applet.fill(200);
             applet.text("X", x, y);

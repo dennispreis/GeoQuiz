@@ -15,17 +15,15 @@ import processing.core.*;
 /**
  * @author Tunjing
  */
-public class ImageMap
-{
+public class ImageMap {
 
     private static PApplet applet;
     private static Map<String, ImageName> imageMap = new HashMap<>();
     private static Map<ImageName, PImage> images = new HashMap<>();
 
-    public ImageMap(PApplet applet)
-    {
-        this.applet = applet;
 
+    public ImageMap(PApplet applet) {
+        ImageMap.applet = applet;
         images = loadImages();
         imageMap.put("AVATAR_LION", AVATAR_LION);
         imageMap.put("AVATAR_ZEBRA", AVATAR_ZEBRA);
@@ -33,31 +31,27 @@ public class ImageMap
         imageMap.put("AVATAR_EAGLE", AVATAR_EAGLE);
         imageMap.put("AVATAR_DOLPHIN", AVATAR_DOLPHIN);
         imageMap.put("AVATAR_COALA", AVATAR_COALA);
-        imageMap.put("PLACEHOLDER", PLACEHOLDER);
 
     }
 
-    public static PImage getImage(ImageName name)
-    {
+    public static PImage getImage(ImageName name) {
         return images.get(name);
     }
 
-    public static ImageName getImageName(String s)
-    {
+    public static ImageName getImageName(String s) {
         return imageMap.get(s);
     }
 
-    public static String getImageString(ImageName im)
-    {
+    public static String getImageString(ImageName im) {
         return im.name();
     }
 
-    private static Map<ImageName, PImage> loadImages()
-    {
+    private static Map<ImageName, PImage> loadImages() {
 
         images.put(ImageName.LOGOUT, applet.loadImage("Images/logout.png"));
         images.put(ImageName.PLACEHOLDER, applet.loadImage("Images/placeholder.jpg"));
         images.put(ImageName.PLACEHOLDER_SMALL, applet.loadImage("Images/placeholder_small.jpg"));
+        images.put(ImageName.SETTING, applet.loadImage("Images/setting.png"));
 
         images.put(ImageName.AVATAR_LION, applet.loadImage("Images/Avatar/lion.png"));
         images.put(ImageName.AVATAR_DOLPHIN, applet.loadImage("Images/Avatar/dolphin.png"));
@@ -74,6 +68,7 @@ public class ImageMap
         images.put(ImageName.AVATAR_COALA_SMALL, applet.loadImage("Images/Avatar/small/coala_small.png"));
 
         //---------- Insert into imageMap
+
         images.put(ImageName.BACKGROUND_0, applet.loadImage("Images/Background/background_0.png"));
         images.put(ImageName.BACKGROUND_1, applet.loadImage("Images/Background/background_1.png"));
         images.put(ImageName.BACKGROUND_2, applet.loadImage("Images/Background/background_2.png"));
@@ -88,6 +83,17 @@ public class ImageMap
         images.put(ImageName.BACKGROUND_BROWN, applet.loadImage("Images/Background/background_brown.png"));
         images.put(ImageName.BACKGROUND_RED, applet.loadImage("Images/Background/background_red.png"));
         images.put(ImageName.BACKGROUND_PLAY, applet.loadImage("Images/Background/background_play.jpg"));
+
+        images.put(ImageName.ACHIEV_0, applet.loadImage("Images/Achievements/achiev_1.png"));
+        images.put(ImageName.ACHIEV_1, applet.loadImage("Images/Achievements/achiev_2.png"));
+        images.put(ImageName.ACHIEV_2, applet.loadImage("Images/Achievements/achiev_3.png"));
+        images.put(ImageName.ACHIEV_3, applet.loadImage("Images/Achievements/achiev_4.png"));
+        images.put(ImageName.ACHIEV_4, applet.loadImage("Images/Achievements/achiev_5.png"));
+        images.put(ImageName.ACHIEV_5, applet.loadImage("Images/Achievements/achiev_6.png"));
+        images.put(ImageName.ACHIEV_6, applet.loadImage("Images/Achievements/achiev_7.png"));
+        images.put(ImageName.ACHIEV_7, applet.loadImage("Images/Achievements/achiev_8.png"));
+        images.put(ImageName.ACHIEV_8, applet.loadImage("Images/Achievements/achiev_9.png"));
+        images.put(ImageName.ACHIEV_9, applet.loadImage("Images/Achievements/achiev_10.png"));
 
         images.put(ImageName.CATEGORY_CITIES, applet.loadImage("Images/Category/cities.png"));
         images.put(ImageName.CATEGORY_MOUNTAINS, applet.loadImage("Images/Category/mountains.png"));
@@ -106,16 +112,6 @@ public class ImageMap
         images.put(ImageName.ARROW_LEFT, applet.loadImage("Images/arrow_left.png"));
         images.put(ImageName.ARROW_RIGHT, applet.loadImage("Images/arrow_right.png"));
 
-        images.put(ImageName.ACHIEVEMENTS_ONE, applet.loadImage("Images/Achievements/achiev_1.png"));
-        images.put(ImageName.ACHIEVEMENTS_TWO, applet.loadImage("Images/Achievements/achiev_2.png"));
-        images.put(ImageName.ACHIEVEMENTS_THREE, applet.loadImage("Images/Achievements/achiev_3.png"));
-        images.put(ImageName.ACHIEVEMENTS_FOUR, applet.loadImage("Images/Achievements/achiev_4.png"));
-        images.put(ImageName.ACHIEVEMENTS_FIVE, applet.loadImage("Images/Achievements/achiev_5.png"));
-        images.put(ImageName.ACHIEVEMENTS_SIX, applet.loadImage("Images/Achievements/achiev_6.png"));
-        images.put(ImageName.ACHIEVEMENTS_SEVEN, applet.loadImage("Images/Achievements/achiev_7.png"));
-        images.put(ImageName.ACHIEVEMENTS_EIGHT, applet.loadImage("Images/Achievements/achiev_8.png"));
-        images.put(ImageName.ACHIEVEMENTS_NINE, applet.loadImage("Images/Achievements/achiev_9.png"));
-        images.put(ImageName.ACHIEVEMENTS_TEN, applet.loadImage("Images/Achievements/achiev_10.png"));
 
         return images;
     }
