@@ -6,6 +6,8 @@
 package DAOs;
 
 import DTOs.HistoryRecord;
+
+import DTOs.Paper;
 import DTOs.ProfileHistory;
 import DTOs.Question;
 import java.sql.Connection;
@@ -23,15 +25,33 @@ import processing.core.PApplet;
 public class MyTestDao extends MySqlDao implements TestDaoInterface
 {
 
+    private PaperDaoInterface IPaperDao = new MyPaperDao();
+
     @Override
     public List<Question> getTestByID(PApplet applet, int id, int paper_id)
     {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection con = null;
+        PreparedStatement ps = null;
+        Paper p = IPaperDao.getPaperByID(applet, paper_id);
+        try
+        {
+            con = this.getConnection();
+            String query = "INSERT INTO test (paper_id,student_id) VALUES (?,?)";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, p.getId());
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return p.getQuestions();
+
     }
 
     @Override
     public ProfileHistory getProfileHistory(int id)
-      {
+    {
         {
             Connection con = null;
             PreparedStatement ps = null;
@@ -50,8 +70,8 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
                 {
                     int test_id = rs.getInt("test_id");
                     Date date_attempt = rs.getDate("data_attempt");
-                    
-                    HistoryRecord h = new HistoryRecord(test_id,date_attempt);
+
+                    HistoryRecord h = new HistoryRecord(test_id, date_attempt);
                     ph.getHistoryRecord().add(h);
                 }
             } catch (SQLException e)
@@ -83,5 +103,26 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
 
     }
 
-    
+    @Override
+    public boolean updateScore(int id, int score)
+    {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        boolean success = false;
+        try
+        {
+            conn = this.getConnection();
+            String query = "UPDATE INTO tests SET score = ? WHERE test_id = ?";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, score);
+            ps.setInt(2, id);
+            return (ps.executeUpdate() == 1);
+
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

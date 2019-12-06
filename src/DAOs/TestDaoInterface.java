@@ -16,9 +16,11 @@ import processing.core.PApplet;
  */
 public interface TestDaoInterface
 {
-    
-    public List<Question> getTestByID(PApplet applet,int id,int paper_id);
+
+    public List<Question> getTestByID(PApplet applet, int id, int paper_id);
 
     public ProfileHistory getProfileHistory(int id);
-    
+
+    public boolean updateScore(int id, int score);
+
 }

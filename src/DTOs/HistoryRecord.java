@@ -10,12 +10,14 @@ public class HistoryRecord {
     private int record_id;
     private Category category;
     private Level level;
+    private int score;
     private Date date;
 
-    public HistoryRecord(int record_id, Category category, Level level, Date date) {
+    public HistoryRecord(int record_id, Category category, Level level,int score, Date date) {
         this.record_id = record_id;
         this.category = category;
         this.level = level;
+        this.score = score;
         this.date = date;
     }
 

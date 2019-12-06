@@ -23,6 +23,8 @@ public interface QuestionDaoInterface
 
     public List<Question> getQuestionByTypeRegion(PApplet applet, String type, String region);
 
+    public Question getQuestionById(PApplet applet, int id);
+    
     public boolean addQuestion(Question q);
 
     public boolean updateQuestion(int id, String field, String value);
