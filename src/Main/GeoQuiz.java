@@ -41,7 +41,6 @@ public class GeoQuiz extends PApplet {
     private static Settings settings;
     private static TeacherDaoInterface ITeacherDao;
     private static StudentDaoInterface IStudentDao;
-    private static List<FeedbackAble> feedbackList;
     private static User user;
     private static GameManager gameManager;
     private static ImageMap imageMap;
@@ -49,6 +48,7 @@ public class GeoQuiz extends PApplet {
     private static LanguageManager languageManager;
     private static UIManager uiManager;
     private static PApplet applet;
+
 
     //------------------------------------Inner classes
     public class Settings {
@@ -60,7 +60,7 @@ public class GeoQuiz extends PApplet {
         public Settings() {
             myFont = createFont("Fonts/Times New Romance.ttf", 30);
             cyrilic = createFont("Fonts/cyrilic.ttf", 30);
-            screen = Screen.LOGIN_STUDENT;
+            screen = Screen.LOGIN;
             textFont(cyrilic);
             backgroundColor = new Color(230, 87, 116);
         }
@@ -105,24 +105,23 @@ public class GeoQuiz extends PApplet {
         soundManager = new SoundManager(new Minim(this), new ControlP5(this));
         IStudentDao = new MyStudentDao();
         ITeacherDao = new MyTeacherDao();
-        feedbackList = new ArrayList<>();
         cp5.setFont(settings.getMyFont());
         passwordProcess = new PasswordProcess(12);
         passwordProcess.setCurrentAttempt(LocalDateTime.now());
         uiManager = new UIManager(cp5);
-        switchScreen(Screen.LOGIN_STUDENT);
+        switchScreen(Screen.LOGIN);
     }
 
     public void draw() {
         switch (settings.getScreen()) {
-            case LOGIN_STUDENT:
+            case LOGIN:
                 showLoginBackground();
                 break;
             case MAIN_MENU_STUDENT:
                 showStudentMainMenu();
                 break;
             case MAIN_MENU_ADMIN:
-                showLoginBackground();
+                showAdminMainMenu();
                 break;
             case CHANGE_PASSWORD_ADMIN_PASSCODE:
                 showChangePasswordPasscodeBackground();
@@ -154,10 +153,15 @@ public class GeoQuiz extends PApplet {
             case PRACTISE_STUDENT_GAME_FEEDBACK:
                 showPractiseGameFeedback();
                 break;
-        }
-
-        for (FeedbackAble f : feedbackList) {
-            f.show();
+            case CREATE_NEW_TEST:
+                showNewTestBackground();
+                break;
+            case SHOW_STUDENT_PROGRESS:
+                showStudentProgressBackground();
+                break;
+            case ADMIN_STUDENTS:
+                showChangeStudentPasswordBackground();
+                break;
         }
 
         if (soundManager.isShowingMenu()) {
@@ -275,7 +279,7 @@ public class GeoQuiz extends PApplet {
         return (mouseX > x1 && mouseX < x1 + x2 && mouseY > y1 && mouseY < y1 + y2);
     }
 
-    private void createUserInstance(int ID, boolean isTeacher) {
+    private static void createUserInstance(int ID, boolean isTeacher) {
         if (isTeacher) {
             user = ITeacherDao.createTeacherUser(ID);
         } else {
@@ -289,34 +293,99 @@ public class GeoQuiz extends PApplet {
         settings.setScreen(targetScreen);
     }
 
-    public static PImage getImage(ImageName name) {
-        return ImageMap.getImage(name);
+    public static void loginVerification() {
+
+        String hashedPassword;
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+        String password = cp5.get(Textfield.class, "Login_Password").getText();
+        //boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
+        boolean userPreset = false;
+        boolean isTeacher = false;
+        int bruteForceResult;
+        int ID = -1;
+
+        for (String s : IStudentDao.getStudentUsernames()) {
+            if (s.equals(name)) {
+                userPreset = true;
+            }
+        }
+        if (!userPreset) {
+            for (String s : ITeacherDao.getTeacherUsernames()) {
+                if (s.equals(name)) {
+                    isTeacher = true;
+                    userPreset = true;
+                }
+            }
+        }
+
+        if (!userPreset || name.isEmpty() || password.isEmpty()) {
+            //Feedback
+        } else {
+            if (isTeacher) {
+
+                hashedPassword = ITeacherDao.getHash(name);
+                bruteForceResult = passwordProcess.bruteForceCheck(name, password, hashedPassword);
+
+                if (bruteForceResult == 1) {
+                    ID = ITeacherDao.getAccountId(name);
+                    createUserInstance(ID, true);
+                    user.setTeacher(true);
+                    uiManager.createAdminElements();
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                } else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5)) {
+                    cp5.get(Button.class, "Login_Login").hide();
+                } else {
+                    //Feedback
+                }
+            } else {
+                ID = IStudentDao.getAccountId(name, password);
+                createUserInstance(ID, false);
+                user.setTeacher(false);
+                uiManager.createStudentElements();
+                gameManager = new GameManager(applet);
+                switchScreen(Screen.MAIN_MENU_STUDENT);
+            }
+        }
     }
 
-    public static Settings getSettings() {
-        return settings;
+    public static void changePassword() {
+        String name = cp5.get(Textfield.class, "Login_Name").getText();
+        String password = cp5.get(Textfield.class, "Change_Password_Password").getText();
+        String hash = passwordProcess.hash(password);
+
+        if (password.isEmpty()) {
+            //Feedback
+        } else {
+            ITeacherDao.setHash(name, hash);
+            ITeacherDao.setAttempt(name, 0);
+            switchScreen(Screen.LOGIN);
+        }
+
     }
 
-    public static GameManager getGameManager() {
-        return gameManager;
-    }
+    public static void checkForPasswordChange() {
+        try {
 
-    public static UIManager getUiManager() {
-        return uiManager;
-    }
+            String name = cp5.get(Textfield.class, "Login_Name").getText();
+            String passcodeText = cp5.get(Textfield.class, "Passcode").getText();
+            int passcode;
 
-    public static SoundManager getSoundManager() {
-        return soundManager;
-    }
+            if (!passcodeText.isEmpty()) {
+                passcode = Integer.parseInt(passcodeText);
+            } else {
+                passcode = -1;
+            }
 
-    public static LanguageManager getLanguageManager() {
-        return languageManager;
-    }
+            if (passcode == ITeacherDao.getPassCode(name)) {
+                switchScreen(Screen.CHANGE_PASSWORD_ADMIN);
+            } else {
+                //Feedback
+            }
+        } catch (NumberFormatException ex) {
+            //Feedback
 
-    public static User getUser() {
-        return user;
+        }
     }
-
 
     //------------------------------------Show Methods
 
@@ -359,7 +428,7 @@ public class GeoQuiz extends PApplet {
         textSize(60);
         textAlign(CENTER, TOP);
         fill(255);
-        text("GeoQuiz!", 450, 100);
+        text("GeoQuiz!", 450, 110);
     }
 
     private void showStudentProfile() {
@@ -433,12 +502,30 @@ public class GeoQuiz extends PApplet {
         text(languageManager.getString("level"), width / 2, 325);
     }
 
+    private void showAdminMainMenu() {
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CENTER);
+        rect(width / 2, height / 2, user.isTeacher() ? 450 : 300, 400);
+        textSize(60);
+        textAlign(CENTER, TOP);
+        fill(255);
+        text("GeoQuiz!", 450, 110);
+    }
+
     private void showStudentWork() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
 
     private void showChangePasswordBackground() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CENTER);
+        rect(width / 2, height / 2, user.isTeacher() ? 450 : 300, 400);
         textSize(60);
         textAlign(CENTER, TOP);
         fill(255);
@@ -448,11 +535,16 @@ public class GeoQuiz extends PApplet {
     }
 
     private void showChangePasswordPasscodeBackground() {
-        background(imageMap.getImage(ImageName.BACKGROUND_GREEN));
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CENTER);
+        rect(width / 2, 250, user.isTeacher() ? 450 : 300, 300);
         textSize(60);
         textAlign(CENTER, TOP);
         fill(255);
-        text("Passcode Check", 450, 100);
+        text("Passcode Check", width / 2, 110);
         textSize(30);
         textAlign(CENTER, TOP);
     }
@@ -476,243 +568,50 @@ public class GeoQuiz extends PApplet {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
 
-    //------------------------------------Anonymous methods for ControlP5-UIElements
-
-    public void Magic() {
-
-        boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
-        if (isTeacher) {
-            Textfield myT = (Textfield) cp5.get("Login_Name");
-            myT.setText("peter");
-            myT = (Textfield) cp5.get("Login_Password");
-            myT.setText("password");
-        } else {
-            Textfield myT = (Textfield) cp5.get("Login_Name");
-            myT.setText("max");
-            myT = (Textfield) cp5.get("Login_Password");
-            myT.setText("123456");
-        }
+    private void showChangeStudentPasswordBackground() {
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
 
-    public boolean Login_Role() {
-
-        boolean isTeacher;
-        boolean flg = cp5.get(Toggle.class, "Login_Role").getState();
-        if (flg) {
-            cp5.addButton("Password_Management")
-                    .setPosition(355, 500)
-                    .setSize(200, 100)
-                    .setLabel("Forgot\nPassword");
-            isTeacher = true;
-
-        } else {
-            isTeacher = false;
-            cp5.getController("Password_Management").setVisible(false);
-            cp5.get(Button.class, "Login_Login").show();
-        }
-        return isTeacher;
+    private void showStudentProgressBackground() {
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
 
-    public void Login_Login() {
-
-        String hashedPassword;
-        String name = cp5.get(Textfield.class, "Login_Name").getText();
-        String password = cp5.get(Textfield.class, "Login_Password").getText();
-        boolean isTeacher = cp5.get(Toggle.class, "Login_Role").getState();
-        boolean userPreset = false;
-        int bruteForceResult;
-        int ID = -1;
-
-        if (isTeacher) {
-            for (String user : ITeacherDao.getTeacherUsernames()) {
-                userPreset = name.equals(user);
-            }
-
-        } else {
-            for (String user : IStudentDao.getStudentUsernames()) {
-                userPreset = name.equals(user);
-            }
-        }
-
-        if (!userPreset || name.isEmpty() || password.isEmpty()) {
-            feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
-                    .setPosition(new PVector(650, 200))
-                    .setSize(new PVector(170, 50)));
-
-        } else {
-            if (isTeacher) {
-
-                hashedPassword = ITeacherDao.getHash(name);
-                bruteForceResult = passwordProcess.bruteForceCheck(name, password, hashedPassword);
-
-                if (bruteForceResult == 1) {
-
-                    ID = ITeacherDao.getAccountId(name);
-                    createUserInstance(ID, true);
-                    uiManager.createAdminElements();
-                    switchScreen(Screen.MAIN_MENU_ADMIN);
-                } else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5)) {
-                    cp5.get(Button.class, "Login_Login").hide();
-                } else {
-                    feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
-                            .setPosition(new PVector(650, 200))
-                            .setSize(new PVector(170, 50)));
-                }
-
-            } else {
-                ID = IStudentDao.getAccountId(name, password);
-                createUserInstance(ID, false);
-                uiManager.createStudentElements();
-                gameManager = new GameManager(this);
-                switchScreen(Screen.MAIN_MENU_STUDENT);
-            }
-        }
+    private void showNewTestBackground() {
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
 
-    public void Password_Management() {
-        String name = cp5.get(Textfield.class, "Login_Name").getText();
-        boolean userPreset = false;
 
-        for (String user : ITeacherDao.getTeacherUsernames()) {
-            userPreset = name.equals(user);
-        }
+    //-------------------------------------Get Instances
 
-        if (!userPreset || name.isEmpty()) {
-            feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
-                    .setPosition(new PVector(650, 200))
-                    .setSize(new PVector(170, 50)));
-        } else {
-            switchScreen(Screen.CHANGE_PASSWORD_ADMIN_PASSCODE);
-        }
+    public static PImage getImage(ImageName name) {
+        return ImageMap.getImage(name);
     }
 
-    public void Change_Password_Check() {
-        try {
-
-            String name = cp5.get(Textfield.class, "Login_Name").getText();
-            String passcodeText = cp5.get(Textfield.class, "Passcode").getText();
-            int passcode;
-
-            if (!passcodeText.isEmpty()) {
-                passcode = Integer.parseInt(passcodeText);
-            } else {
-                passcode = -1;
-            }
-
-            if (passcode == ITeacherDao.getPassCode(name)) {
-                switchScreen(Screen.CHANGE_PASSWORD_ADMIN);
-            } else {
-                feedbackList.add(new PasscodeNotFoundFeedback(this, 5000)
-                        .setPosition(new PVector(650, 200))
-                        .setSize(new PVector(170, 50)));
-            }
-        } catch (NumberFormatException ex) {
-            feedbackList.add(new PasscodeNotFoundFeedback(this, 5000)
-                    .setPosition(new PVector(650, 200))
-                    .setSize(new PVector(170, 50)));
-
-        }
+    public static Settings getSettings() {
+        return settings;
     }
 
-    public void Change_Password_Change() {
-        String name = cp5.get(Textfield.class, "Login_Name").getText();
-        String password = cp5.get(Textfield.class, "Change_Password_Password").getText();
-        String hash = passwordProcess.hash(password);
-
-        if (password.isEmpty()) {
-            feedbackList.add(new NamePasswordNotFoundFeedBack(this, 5000)
-                    .setPosition(new PVector(650, 200))
-                    .setSize(new PVector(170, 50)));
-        } else {
-            ITeacherDao.setHash(name, hash);
-            ITeacherDao.setAttempt(name, 0);
-            switchScreen(Screen.LOGIN_STUDENT);
-        }
-
+    public static GameManager getGameManager() {
+        return gameManager;
     }
 
-    public void Profile_Student_Nickname_Change() {
-        //SAVE NEW NICKNAME TO DATABASE FROM TEXTFIELD CONTROLLER
-        //RENEW THE USERNICKNAME
-
-        Textfield tf = (Textfield) cp5.get("Profile_Student_Nickname");
-        ((Student) user).setNickname(tf.getText());
-        IStudentDao.saveStudentNickName((Student) user);
+    public static UIManager getUiManager() {
+        return uiManager;
     }
 
-    public void Profile_Student_Avatar_Change(boolean theFlag) {
-        if (theFlag) {
-            cp5.get("Profile_Avatar_Lion").show();
-            cp5.get("Profile_Avatar_Eagle").show();
-            cp5.get("Profile_Avatar_Dolphin").show();
-            cp5.get("Profile_Avatar_Zebra").show();
-            cp5.get("Profile_Avatar_Penguin").show();
-            cp5.get("Profile_Avatar_Coala").show();
-
-        } else {
-            cp5.get("Profile_Avatar_Lion").hide();
-            cp5.get("Profile_Avatar_Eagle").hide();
-            cp5.get("Profile_Avatar_Dolphin").hide();
-            cp5.get("Profile_Avatar_Zebra").hide();
-            cp5.get("Profile_Avatar_Coala").hide();
-            cp5.get("Profile_Avatar_Penguin").hide();
-        }
+    public static SoundManager getSoundManager() {
+        return soundManager;
     }
 
-    public void Practise_Student_Go() {
-        gameManager.setPlaying(true);
-        switchScreen(Screen.PLAYING);
+    public static LanguageManager getLanguageManager() {
+        return languageManager;
     }
 
-    public void Practise_Student_Playing_Next() {
-        if (!gameManager.nextQuestion()) {
-            switchScreen(Screen.PRACTISE_STUDENT_GAME_FEEDBACK);
-            gameManager.loadPractiseFeedback();
-        }
+    public static User getUser() {
+        return user;
     }
 
-    public void Practise_Student_Playing_Back() {
-        switchScreen(Screen.MAIN_MENU_STUDENT);
-        gameManager.setPlaying(false);
-        gameManager.setActuallQuestionIndex(0);
-    }
-
-    public void Practise_Student_Game_Feedback_Back() {
-        switchScreen(Screen.MAIN_MENU_STUDENT);
-        gameManager.setActuallQuestionIndex(0);
-        gameManager.setPlaying(false);
-        gameManager.reset();
-    }
-
-    public void Profile_Avatar_Lion() {
-        ((Student) user).setAvatar(ImageName.AVATAR_LION.name());
-        boolean tf = IStudentDao.saveStudentAvatar((Student) user);
-
-    }
-
-    public void Profile_Avatar_Eagle() {
-        ((Student) user).setAvatar(ImageName.AVATAR_EAGLE.name());
-        boolean tf = IStudentDao.saveStudentAvatar((Student) user);
-
-    }
-
-    public void Profile_Avatar_Zebra() {
-        ((Student) user).setAvatar(ImageName.AVATAR_ZEBRA.name());
-        IStudentDao.saveStudentAvatar((Student) user);
-    }
-
-    public void Profile_Avatar_Dolphin() {
-        ((Student) user).setAvatar(ImageName.AVATAR_DOLPHIN.name());
-        IStudentDao.saveStudentAvatar((Student) user);
-    }
-
-    public void Profile_Avatar_Coala() {
-        ((Student) user).setAvatar(ImageName.AVATAR_COALA.name());
-        IStudentDao.saveStudentAvatar((Student) user);
-    }
-
-    public void Profile_Avatar_Penguin() {
-        ((Student) user).setAvatar(ImageName.AVATAR_PENGUIN.name());
-        IStudentDao.saveStudentAvatar((Student) user);
+    public static StudentDaoInterface getIStudentDao() {
+        return IStudentDao;
     }
 }
