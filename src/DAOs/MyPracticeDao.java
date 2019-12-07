@@ -139,7 +139,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
         {
 
             conn = this.getConnection();
-            String query = "UPDATE INTO practices SET score = ? WHERE practice_id = ?";
+            String query = "UPDATE practices SET score = ? WHERE practice_id = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, score);
             ps.setInt(2, id);

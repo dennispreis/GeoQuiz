@@ -112,7 +112,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
         try
         {
             conn = this.getConnection();
-            String query = "UPDATE INTO tests SET score = ? WHERE test_id = ?";
+            String query = "UPDATE tests SET score = ? WHERE test_id = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, score);
             ps.setInt(2, id);
