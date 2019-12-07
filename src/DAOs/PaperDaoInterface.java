@@ -27,6 +27,6 @@ public interface PaperDaoInterface
 
     public Paper getPaperByID(PApplet appplet, int id);
 
-    public void addNewPaper(List<Question> questionList);
+    public int addNewPaper(List<Question> questionList);
 
 }

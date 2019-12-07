@@ -25,26 +25,22 @@ import processing.core.PApplet;
 /**
  * @author DTOs.User
  */
-public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
-{
+public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
 
     @Override
-    public List<Question> getRandQuestion(PApplet applet)
-    {
+    public List<Question> getRandQuestion(PApplet applet) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Question> questions = new ArrayList<>();
-        try
-        {
+        try {
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
             String query = "SELECT question_id,type_id,region_id,question_text,correct_answer FROM questions ORDER BY RAND() LIMIT 10";
             ps = con.prepareStatement(query);
             //Using a PreparedStatement to execute SQL...
             rs = ps.executeQuery();
-            while (rs.next())
-            {
+            while (rs.next()) {
 
                 int id = rs.getInt("question_id");
                 int type_id = rs.getInt("type_id");
@@ -68,53 +64,46 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 ps = con.prepareStatement(query4);
                 ps.setInt(1, id);
                 rs2 = ps.executeQuery();
-                if (rs2.next())
-                {
+                if (rs2.next()) {
                     String a1 = rs2.getString("answer_one");
                     String a2 = rs2.getString("answer_two");
                     String a3 = rs2.getString("answer_three");
                     String a4 = rs2.getString("answer_four");
                     DragAndDrop_Question q = new DragAndDrop_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
                     questions.add(q);
-                } else
-                {
+                } else {
 
                     String query5 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_mc WHERE question_id = ?";
                     ps = con.prepareStatement(query5);
                     ps.setInt(1, id);
                     rs2 = ps.executeQuery();
-                    if (rs2.next())
-                    {
+                    if (rs2.next()) {
                         String a1 = rs2.getString("answer_one");
                         String a2 = rs2.getString("answer_two");
                         String a3 = rs2.getString("answer_three");
                         String a4 = rs2.getString("answer_four");
                         Multiplichoice_Question q = new Multiplichoice_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
                         questions.add(q);
-                    } else
-                    {
+                    } else {
 
                         String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
                         ps = con.prepareStatement(query6);
                         ps.setInt(1, id);
                         rs2 = ps.executeQuery();
-                        if (rs2.next())
-                        {
+                        if (rs2.next()) {
                             String a1 = rs2.getString("answer_one");
                             String a2 = rs2.getString("answer_two");
                             String a3 = rs2.getString("answer_one_dir");
                             String a4 = rs2.getString("answer_two_dir");
                             ChoosePicture_Question q = new ChoosePicture_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
                             questions.add(q);
-                        } else
-                        {
+                        } else {
 
                             String query7 = "SELECT question_id FROM questions_tf WHERE question_id = ?";
                             ps = con.prepareStatement(query7);
                             ps.setInt(1, id);
                             rs2 = ps.executeQuery();
-                            if (rs2.next())
-                            {
+                            if (rs2.next()) {
                                 TrueOrFalse_Question q = new TrueOrFalse_Question(applet, id, type, region, q_t, c_a);
                                 questions.add(q);
                             }
@@ -123,27 +112,20 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 }
 
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
 
-        } finally
-        {
-            try
-            {
-                if (rs != null)
-                {
+        } finally {
+            try {
+                if (rs != null) {
                     rs.close();
                 }
-                if (ps != null)
-                {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection(con);
                 }
-            } catch (SQLException e)
-            {
+            } catch (SQLException e) {
 
             }
         }
@@ -151,14 +133,12 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
     }
 
     @Override
-    public List<Question> getQuestionByType(PApplet applet, String type)
-    {
+    public List<Question> getQuestionByType(PApplet applet, String type) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Question> questions = new ArrayList<>();
-        try
-        {
+        try {
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
 
@@ -172,8 +152,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
             ps.setInt(1, type_id_in);
             //Using a PreparedStatement to execute SQL...
             rs = ps.executeQuery();
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int id = rs.getInt("question_id");
                 int type_id = rs.getInt("type_id");
                 int region_id = rs.getInt("region_id");
@@ -198,50 +177,43 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 ps = con.prepareStatement(query4);
                 ps.setInt(1, id);
                 rs2 = ps.executeQuery();
-                if (rs2.next())
-                {
+                if (rs2.next()) {
                     String a1 = rs2.getString("answer_one");
                     String a2 = rs2.getString("answer_two");
                     String a3 = rs2.getString("answer_three");
                     String a4 = rs2.getString("answer_four");
                     DragAndDrop_Question q = new DragAndDrop_Question(applet, id, type2, region, q_t, c_a, a1, a2, a3, a4);
                     questions.add(q);
-                } else
-                {
+                } else {
                     String query5 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_mc WHERE question_id = ?";
                     ps = con.prepareStatement(query5);
                     ps.setInt(1, id);
                     rs2 = ps.executeQuery();
-                    if (rs2.next())
-                    {
+                    if (rs2.next()) {
                         String a1 = rs2.getString("answer_one");
                         String a2 = rs2.getString("answer_two");
                         String a3 = rs2.getString("answer_three");
                         String a4 = rs2.getString("answer_four");
                         Multiplichoice_Question q = new Multiplichoice_Question(applet, id, type2, region, q_t, c_a, a1, a2, a3, a4);
                         questions.add(q);
-                    } else
-                    {
+                    } else {
                         String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
                         ps = con.prepareStatement(query6);
                         ps.setInt(1, id);
                         rs2 = ps.executeQuery();
-                        if (rs2.next())
-                        {
+                        if (rs2.next()) {
                             String a1 = rs2.getString("answer_one");
                             String a2 = rs2.getString("answer_two");
                             String a3 = rs2.getString("answer_one_dir");
                             String a4 = rs2.getString("answer_two_dir");
                             ChoosePicture_Question q = new ChoosePicture_Question(applet, id, type2, region, q_t, c_a, a1, a2, a3, a4);
                             questions.add(q);
-                        } else
-                        {
+                        } else {
                             String query7 = "SELECT question_id FROM question_tf WHERE questions_id = ?";
                             ps = con.prepareStatement(query7);
                             ps.setInt(1, id);
                             rs2 = ps.executeQuery();
-                            if (rs2.next())
-                            {
+                            if (rs2.next()) {
                                 TrueOrFalse_Question q = new TrueOrFalse_Question(applet, id, type2, region, q_t, c_a);
                                 questions.add(q);
                             }
@@ -250,27 +222,20 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 }
 
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
 
-        } finally
-        {
-            try
-            {
-                if (rs != null)
-                {
+        } finally {
+            try {
+                if (rs != null) {
                     rs.close();
                 }
-                if (ps != null)
-                {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection(con);
                 }
-            } catch (SQLException e)
-            {
+            } catch (SQLException e) {
 
             }
         }
@@ -278,14 +243,12 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
     }
 
     @Override
-    public List<Question> getQuestionByRegion(PApplet applet, String region)
-    {
+    public List<Question> getQuestionByRegion(PApplet applet, String region) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Question> questions = new ArrayList<>();
-        try
-        {
+        try {
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
 
@@ -299,8 +262,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
             ps.setInt(1, region_id_in);
             //Using a PreparedStatement to execute SQL...
             rs = ps.executeQuery();
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int id = rs.getInt("question_id");
                 int type_id = rs.getInt("type_id");
                 int region_id = rs.getInt("region_id");
@@ -325,50 +287,43 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 ps = con.prepareStatement(query4);
                 ps.setInt(1, id);
                 rs2 = ps.executeQuery();
-                if (rs2.next())
-                {
+                if (rs2.next()) {
                     String a1 = rs2.getString("answer_one");
                     String a2 = rs2.getString("answer_two");
                     String a3 = rs2.getString("answer_three");
                     String a4 = rs2.getString("answer_four");
                     DragAndDrop_Question q = new DragAndDrop_Question(applet, id, type2, region2, q_t, c_a, a1, a2, a3, a4);
                     questions.add(q);
-                } else
-                {
+                } else {
                     String query5 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_mc WHERE question_id = ?";
                     ps = con.prepareStatement(query5);
                     ps.setInt(1, id);
                     rs2 = ps.executeQuery();
-                    if (rs2.next())
-                    {
+                    if (rs2.next()) {
                         String a1 = rs2.getString("answer_one");
                         String a2 = rs2.getString("answer_two");
                         String a3 = rs2.getString("answer_three");
                         String a4 = rs2.getString("answer_four");
                         Multiplichoice_Question q = new Multiplichoice_Question(applet, id, type2, region2, q_t, c_a, a1, a2, a3, a4);
                         questions.add(q);
-                    } else
-                    {
+                    } else {
                         String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
                         ps = con.prepareStatement(query6);
                         ps.setInt(1, id);
                         rs2 = ps.executeQuery();
-                        if (rs2.next())
-                        {
+                        if (rs2.next()) {
                             String a1 = rs2.getString("answer_one");
                             String a2 = rs2.getString("answer_two");
                             String a3 = rs2.getString("answer_one_dir");
                             String a4 = rs2.getString("answer_two_dir");
                             ChoosePicture_Question q = new ChoosePicture_Question(applet, id, type2, region2, q_t, c_a, a1, a2, a3, a4);
                             questions.add(q);
-                        } else
-                        {
+                        } else {
                             String query7 = "SELECT question_id FROM questions_tf WHERE question_id = ?";
                             ps = con.prepareStatement(query7);
                             ps.setInt(1, id);
                             rs2 = ps.executeQuery();
-                            if (rs2.next())
-                            {
+                            if (rs2.next()) {
                                 TrueOrFalse_Question q = new TrueOrFalse_Question(applet, id, type2, region2, q_t, c_a);
                                 questions.add(q);
                             }
@@ -377,27 +332,20 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 }
 
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
 
-        } finally
-        {
-            try
-            {
-                if (rs != null)
-                {
+        } finally {
+            try {
+                if (rs != null) {
                     rs.close();
                 }
-                if (ps != null)
-                {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection(con);
                 }
-            } catch (SQLException e)
-            {
+            } catch (SQLException e) {
 
             }
         }
@@ -405,14 +353,12 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
     }
 
     @Override
-    public List<Question> getQuestionByTypeRegion(PApplet applet, String type, String region)
-    {
+    public List<Question> getQuestionByTypeRegion(PApplet applet, String type, String region) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Question> questions = new ArrayList<>();
-        try
-        {
+        try {
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
 
@@ -434,8 +380,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
             ps.setInt(2, type_id_in);
             //Using a PreparedStatement to execute SQL...
             rs = ps.executeQuery();
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int id = rs.getInt("question_id");
                 int type_id = rs.getInt("type_id");
                 int region_id = rs.getInt("region_id");
@@ -458,50 +403,43 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 ps = con.prepareStatement(query4);
                 ps.setInt(1, id);
                 rs2 = ps.executeQuery();
-                if (rs2.next())
-                {
+                if (rs2.next()) {
                     String a1 = rs2.getString("answer_one");
                     String a2 = rs2.getString("answer_two");
                     String a3 = rs2.getString("answer_three");
                     String a4 = rs2.getString("answer_four");
                     DragAndDrop_Question q = new DragAndDrop_Question(applet, id, type2, region2, q_t, c_a, a1, a2, a3, a4);
                     questions.add(q);
-                } else
-                {
+                } else {
                     String query5 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_mc WHERE question_id = ?";
                     ps = con.prepareStatement(query5);
                     ps.setInt(1, id);
                     rs2 = ps.executeQuery();
-                    if (rs2.next())
-                    {
+                    if (rs2.next()) {
                         String a1 = rs2.getString("answer_one");
                         String a2 = rs2.getString("answer_two");
                         String a3 = rs2.getString("answer_three");
                         String a4 = rs2.getString("answer_four");
                         Multiplichoice_Question q = new Multiplichoice_Question(applet, id, type2, region2, q_t, c_a, a1, a2, a3, a4);
                         questions.add(q);
-                    } else
-                    {
+                    } else {
                         String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
                         ps = con.prepareStatement(query6);
                         ps.setInt(1, id);
                         rs2 = ps.executeQuery();
-                        if (rs2.next())
-                        {
+                        if (rs2.next()) {
                             String a1 = rs2.getString("answer_one");
                             String a2 = rs2.getString("answer_two");
                             String a3 = rs2.getString("answer_one_dir");
                             String a4 = rs2.getString("answer_two_dir");
                             ChoosePicture_Question q = new ChoosePicture_Question(applet, id, type2, region2, q_t, c_a, a1, a2, a3, a4);
                             questions.add(q);
-                        } else
-                        {
+                        } else {
                             String query7 = "SELECT question_id FROM questions_tf WHERE question_id = ?";
                             ps = con.prepareStatement(query7);
                             ps.setInt(1, id);
                             rs2 = ps.executeQuery();
-                            if (rs2.next())
-                            {
+                            if (rs2.next()) {
                                 TrueOrFalse_Question q = new TrueOrFalse_Question(applet, id, type2, region2, q_t, c_a);
                                 questions.add(q);
                             }
@@ -510,27 +448,20 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 }
 
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
-        } finally
-        {
-            try
-            {
-                if (rs != null)
-                {
+        } finally {
+            try {
+                if (rs != null) {
                     rs.close();
                 }
-                if (ps != null)
-                {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection(con);
                 }
-            } catch (SQLException e)
-            {
+            } catch (SQLException e) {
 
             }
         }
@@ -539,14 +470,12 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
 
 
     @Override
-    public Question getQuestionById(PApplet applet, int question_id)
-    {
+    public Question getQuestionById(PApplet applet, int question_id) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Question q = null;
-        try
-        {
+        try {
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
             String query = "SELECT question_id,type_id,region_id,question_text,correct_answer FROM questions WHERE question_id = ? LIMIT 1";
@@ -554,8 +483,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
             //Using a PreparedStatement to execute SQL...
             ps.setInt(1, question_id);
             rs = ps.executeQuery();
-            while (rs.next())
-            {
+            while (rs.next()) {
 
                 int id = rs.getInt("question_id");
                 int type_id = rs.getInt("type_id");
@@ -579,53 +507,46 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 ps = con.prepareStatement(query4);
                 ps.setInt(1, id);
                 rs2 = ps.executeQuery();
-                if (rs2.next())
-                {
+                if (rs2.next()) {
                     String a1 = rs2.getString("answer_one");
                     String a2 = rs2.getString("answer_two");
                     String a3 = rs2.getString("answer_three");
                     String a4 = rs2.getString("answer_four");
                     q = new DragAndDrop_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
 
-                } else
-                {
+                } else {
 
                     String query5 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_mc WHERE question_id = ?";
                     ps = con.prepareStatement(query5);
                     ps.setInt(1, id);
                     rs2 = ps.executeQuery();
-                    if (rs2.next())
-                    {
+                    if (rs2.next()) {
                         String a1 = rs2.getString("answer_one");
                         String a2 = rs2.getString("answer_two");
                         String a3 = rs2.getString("answer_three");
                         String a4 = rs2.getString("answer_four");
                         q = new Multiplichoice_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
 
-                    } else
-                    {
+                    } else {
 
                         String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
                         ps = con.prepareStatement(query6);
                         ps.setInt(1, id);
                         rs2 = ps.executeQuery();
-                        if (rs2.next())
-                        {
+                        if (rs2.next()) {
                             String a1 = rs2.getString("answer_one");
                             String a2 = rs2.getString("answer_two");
                             String a3 = rs2.getString("answer_one_dir");
                             String a4 = rs2.getString("answer_two_dir");
                             q = new ChoosePicture_Question(applet, id, type, region, q_t, c_a, a1, a2, a3, a4);
 
-                        } else
-                        {
+                        } else {
 
                             String query7 = "SELECT question_id FROM questions_tf WHERE question_id = ?";
                             ps = con.prepareStatement(query7);
                             ps.setInt(1, id);
                             rs2 = ps.executeQuery();
-                            if (rs2.next())
-                            {
+                            if (rs2.next()) {
                                 q = new TrueOrFalse_Question(applet, id, type, region, q_t, c_a);
                             }
                         }
@@ -633,27 +554,20 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
                 }
 
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
 
-        } finally
-        {
-            try
-            {
-                if (rs != null)
-                {
+        } finally {
+            try {
+                if (rs != null) {
                     rs.close();
                 }
-                if (ps != null)
-                {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection(con);
                 }
-            } catch (SQLException e)
-            {
+            } catch (SQLException e) {
 
             }
         }
@@ -661,39 +575,33 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
     }
 
     @Override
-    public boolean addQuestion(Question q)
-    {
+    public boolean addQuestion(Question q) {
         Connection conn = null;
         PreparedStatement ps = null;
         boolean success = false;
-        try
-        {
+        try {
 
             conn = this.getConnection();
             String query = "INSERT INTO questions (question_id) VALUES(?)";
             ps = conn.prepareStatement(query);
             ps.setInt(1, q.getId());
-            if (ps.executeUpdate() == 1)
-            {
+            if (ps.executeUpdate() == 1) {
 
                 return true;
             }
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
     }
 
     @Override
-    public boolean updateQuestion(int id, String field, String value)
-    {
+    public boolean updateQuestion(int id, String field, String value) {
         Connection con = null;
         PreparedStatement ps = null;
         boolean success = false;
-        try
-        {
+        try {
 
             con = this.getConnection();
             String query = "UPDATE `questions` SET " + field + " = ? WHERE `questions`.`question_id` = ?";
@@ -701,23 +609,17 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
             ps.setString(1, value);
             ps.setInt(2, id);
             success = (ps.executeUpdate() == 1);
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
 
-        } finally
-        {
-            try
-            {
-                if (ps != null)
-                {
+        } finally {
+            try {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection(con);
                 }
-            } catch (SQLException e)
-            {
+            } catch (SQLException e) {
                 System.out.println("Delete Questions" + e.getMessage());
             }
         }
@@ -725,36 +627,28 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface
     }
 
     @Override
-    public boolean deleteQuestion(int id)
-    {
+    public boolean deleteQuestion(int id) {
         Connection con = null;
         PreparedStatement ps = null;
         boolean success = false;
-        try
-        {
+        try {
 
             con = this.getConnection();
             String query = "DELETE FROM `questions` WHERE `questions`.`question_id` = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1, id);
             success = (ps.executeUpdate() == 1);
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
 
-        } finally
-        {
-            try
-            {
-                if (ps != null)
-                {
+        } finally {
+            try {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection(con);
                 }
-            } catch (SQLException e)
-            {
+            } catch (SQLException e) {
                 System.out.println("Delete Questions" + e.getMessage());
             }
         }

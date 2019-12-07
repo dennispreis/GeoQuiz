@@ -163,40 +163,34 @@ public class MyPaperDao extends MySqlDao implements PaperDaoInterface {
     }
 
     @Override
-    public Paper getPaperByID(PApplet appplet, int id)
-    {
+    public Paper getPaperByID(PApplet appplet, int id) {
         List<Question> questionList = new ArrayList<>();
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        try
-        {
+        try {
             con = this.getConnection();
             String query = "SELECT paper_id,question_id FROM paper WHERE paper_id=?";
             ps = con.prepareStatement(query);
             ps.setInt(1, id);
             rs = ps.executeQuery();
 
-            while (rs.next())
-            {
+            while (rs.next()) {
                 int question_id = rs.getInt("question_id");
                 questionList.add(IQuestionDao.getQuestionById(appplet, question_id));
             }
-        } catch (SQLException e)
-        {
+        } catch (SQLException e) {
 
         }
         return new Paper(id, questionList);
     }
 
     @Override
-    public void addNewPaper(List<Question> questionList)
-    {
+    public int addNewPaper(List<Question> questionList) {
         Connection conn = null;
         PreparedStatement ps = null;
         int insertId = 0;
-        try
-        {
+        try {
 
             conn = this.getConnection();
             String query = "INSERT INTO papers (question_id) VALUES(?)";
@@ -204,13 +198,10 @@ public class MyPaperDao extends MySqlDao implements PaperDaoInterface {
             ps.setInt(1, questionList.get(0).getId());
             ps.executeUpdate();
 
-            try (ResultSet generatedKeys = ps.getGeneratedKeys())
-            {
-                if (generatedKeys.next())
-                {
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
                     insertId = generatedKeys.getInt(1);
-                    for (int i = 1; i < questionList.size(); i++)
-                    {
+                    for (int i = 1; i < questionList.size(); i++) {
                         query = "INSERT INTO papers (paper_id,question_id) VALUES(?,?)";
                         ps = conn.prepareStatement(query);
                         ps.setInt(1, insertId);
@@ -219,11 +210,10 @@ public class MyPaperDao extends MySqlDao implements PaperDaoInterface {
                     }
                 }
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return insertId;
     }
 
 }
