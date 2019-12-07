@@ -97,7 +97,7 @@ public class ImageMap {
 
         images.put(ImageName.CATEGORY_CITIES, applet.loadImage("Images/Category/cities.png"));
         images.put(ImageName.CATEGORY_MOUNTAINS, applet.loadImage("Images/Category/mountains.png"));
-        images.put(ImageName.CATEGORY_RIVER, applet.loadImage("Images/Category/river.png"));
+        images.put(ImageName.CATEGORY_RIVERS, applet.loadImage("Images/Category/river.png"));
         images.put(ImageName.CATEGORY_WORLD, applet.loadImage("Images/Category/world.png"));
 
         images.put(ImageName.LEVEL_EASY, applet.loadImage("Images/Level/easy.png"));

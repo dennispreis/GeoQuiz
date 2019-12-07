@@ -8,22 +8,18 @@ package DTOs;
 import java.util.List;
 
 /**
- *
  * @author User
  */
-public class Paper
-{
+public class Paper {
 
     private int id;
     private List<Question> questions;
 
-    public Paper(int id)
-    {
+    public Paper(int id) {
         this.id = id;
     }
 
-    public Paper(int id, List<Question> questions)
-    {
+    public Paper(int id, List<Question> questions) {
         this.id = id;
         this.questions = questions;
     }
@@ -33,8 +29,7 @@ public class Paper
      *
      * @return the value of id
      */
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
@@ -43,8 +38,7 @@ public class Paper
      *
      * @param id new value of id
      */
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -53,8 +47,7 @@ public class Paper
      *
      * @return the value of questions
      */
-    public List<Question> getQuestions()
-    {
+    public List<Question> getQuestions() {
         return questions;
     }
 
@@ -63,8 +56,7 @@ public class Paper
      *
      * @param questions new value of questions
      */
-    public void setQuestions(List<Question> questions)
-    {
+    public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
 

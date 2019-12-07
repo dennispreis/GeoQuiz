@@ -14,12 +14,21 @@ public class User
 
     private int id;
     private String name;
+    private boolean isTeacher;
 
     
     public User(int id, String name)
     {
         this.id = id;
         this.name = name;
+    }
+
+    public void setTeacher(boolean bool){
+        this.isTeacher = bool;
+    }
+
+    public boolean isTeacher(){
+        return this.isTeacher;
     }
 
     

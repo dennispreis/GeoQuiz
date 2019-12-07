@@ -40,11 +40,11 @@ public class GameManager {
 
         categoryChooser = new TypeChooser(applet).setElements(new ChooseAble[]{
                 new ChooseAble(applet, 175, 200, ImageName.CATEGORY_CITIES, Category.CITIES).setText("Cities"),
-                new ChooseAble(applet, 275, 200, ImageName.CATEGORY_MOUNTAINS, Category.MOUNTAIN).setText("Mountains"),
-                new ChooseAble(applet, 375, 200, ImageName.CATEGORY_RIVER, Category.RIVER).setText("Rivers"),
+                new ChooseAble(applet, 275, 200, ImageName.CATEGORY_MOUNTAINS, Category.MOUNTAINS).setText("Mountains"),
+                new ChooseAble(applet, 375, 200, ImageName.CATEGORY_RIVERS, Category.RIVERS).setText("Rivers"),
                 new ChooseAble(applet, 475, 200, ImageName.CATEGORY_WORLD, Category.WORLD).setText("World"),
-                new ChooseAble(applet, 575, 200, ImageName.PLACEHOLDER_SMALL, Category.ISLAND).setText("Islands"),
-                new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKE).setText("Lakes"),
+                new ChooseAble(applet, 575, 200, ImageName.PLACEHOLDER_SMALL, Category.ISLANDS).setText("Islands"),
+                new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
         });
         categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
 
@@ -58,7 +58,7 @@ public class GameManager {
     }
 
     public void createQuestions() {
-        List<Question> tmp = IPracticeDao.getPractice(applet, 0, category.getName(), level.getName());
+        List<Question> tmp = IPracticeDao.getPractice(applet, GeoQuiz.getUser().getId(), category.getName(), level.getName());
         questions = new Question[tmp.size()];
         tmp.toArray(questions);
         actuallQuestionIndex = 0;

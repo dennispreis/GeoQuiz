@@ -13,6 +13,7 @@ public class PasscodeNotFoundFeedback extends Feedback {
     public void show() {
         if (applet.millis() < actualTime + time) {
             applet.fill(applet.color(125, 100));
+            applet.rectMode(CORNER);
             applet.rect(position.x, position.y, size.x, size.y);
             applet.fill(0);
             applet.textSize(20);

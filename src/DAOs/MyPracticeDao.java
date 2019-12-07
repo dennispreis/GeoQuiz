@@ -25,21 +25,18 @@ import processing.core.PApplet;
 /**
  * @author User
  */
-public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
-{
+public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface {
 
     CategoryMap cm = new CategoryMap();
     LevelMap lm = new LevelMap();
     private PaperDaoInterface IPaperDao = new MyPaperDao();
 
     @Override
-    public List<Question> getPractice(PApplet applet, int id, String category, String level)
-    {
+    public List<Question> getPractice(PApplet applet,int id, String category, String level) {
         Connection con = null;
         PreparedStatement ps = null;
         Paper p = IPaperDao.getRandPaper(applet);
-        try
-        {
+        try {
             con = this.getConnection();
             String query = "INSERT INTO practices (paper_id,student_id,category,level) VALUES (?,?,?,?)";
             ps = con.prepareStatement(query);
@@ -48,40 +45,34 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             ps.setString(3, category);
             ps.setString(4, level);
             ps.executeUpdate();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return p.getQuestions();
     }
 
-    public List<Question> getPracticeByType(PApplet applet, String type, int id, String category, String level)
-    {
+    public List<Question> getPracticeByType(PApplet applet, String type, int id, String category, String level) {
         return IPaperDao.getPaperByType(applet, type).getQuestions();
     }
 
     @Override
-    public List<Question> getPracticeByRegion(PApplet applet, String region, int id, String category, String level)
-    {
+    public List<Question> getPracticeByRegion(PApplet applet, String region, int id, String category, String level) {
         return IPaperDao.getPaperByRegion(applet, region).getQuestions();
     }
 
     @Override
-    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region, int id, String category, String level)
-    {
+    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region, int id, String category, String level) {
         return IPaperDao.getPaperByTypeRegion(applet, type, region).getQuestions();
     }
 
     @Override
-    public ProfileHistory getProfileHistory(int id)
-    {
+    public ProfileHistory getProfileHistory(int id) {
         {
             Connection con = null;
             PreparedStatement ps = null;
             ResultSet rs = null;
             ProfileHistory ph = new ProfileHistory();
-            try
-            {
+            try {
                 //Get connection object using the methods in the super class (MySqlDao.java)...
                 con = this.getConnection();
                 String query = "SELECT category,level,score,data_attempt FROM practices WHERE student_id = ?";
@@ -90,8 +81,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
                 //Using a PreparedStatement to execute SQL...
                 rs = ps.executeQuery();
                 int idx = 0;
-                while (rs.next())
-                {
+                while (rs.next()) {
 
                     String category = rs.getString("category");
                     String level = rs.getString("level");
@@ -103,26 +93,19 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
                     idx++;
                 }
 
-            } catch (SQLException e)
-            {
-            } finally
-            {
-                try
-                {
-                    if (rs != null)
-                    {
+            } catch (SQLException e) {
+            } finally {
+                try {
+                    if (rs != null) {
                         rs.close();
                     }
-                    if (ps != null)
-                    {
+                    if (ps != null) {
                         ps.close();
                     }
-                    if (con != null)
-                    {
+                    if (con != null) {
                         freeConnection(con);
                     }
-                } catch (SQLException e)
-                {
+                } catch (SQLException e) {
                 }
             }
             return ph;     // may be empty  }
@@ -130,13 +113,11 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
     }
 
     @Override
-    public boolean updateScore(int id, int score)
-    {
+    public boolean updateScore(int id, int score) {
         Connection conn = null;
         PreparedStatement ps = null;
         boolean success = false;
-        try
-        {
+        try {
 
             conn = this.getConnection();
             String query = "UPDATE INTO practices SET score = ? WHERE practice_id = ?";
@@ -145,8 +126,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             ps.setInt(2, id);
             return (ps.executeUpdate() == 1);
 
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;

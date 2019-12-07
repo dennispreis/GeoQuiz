@@ -1,12 +1,12 @@
 package GameManager;
 
 public enum Category implements GameProperty {
-    RIVER("river"),
-    MOUNTAIN("mountain"),
+    RIVERS("rivers"),
+    MOUNTAINS("mountains"),
     CITIES("cities"),
     WORLD("world"),
-    ISLAND("island"),
-    LAKE("lake"),
+    ISLANDS("islands"),
+    LAKES("lakes"),
     TEST("test"),
     TMP("tmp");
 
