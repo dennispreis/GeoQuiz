@@ -33,6 +33,8 @@ public class GameManager
     private TypeChooser categoryChooser, levelChooser;
     private MyPracticeDao IPracticeDao;
     private MyTestDao ITestDao;
+    private int paper_id;
+    private boolean test;
     private int id;
 
     public GameManager(PApplet applet)
@@ -67,7 +69,7 @@ public class GameManager
 
     public GameManager(PApplet applet, int id)
     {
-        this.id = 1;
+        this.id = id;
         this.applet = applet;
         this.category = Category.WORLD;
         this.level = Level.EASY;
@@ -133,7 +135,14 @@ public class GameManager
 
     public void createQuestions()
     {
-        List<Question> tmp = IPracticeDao.getPractice(applet, 0, category.getName(), level.getName());
+        List<Question> tmp;
+        if (IPracticeDao != null)
+        {
+            tmp = IPracticeDao.getPractice(applet, 0, category.getName(), level.getName());
+        } else
+        {
+            tmp = ITestDao.getTestByID(applet, id, paper_id);
+        }
         questions = new Question[tmp.size()];
         tmp.toArray(questions);
         actuallQuestionIndex = 0;
@@ -315,4 +324,25 @@ public class GameManager
     {
         this.level = levelChooser.getActiveElement().getGameProperty();
     }
+
+    public int getPaper_id()
+    {
+        return paper_id;
+    }
+
+    public void setPaper_id(int paper_id)
+    {
+        this.paper_id = paper_id;
+    }
+
+    public boolean isTest()
+    {
+        return test;
+    }
+
+    public void setTest(boolean test)
+    {
+        this.test = test;
+    }
+
 }
