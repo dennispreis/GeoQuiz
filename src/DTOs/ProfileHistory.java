@@ -22,11 +22,7 @@ public class ProfileHistory
     {
         startIndex = 0;
         endIndex = 5;
-        historyRecords = new HistoryRecord[]
-        {
-            new HistoryRecord(Category.CITIES, Level.HARD, new Date(System.currentTimeMillis())),
-            new HistoryRecord(Category.MOUNTAINS, Level.EASY, new Date(System.currentTimeMillis()))
-        };
+        historyRecords = new HistoryRecord[5];
         historyRecordsList = new ArrayList<>();
     }
 
@@ -51,12 +47,14 @@ public class ProfileHistory
                 if (historyRecords[i] != null)
                 {
                     tmp[counter] = historyRecords[i];
-                } else
+                }
+                else
                 {
                     tmp[counter] = null;
                 }
             }
-        } catch (ArrayIndexOutOfBoundsException ex)
+        }
+        catch (ArrayIndexOutOfBoundsException ex)
         {
         }
         return tmp;

@@ -29,12 +29,8 @@ import java.util.*;
 import java.util.List;
 
 import Images.ImageMap;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.print.PrinterException;
 
 import java.time.LocalDateTime;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -51,9 +47,8 @@ public class GeoQuiz extends PApplet
     private static List<FeedbackAble> feedbackList;
     private static User user;
     private static GameManager gameManager;
-    private static DragAndDrop dragAndDrop;
-    private static ChoosePicture choosePicture;
     private static ImageMap imageMap;
+    private static JFrame frame;
 
     //------------------------------------Inner classes
     class Settings
@@ -97,7 +92,6 @@ public class GeoQuiz extends PApplet
     public static void main(String[] args)
     {
         PApplet.main("Main.GeoQuiz", args);
-
     }
 
     public void settings()
@@ -107,6 +101,7 @@ public class GeoQuiz extends PApplet
 
     public void setup()
     {
+
         settings = new Settings();
         cp5 = new ControlP5(this);
         IStudentDao = new MyStudentDao();
@@ -117,11 +112,13 @@ public class GeoQuiz extends PApplet
         passwordProcess = new PasswordProcess(12);
         passwordProcess.setCurrentAttempt(LocalDateTime.now());
         imageMap = new ImageMap(this);
+        frame = new JFrame();
 
     }
 
     public void draw()
     {
+
         switch (settings.getScreen())
         {
 
@@ -403,12 +400,43 @@ public class GeoQuiz extends PApplet
         text("GeoQuiz!", 450, 100);
         textSize(30);
         textAlign(CENTER, TOP);
+        
+        fill(255, 120);
+        rectMode(CORNER);
+        rect(610, 400, 150, 100);
     }
 
     private void showStudentProfile()
     {
         background(imageMap.getImage(ImageName.BACKGROUND_GREEN));
 
+        fill(255,120);
+        stroke(255);
+        rectMode(CENTER);
+        rect(525, 300, 330, 250);
+        textSize(20);
+        textAlign(CORNER);
+        stroke(0);
+        fill(0);
+        line(365, 205, 685, 205);
+        text("Category", 375, 200);
+        text("Level", 500, 200);
+        text("Date", 590, 200);
+        
+        HistoryRecord[] history = ((Student) user).getProfileHistory().getFiveRecords();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (int i = 0; i < history.length; i++)
+        {
+            if (history[i] != null)
+            {
+                text(history[i].getCategory().name(), 375, 225 + 30 * i);
+                text(history[i].getLevel().name(), 500, 225 + 30 * i);
+                text((formatter.format(history[0].getDate())), 590, 225 + 30 * i);
+            }
+        }
+        
         textAlign(LEFT, TOP);
         text("Click to change avatar", 130, 300);
 
@@ -418,11 +446,8 @@ public class GeoQuiz extends PApplet
     private void showStudentMainMenu()
     {
         background(imageMap.getImage(ImageName.BACKGROUND_GREEN));
-        fill(100, 125);
-        stroke(0);
-        strokeWeight(2);
+
         rectMode(CENTER);
-        rect(width / 2, height / 2, 750, 325);
         textSize(20);
         textAlign(CENTER, TOP);
         fill(255);
@@ -495,27 +520,28 @@ public class GeoQuiz extends PApplet
     private void uielementsCreateLogin()
     {
 
-        cp5.addButton("Magic").setPosition(570, 420).setSize(100, 50);
+        cp5.addButton("Magic").setPosition(570, 530).setSize(100, 50);
 //---------
         cp5.addToggle("Login_Role")
-                .setPosition(10, 10)
+                .setPosition(620, 420)
                 .setSize(20, 70)
                 .setView((theGraphics, c)
                         ->
                 {
-                    theGraphics.fill(Color.BLACK.getRGB());
-                    theGraphics.rect(-2, -2, c.getWidth() + 4, c.getHeight() + 4);
+                    theGraphics.fill(Color.BLACK.getRGB(), 120);
+                    theGraphics.rect(-2, -2, c.getWidth() + 4, c.getHeight()-7);
                     theGraphics.fill(Color.WHITE.getRGB());
                     int h = c.getHeight() / 2;
-                    theGraphics.rect(0, c.getState() ? h : 0, c.getWidth(), h);
+                    theGraphics.circle(-2, c.getState() ? h : 0, 24);
+                    
                 });
 
         cp5.addLabel("Student")
-                .setPosition(30, 5)
-                .setColor(Color.WHITE.getRGB());
+                .setPosition(640, 415)
+                .setColor(Color.BLACK.getRGB());
         cp5.addLabel("Teacher")
-                .setPosition(30, 45)
-                .setColor(Color.WHITE.getRGB());
+                .setPosition(640, 450)
+                .setColor(Color.BLACK.getRGB());
 
         Color col = Color.decode("#7974fc");
 
@@ -673,47 +699,53 @@ public class GeoQuiz extends PApplet
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-        String data[] = new String[history.length];
+        String rowData[][] = new String[history.length][3];
 
         for (int i = 0; i < history.length; i++)
         {
+
             if (history[i] != null)
             {
-                data[0] = history[0].getCategory().name();
-                data[1] = history[1].getLevel().name();
-                data[2] = formatter.format(history[0].getDate());
+
+                rowData[i][0] = history[i].getCategory().name();
+                rowData[i][1] = history[i].getLevel().name();
+                rowData[i][2] = formatter.format(history[i].getDate());
 
             }
+
         }
-        JFrame frame = new JFrame();
-        String rowData[][] =
-        {
-            data
-        };
 
         Object columnNames[] =
         {
             "Category", "Level", "Date"
         };
 
-        JTable table = new JTable(rowData, columnNames);
+        if (frame.isDisplayable())
+        {
+            frame.setVisible(true);
+        }
+        else
+        {
 
-        frame.setLocation(555, 260);
-        JScrollPane scrollPane = new JScrollPane(table);
+            JTable table = new JTable(rowData, columnNames);
 
-        frame.add(scrollPane, BorderLayout.CENTER);
+            frame.setLocation(550, 260);
+            JScrollPane scrollPane = new JScrollPane(table);
 
-        frame.setUndecorated(true);
-        frame.setSize(330, 250);
-        frame.setVisible(true);
-        frame.setResizable(false);
+            frame.add(scrollPane, BorderLayout.CENTER);
+
+            frame.setAlwaysOnTop(true);
+            frame.setUndecorated(true);
+            frame.setSize(330, 250);
+            frame.setVisible(true);
+            frame.setResizable(false);
+            frame.setEnabled(false);
+        }
 
     }
 
     private void uielementsCreateStudentProfile()
     {
-
-        tableGeneration();
 
         cp5.addToggle("Profile_Student_Avatar_Change").setPosition(100, 300).setSize(25, 25).
                 setLabel("");
@@ -786,16 +818,16 @@ public class GeoQuiz extends PApplet
                 onEnter(callbackEvent -> cp5.getController("Achievement_Label_9").show()).
                 onLeave(callbackEvent -> cp5.getController("Achievement_Label_9").hide());
 
-        cp5.addLabel("Achievement_Label_0").setPosition(450, 400).setSize(100, 100).setText("Achievement_0").hide();
-        cp5.addLabel("Achievement_Label_1").setPosition(450, 400).setText("Achievement_1").hide();
-        cp5.addLabel("Achievement_Label_2").setPosition(450, 400).setText("Achievement_2").hide();
-        cp5.addLabel("Achievement_Label_3").setPosition(450, 400).setText("Achievement_3").hide();
-        cp5.addLabel("Achievement_Label_4").setPosition(450, 400).setText("Achievement_4").hide();
-        cp5.addLabel("Achievement_Label_5").setPosition(450, 400).setText("Achievement_5").hide();
-        cp5.addLabel("Achievement_Label_6").setPosition(450, 400).setText("Achievement_6").hide();
-        cp5.addLabel("Achievement_Label_7").setPosition(450, 400).setText("Achievement_7").hide();
-        cp5.addLabel("Achievement_Label_8").setPosition(450, 400).setText("Achievement_8").hide();
-        cp5.addLabel("Achievement_Label_9").setPosition(450, 400).setText("Achievement_9").hide();
+        cp5.addLabel("Achievement_Label_0").setPosition(350, 450).setSize(100, 100).setText("Complete a Quiz").hide();
+        cp5.addLabel("Achievement_Label_1").setPosition(350, 450).setText("Achievement_1").hide();
+        cp5.addLabel("Achievement_Label_2").setPosition(350, 450).setText("Achievement_2").hide();
+        cp5.addLabel("Achievement_Label_3").setPosition(350, 450).setText("Achievement_3").hide();
+        cp5.addLabel("Achievement_Label_4").setPosition(350, 450).setText("Achievement_4").hide();
+        cp5.addLabel("Achievement_Label_5").setPosition(350, 450).setText("Achievement_5").hide();
+        cp5.addLabel("Achievement_Label_6").setPosition(350, 450).setText("Achievement_6").hide();
+        cp5.addLabel("Achievement_Label_7").setPosition(350, 450).setText("Achievement_7").hide();
+        cp5.addLabel("Achievement_Label_8").setPosition(350, 450).setText("Achievement_8").hide();
+        cp5.addLabel("Achievement_Label_9").setPosition(350, 450).setText("Achievement_9").hide();
 
     }
 
@@ -836,6 +868,12 @@ public class GeoQuiz extends PApplet
     private void uielementsRemoveAll()
     {
         feedbackList.removeAll(feedbackList);
+
+        if (frame != null)
+        {
+            frame.setVisible(false);
+        }
+
         cp5.getAll().forEach(ControllerInterface::hide);
     }
 
@@ -870,6 +908,7 @@ public class GeoQuiz extends PApplet
                 "Login_Role").getState();
         if (flg)
         {
+            textAlign(CENTER);
             cp5.addButton("Password_Management")
                     .setPosition(355, 500)
                     .setSize(200, 100)
