@@ -2,6 +2,7 @@ package UI;
 
 import DTOs.Question;
 import DTOs.Student;
+import DTOs.Teacher;
 import GameManager.Category;
 import GameManager.ChooseAble;
 import Images.ImageMap;
@@ -304,7 +305,7 @@ public class UIManager
                     Textfield tf = (Textfield) cp5.get("Login_Name");
                     tf.setText("peter");
                     tf = (Textfield) cp5.get("Login_Password");
-                    tf.setText("poop");
+                    tf.setText("password");
                 })
         });
 
@@ -666,7 +667,7 @@ public class UIManager
                         .setText(GeoQuiz.getLanguageManager().getString("achievement_9")).hide()
         });
     }
-
+    
     private void uielementsCreateStudentPractise()
     {
         String[] cats = new String[Category.values().length];
@@ -828,7 +829,20 @@ public class UIManager
                 cp5.addButton("Admin_Show_Student_Progress").setPosition(20, 20).setSize(100, 100).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
                     switchScreen(Screen.MAIN_MENU_ADMIN);
-                })
+                }),       
+                cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    Teacher teach = (Teacher) GeoQuiz.getUser();
+                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
+                        teach.getProfileHistory().increaseRange();
+                }),
+                cp5.addButton("Profile_History_Last").setPosition(630, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    Teacher teach = (Teacher) GeoQuiz.getUser();
+                    if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
+                }),
         });
     }
 
