@@ -42,8 +42,10 @@ public class NewTestManager {
 
     public void updateRecordActive(QuestionRecord qr) {
         if (!qr.getMyQuestionCheckBox().isActive()) {
-            qr.getMyQuestionCheckBox().setActive(true);
-            increaseQuestionCounter();
+            if (numOfQuestionsMarked != 10) {
+                qr.getMyQuestionCheckBox().setActive(true);
+                increaseQuestionCounter();
+            }
         } else {
             qr.getMyQuestionCheckBox().setActive(false);
             decreaseQuestionCounter();
@@ -61,6 +63,13 @@ public class NewTestManager {
 
     public int getNumOfQuestionsMarked() {
         return this.numOfQuestionsMarked;
+    }
+
+    public void resetMarkedQuestions() {
+        for (QuestionRecord qr : questionRecordList) {
+            qr.getMyQuestionCheckBox().setActive(false);
+        }
+        numOfQuestionsMarked = 0;
     }
 
     public void nextPage() {

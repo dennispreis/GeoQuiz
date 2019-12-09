@@ -10,7 +10,6 @@ public class ProfileHistory
     private int actualPage;
     private int maxPages;
     private List<HistoryRecord> historyRecordsList;
-    private int range;
 
     public ProfileHistory()
     {
