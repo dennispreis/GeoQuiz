@@ -47,14 +47,14 @@ public class GameManager {
                 new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
         });
         categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
-
+/*
         levelChooser = new TypeChooser(applet).setElements(new ChooseAble[]{
                 new ChooseAble(applet, 275, 400, ImageName.LEVEL_EASY, Level.EASY).setText("Easy"),
                 new ChooseAble(applet, 425, 400, ImageName.PLACEHOLDER_SMALL, Level.MEDIUM).setText("Medium"),
                 new ChooseAble(applet, 575, 400, ImageName.LEVEL_HARD, Level.HARD).setText("Hard")
         });
         levelChooser.updateActiveElement(levelChooser.getElements()[0]);
-
+*/
     }
 
     public void createQuestions() {
@@ -68,7 +68,7 @@ public class GameManager {
 
     public void showGameChoosing() {
         categoryChooser.show();
-        levelChooser.show();
+//        levelChooser.show();
     }
 
     public void show() {

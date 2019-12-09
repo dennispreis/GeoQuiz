@@ -20,8 +20,10 @@ public class RadioButton implements GameElement {
 
     public void selectElement(RadioButtonElement ele) {
         if (this.activeElement == null) {
-            this.activeElement = ele;
-            this.activeElement.setActive(true);
+            if (ele != null) {
+                this.activeElement = ele;
+                this.activeElement.setActive(true);
+            }
         } else {
             this.activeElement.setActive(false);
             this.activeElement = ele;

@@ -14,7 +14,7 @@ public class ChooseAble {
     private float xPos, yPos, xSize, ySize;
     private String text;
     private PImage image;
-    private boolean isActive;
+    private boolean isActive, hide;
     private GameProperty gameProperty;
 
     public ChooseAble(PApplet applet, float x, float y, ImageName name, GameProperty prop) {
@@ -27,31 +27,41 @@ public class ChooseAble {
         this.image.resize((int) xSize, (int) ySize);
         this.text = "";
         this.isActive = false;
+        this.hide = false;
         this.gameProperty = prop;
     }
 
-    public void show(){
-        if(this.isActive){
-            applet.fill(200, 100);
-            applet.stroke(2);
-            applet.strokeWeight(4);
-            applet.rectMode(CORNER);
-            applet.rect(xPos-xSize/5, yPos-ySize/5, xSize+xSize/2.5f, ySize+ySize/2.5f);
+    public void show() {
+        if (!hide) {
+            if (this.isActive) {
+                applet.fill(200, 100);
+                applet.stroke(2);
+                applet.strokeWeight(4);
+                applet.rectMode(CORNER);
+                applet.rect(xPos - xSize / 5, yPos - ySize / 5, xSize + xSize / 2.5f, ySize + ySize / 2.5f);
+            }
+            applet.imageMode(CORNER);
+            applet.image(image, xPos, yPos);
+            applet.textAlign(CENTER, CENTER);
+            applet.fill(255);
+            applet.text(this.text, xPos + xSize / 2, yPos + ySize * 1.5f);
         }
-        applet.imageMode(CORNER);
-        applet.image(image, xPos, yPos);
-        applet.textAlign(CENTER, CENTER);
-        applet.fill(255);
-        applet.text(this.text, xPos + xSize/2, yPos + ySize*1.5f);
-
     }
 
-    public GameProperty getGameProperty(){
+    public void hide() {
+        this.hide = true;
+    }
+
+    public void unhide() {
+        this.hide = false;
+    }
+
+    public GameProperty getGameProperty() {
         return this.gameProperty;
     }
 
-    public boolean isMouseWithIn(){
-        return (applet.mouseX > xPos && applet.mouseX < xPos+ySize && applet.mouseY > yPos && applet.mouseY < yPos+ySize);
+    public boolean isMouseWithIn() {
+        return (applet.mouseX > xPos && applet.mouseX < xPos + ySize && applet.mouseY > yPos && applet.mouseY < yPos + ySize);
     }
 
     public ChooseAble setText(String t) {
