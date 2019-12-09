@@ -635,14 +635,14 @@ public class GeoQuiz extends PApplet {
                     text((formatter.format(history.get(i).getDate())), 665, 215 + 30 * historyIndex);
                 }
 
-
+            }
             } catch (IndexOutOfBoundsException ignore) {
             }
-
+      
             textAlign(CENTER, CENTER);
             text((teach.getProfileHistory().getActualPage()) + " / " + (teach.getProfileHistory().getMaxPages()), 725, 540);
         }
-        }
+    
        
     }
     
