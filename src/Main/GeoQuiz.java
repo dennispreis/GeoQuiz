@@ -191,12 +191,14 @@ public class GeoQuiz extends PApplet
             case PRACTISE_STUDENT_GAME_FEEDBACK:
                 showPractiseGameFeedback();
                 break;
-
             case CREATE_NEW_TEST:
                 showNewTestBackground();
                 break;
             case SHOW_STUDENT_PROGRESS:
                 showAdminStudentProccess();
+                break;
+            case SHOW_STUDENT_TEST:
+                showAdminStudentTest();
                 break;
             case ADMIN_STUDENTS:
                 showChangeStudentPasswordBackground();
@@ -649,7 +651,7 @@ public class GeoQuiz extends PApplet
         stroke(0);
         strokeWeight(2);
         rectMode(CENTER);
-        rect(width / 2, height / 2, user.isTeacher() ? 450 : 300, 400);
+        rect(width / 2, height / 2, 450, 600);
         textSize(60);
         textAlign(CENTER, TOP);
         fill(255);
@@ -679,7 +681,9 @@ public class GeoQuiz extends PApplet
         text(languageManager.getString("date"), 665, 170);
         textSize(20);
         Teacher teach = (Teacher)user;
-        teach.setProfileHistory("Son");
+        
+        if(teach.getProfileHistory()!=null)
+        {
         List<HistoryRecord> history = teach.getProfileHistory().getHistoryRecord();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try
@@ -702,9 +706,64 @@ public class GeoQuiz extends PApplet
         {
         }
         textAlign(CENTER, CENTER);
-        text((teach.getProfileHistory().getActualPage()) + " / " + (teach.getProfileHistory().getMaxPages()), 725, 540);
+        text((teach.getProfileHistory().getActualPage()+1) + " / " + (teach.getProfileHistory().getMaxPages()+1), 725, 540);
 
+        }
+       
     }
+    
+    
+    private void showAdminStudentTest(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CORNER);
+        rect(10, 120, width-15, height-200);
+
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("Student_Test_List--Class"),200,50);
+     
+        textSize(25);
+        stroke(255);
+        line(12, 180, width-8, 180);
+        text(languageManager.getString("student_name"),50,170);
+        text(languageManager.getString("test_name"),250, 170);
+        text(languageManager.getString("test_id"), 410, 170);
+        text(languageManager.getString("score"),550,170);
+        text(languageManager.getString("date"), 665, 170);
+        textSize(20);
+        Teacher teach = (Teacher)user;
+        if(teach.getClassList()==null)
+        {
+        List<HistoryRecord> history = teach.getProfileHistory().getHistoryRecord();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try
+        {
+            for (int i = teach.getProfileHistory().getStart(), historyIndex = 0; i < teach.getProfileHistory().getEnd(); i++, historyIndex++)
+            {
+                if (history.get(i) != null)
+                {
+                    text(history.get(i).getStudent_name(),50,215 + 30*historyIndex);
+                    text(history.get(i).getTest_name(), 250, 215 + 30 * historyIndex);
+                    text(history.get(i).getRecord_id(), 410, 215 + 30 * historyIndex);
+                    text(history.get(i).getScore(),550,215+30*historyIndex);
+                    text((formatter.format(history.get(i).getDate())), 665, 215 + 30 * historyIndex);
+                }
+            }
+            
+            
+            
+        } catch (IndexOutOfBoundsException ignore)
+        {
+        }
+        textAlign(CENTER, CENTER);
+        text((teach.getProfileHistory().getActualPage()+1) + " / " + (teach.getProfileHistory().getMaxPages()+1), 725, 540);
+        }
+    }
+    
     
     private void showStudentWork() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
