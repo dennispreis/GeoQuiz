@@ -23,4 +23,5 @@ public interface TestDaoInterface
 
     public boolean updateScore(int id, int score);
 
+    public void addTest(String test_name,List<Question> questionList);
 }

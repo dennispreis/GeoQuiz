@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 import processing.core.PApplet;
@@ -123,6 +124,30 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public void addTest(String test_name, List<Question> questionList)
+    {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int insertId = IPaperDao.addNewPaper(questionList);
+        try
+        {
+            
+            conn = this.getConnection();
+            String query = "INSERT INTO tests (test_name,paper_id) VALUES(?,?)";
+            ps = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1,test_name );
+            ps.setInt(2, insertId);
+            ps.executeUpdate();
+
+           
+           
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
 }
