@@ -98,6 +98,7 @@ public class UIManager {
         uielementsCreateAdminPasscode();
         uielementsCreateAdminMainMenu();
         uielementsCreateShowStudent_Progress();
+        uielementsCreateShowStudent_Test();
         uielementsCreateCreateNewTest();
         uielementsCreateChangeStudentPassword();
         uielementsHideAll();
@@ -349,9 +350,17 @@ public class UIManager {
                         .onClick(callbackEvent -> {
                     GeoQuiz.switchScreen(Screen.SHOW_STUDENT_PROGRESS);
                 }),
+                
+                cp5.addButton("View_Student_Test")
+                        .setPosition(255, 440)
+                        .setSize(400, 50)
+                        .setLabel(GeoQuiz.getLanguageManager().getString("View_Student_Test"))
+                        .onClick(callbackEvent -> {
+                    GeoQuiz.switchScreen(Screen.SHOW_STUDENT_TEST);
+                }),
 
                 cp5.addButton("Create_New_Test")
-                        .setPosition(255, 440)
+                        .setPosition(255, 520)
                         .setSize(400, 50)
                         .setLabel("Create Tests")
                         .onClick(callbackEvent -> {
@@ -826,14 +835,51 @@ public class UIManager {
         Teacher teach = (Teacher) GeoQuiz.getUser();
         Controller[] controlArray = new Controller[teach.getClassList().size() + 3];
         controlArray[0] = cp5.addButton("Admin_Show_Student_Progress").setPosition(20, 20).setSize(100, 100).
-                setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
-            switchScreen(Screen.MAIN_MENU_ADMIN);
-        });
-        controlArray[1] = cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
-                .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-                .onClick(callbackEvent -> {
 
-                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages())) {
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                });
+        controlArray[1] =  cp5.addButton("Profile_History_Next ").setPosition(770, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                        
+                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
+                    {   
+                        teach.getProfileHistory().increaseRange();
+                    }
+                });
+        controlArray[2] = cp5.addButton("Profile_History_Last ").setPosition(630, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
+                });
+        for(int i = 0 ; i < teach.getClassList().size();i++)
+        {
+            String class_name = teach.getClassList().get(i).getName();
+            controlArray[i+3] = cp5.addButton(class_name+" ").setPosition(85+100*i,75).setSize(80,40).onClick(
+            callbackEvent -> {
+                System.out.println("Class "+class_name+" Selected");
+                teach.setProfileHistory(class_name);
+            }
+            );
+        }
+        
+        controller.put(Screen.SHOW_STUDENT_PROGRESS, controlArray);
+    }
+    
+    private void uielementsCreateShowStudent_Test() {
+        Teacher teach = (Teacher)GeoQuiz.getUser();
+        Controller[] controlArray = new Controller[teach.getClassList().size()+3];
+        controlArray[0] = cp5.addButton("Admin_Show_Student_Test").setPosition(20, 20).setSize(100, 100).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                });
+        controlArray[1] =  cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                        
+                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
+                    {   
                         teach.getProfileHistory().increaseRange();
                     }
                 });
@@ -852,7 +898,9 @@ public class UIManager {
             );
         }
 
-        controller.put(Screen.SHOW_STUDENT_PROGRESS, controlArray);
+        
+        controller.put(Screen.SHOW_STUDENT_TEST, controlArray);
+
     }
 
 }
