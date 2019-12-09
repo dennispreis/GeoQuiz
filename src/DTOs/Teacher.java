@@ -5,9 +5,11 @@
  */
 package DTOs;
 
+import DAOs.ClassDaoInterface;
+import DAOs.MyClassDao;
 import DAOs.MyPracticeDao;
 import DAOs.PracticeDaoInterface;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -16,14 +18,14 @@ import java.util.ArrayList;
 public class Teacher extends User
 {
 
-    private ArrayList<Class> classList;
+    private List<Class> classList;
     private ProfileHistory classHistory;
     private static PracticeDaoInterface IPracticeDao = new MyPracticeDao();
-
+    private static ClassDaoInterface IClassDao = new MyClassDao();
     public Teacher(int id, String name)
     {
         super(id, name);
-        classList = new ArrayList<>();
+        classList = IClassDao.getClassByTeacherId(id);
     }
 
     public void setProfileHistory(String className)
@@ -36,4 +38,16 @@ public class Teacher extends User
     {
         return this.classHistory;
     }
+
+    public List<Class> getClassList()
+    {
+        return classList;
+    }
+
+    public void setClassList(List<Class> classList)
+    {
+        this.classList = classList;
+    }
+    
+    
 }

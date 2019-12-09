@@ -16,10 +16,10 @@ public class ProfileHistory
     {
         historyRecordsList = new ArrayList<>();
         start = 0;
+        range = 5;
         end = range;
         actualPage = 0;
         maxPages = 0;
-        range = 5;
     }
 
     public ProfileHistory(int r)

@@ -611,21 +611,21 @@ public class GeoQuiz extends PApplet
         stroke(0);
         strokeWeight(2);
         rectMode(CORNER);
-        rect(10, 100, width-15, height-200);
+        rect(10, 120, width-15, height-200);
 
         textSize(30);
         fill(255);
         textAlign(CORNER);
         text(languageManager.getString("Student_Practice_List--Class"),200,50);
-        text(languageManager.getString("Son"),575,50);
+     
         textSize(25);
         stroke(255);
-        line(12, 150, width-8, 150);
-        text(languageManager.getString("student_name"),50,140);
-        text(languageManager.getString("category"),250, 140);
-        text(languageManager.getString("level"), 410, 140);
-        text(languageManager.getString("score"),550,140);
-        text(languageManager.getString("date"), 665, 140);
+        line(12, 180, width-8, 180);
+        text(languageManager.getString("student_name"),50,170);
+        text(languageManager.getString("category"),250, 170);
+        text(languageManager.getString("level"), 410, 170);
+        text(languageManager.getString("score"),550,170);
+        text(languageManager.getString("date"), 665, 170);
         textSize(20);
         Teacher teach = (Teacher)user;
         teach.setProfileHistory("Son");
@@ -637,11 +637,11 @@ public class GeoQuiz extends PApplet
             {
                 if (history.get(i) != null)
                 {
-                    text(history.get(i).getStudent_name(),50,185 + 30*historyIndex);
-                    text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 250, 185 + 30 * historyIndex);
-                    text(languageManager.getString(history.get(i).getLevel().name().toLowerCase()), 410, 185 + 30 * historyIndex);
-                    text(history.get(i).getScore(),550,185+30*historyIndex);
-                    text((formatter.format(history.get(i).getDate())), 665, 185 + 30 * historyIndex);
+                    text(history.get(i).getStudent_name(),50,215 + 30*historyIndex);
+                    text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 250, 215 + 30 * historyIndex);
+                    text(languageManager.getString(history.get(i).getLevel().name().toLowerCase()), 410, 215 + 30 * historyIndex);
+                    text(history.get(i).getScore(),550,215+30*historyIndex);
+                    text((formatter.format(history.get(i).getDate())), 665, 215 + 30 * historyIndex);
                 }
             }
             
@@ -651,7 +651,7 @@ public class GeoQuiz extends PApplet
         {
         }
         textAlign(CENTER, CENTER);
-        text((teach.getProfileHistory().getActualPage() + 1) + " / " + (teach.getProfileHistory().getMaxPages() + 1), 725, 540);
+        text((teach.getProfileHistory().getActualPage()) + " / " + (teach.getProfileHistory().getMaxPages()), 725, 540);
 
     }
     
