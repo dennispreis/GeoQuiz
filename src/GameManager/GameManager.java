@@ -103,13 +103,13 @@ public class GameManager
 
     public void createQuestions()
     {
-        List<Question> tmp;
+        List<Question> tmp=null;
         if (IPracticeDao != null)
         {
             tmp = IPracticeDao.getPractice(applet, 0, category.getName(), level.getName());
         } else
         {
-            tmp = ITestDao.getTestByID(applet, id, paper_id);
+//            tmp = ITestDao.attemptTest(applet, id, test_id);
         }
         questions = new Question[tmp.size()];
         tmp.toArray(questions);
