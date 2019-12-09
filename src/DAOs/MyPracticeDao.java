@@ -135,7 +135,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             {
                 //Get connection object using the methods in the super class (MySqlDao.java)...
                 con = this.getConnection();
-                String query = "SELECT category,level,score,data_attempt FROM practices WHERE student_id = ?";
+                String query = "SELECT category,level,score,data_attempt FROM practices WHERE student_id = ? ORDER BY data_attempt DESC";
                 ps = con.prepareStatement(query);
                 ps.setInt(1, id);
                 //Using a PreparedStatement to execute SQL...
