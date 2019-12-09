@@ -56,7 +56,6 @@ public class GameManager
                 new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
         });
         categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
-
         levelChooser = new TypeChooser(applet).setElements(new ChooseAble[]
         {
             new ChooseAble(applet, 275, 400, ImageName.LEVEL_EASY, Level.EASY).setText("Easy"),
@@ -64,37 +63,6 @@ public class GameManager
             new ChooseAble(applet, 575, 400, ImageName.LEVEL_HARD, Level.HARD).setText("Hard")
         });
         levelChooser.updateActiveElement(levelChooser.getElements()[0]);
-
-    }
-
-    public GameManager(PApplet applet, int id)
-    {
-        this.id = id;
-        this.applet = applet;
-        this.category = Category.WORLD;
-        this.level = Level.EASY;
-        this.IPracticeDao = new MyPracticeDao();
-        score = 0;
-
-        categoryChooser = new TypeChooser(applet).setElements(new ChooseAble[]
-        {
-            new ChooseAble(applet, 175, 200, ImageName.CATEGORY_CITIES, Category.CITIES).setText("Cities"),
-            new ChooseAble(applet, 275, 200, ImageName.CATEGORY_MOUNTAINS, Category.MOUNTAINS).setText("Mountains"),
-            new ChooseAble(applet, 375, 200, ImageName.CATEGORY_RIVERS, Category.RIVERS).setText("Rivers"),
-            new ChooseAble(applet, 475, 200, ImageName.CATEGORY_WORLD, Category.WORLD).setText("World"),
-            new ChooseAble(applet, 575, 200, ImageName.PLACEHOLDER_SMALL, Category.ISLANDS).setText("Islands"),
-            new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
-        });
-        categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
-
-        levelChooser = new TypeChooser(applet).setElements(new ChooseAble[]
-        {
-            new ChooseAble(applet, 275, 400, ImageName.LEVEL_EASY, Level.EASY).setText("Easy"),
-            new ChooseAble(applet, 425, 400, ImageName.PLACEHOLDER_SMALL, Level.MEDIUM).setText("Medium"),
-            new ChooseAble(applet, 575, 400, ImageName.LEVEL_HARD, Level.HARD).setText("Hard")
-        });
-        levelChooser.updateActiveElement(levelChooser.getElements()[0]);
-
     }
 
     public GameManager(PApplet applet, int id, boolean test)
@@ -153,7 +121,7 @@ public class GameManager
     public void showGameChoosing()
     {
         categoryChooser.show();
-        levelChooser.show();
+//        levelChooser.show();
     }
 
     public void show()

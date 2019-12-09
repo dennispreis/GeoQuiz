@@ -6,7 +6,7 @@ import java.util.List;
 public class ProfileHistory
 {
 
-    private int start, end;
+    private int start, end, range;
     private int actualPage;
     private int maxPages;
     private List<HistoryRecord> historyRecordsList;
@@ -15,6 +15,7 @@ public class ProfileHistory
     public ProfileHistory()
     {
         historyRecordsList = new ArrayList<>();
+        range = 5;
         start = 0;
         range = 5;
         end = range;
@@ -37,6 +38,7 @@ public class ProfileHistory
         return maxPages;
     }
 
+
     void setMaxPages()
     {
         this.maxPages = historyRecordsList.size() / range;
@@ -57,8 +59,8 @@ public class ProfileHistory
         return end;
     }
 
-    public void increaseRange()
-    {
+    public void increaseRange() {
+
         start += range;
         end += range;
         actualPage++;

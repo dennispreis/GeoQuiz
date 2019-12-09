@@ -677,34 +677,31 @@ public class UIManager
             cats[idx++] = c.name();
         }
 
-        controller.put(Screen.PRACTISE_STUDENT, new Controller[]
-        {
+        controller.put(Screen.PRACTISE_STUDENT, new Controller[]{
 
-            cp5.addButton("Practise_Student_Back").setPosition(20, 20).setSize(100, 100).
-            setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent
-            -> 
-            {
-                switchScreen(Screen.MAIN_MENU_STUDENT);
-            }),
-            cp5.addButton("Practise_Student_Go").setPosition(775, 275).setSize(100, 100).
-            setImage(ImageMap.getImage(ImageName.GO)).onClick(callbackEvent
-            -> 
-            {
-                GeoQuiz.getGameManager().setChoosenCategory();
-                GeoQuiz.getGameManager().setChoosenLevel();
-                GeoQuiz.getGameManager().createQuestions();
-                GeoQuiz.getGameManager().setPlaying(true);
-                GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
-                changeQuestionLanguage();
-                switchScreen(Screen.PLAYING);
-            })
+                cp5.addButton("Practise_Student_Back").setPosition(20, 20).setSize(100, 100).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.MAIN_MENU_STUDENT);
+                }),
+
+                cp5.addButton("Practise_Student_Go").setPosition(400, 350).setSize(100, 100).
+                        setImage(ImageMap.getImage(ImageName.GO)).onClick(callbackEvent -> {
+                    GeoQuiz.getGameManager().setChoosenCategory();
+                 //   GeoQuiz.getGameManager().setChoosenLevel();
+                    GeoQuiz.getGameManager().createQuestions();
+                    GeoQuiz.getGameManager().setPlaying(true);
+                    GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
+                    changeQuestionLanguage();
+                    switchScreen(Screen.PLAYING);
+                })
+
         });
     }
 
     private void uielementsCreateStudentPlaying() {
         controller.put(Screen.PLAYING, new Controller[]{
-                cp5.addButton("Practise_Student_Playing_Back").setPosition(20, 20).setSize(200, 50).
-                        setImage(ImageMap.getImage(ImageName.LOGOUT))
+                cp5.addButton("Practise_Student_Playing_Back").setPosition(20, 20).setSize(200, 50)
+                        .setImage(ImageMap.getImage(ImageName.LOGOUT))
                         .onClick(callbackEvent -> {
                     GeoQuiz.getGameManager().setPlaying(false);
                     Toggle t = (Toggle) GeoQuiz.getSoundManager().getSoundMenu().get("Sound_PlayPause");
@@ -714,9 +711,14 @@ public class UIManager
                     GeoQuiz.getGameManager().setActuallQuestionIndex(0);
                     switchScreen(Screen.MAIN_MENU_STUDENT);
                 }),
+                cp5.addButton("Pratice_Student_Read_Question").setPosition(840, 70).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                            GeoQuiz.getSoundManager().triggerLanguageAudio();
+                }),
 
-                cp5.addButton("Practise_Student_Playing_Next").setPosition(775, 275).setSize(100, 100).
-                        setImage(ImageMap.getImage(ImageName.ARROW_RIGHT))
+                cp5.addButton("Practise_Student_Playing_Next").setPosition(775, 275).setSize(100, 100)
+                        .setImage(ImageMap.getImage(ImageName.ARROW_RIGHT))
                         .onClick(callbackEvent -> {
                     if (!GeoQuiz.getGameManager().nextQuestion()) {
                         switchScreen(Screen.PRACTISE_STUDENT_GAME_FEEDBACK);
@@ -808,11 +810,19 @@ public class UIManager
 
     private void uielementsCreateCreateNewTest() {
         controller.put(Screen.CREATE_NEW_TEST, new Controller[]{
-                cp5.addButton("Admin_Create_Test_Logout").setPosition(20, 20).setSize(100, 100).
+                cp5.addButton("Admin_Create_Test_Logout").setPosition(20, 20).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
                     switchScreen(Screen.MAIN_MENU_ADMIN);
-                })
+                }),
+                cp5.addTextfield("Admin_Create_Test_TestName").setPosition(100, 75).setSize(300, 50)
+                        .setLabel("Test name").setAutoClear(false),
+                cp5.addButton("Admin_Create_Test_CreateTest").setPosition(425, 75).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL)),
+                cp5.addButton("Admin_Create_Test_resetTest").setPosition(500, 75).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
         });
+        Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
+        tf.getCaptionLabel().setPaddingY(-90);
     }
 
     private void uielementsCreateChangeStudentPassword() {

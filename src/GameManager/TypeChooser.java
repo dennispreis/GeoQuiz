@@ -8,7 +8,7 @@ public class TypeChooser {
     private ChooseAble[] elements;
     private ChooseAble activeElement;
 
-    TypeChooser(PApplet applet) {
+    public TypeChooser(PApplet applet) {
         this.applet = applet;
     }
 
@@ -18,7 +18,7 @@ public class TypeChooser {
         }
     }
 
-    TypeChooser setElements(ChooseAble[] arr) {
+    public TypeChooser setElements(ChooseAble[] arr) {
         this.elements = arr;
         return this;
     }

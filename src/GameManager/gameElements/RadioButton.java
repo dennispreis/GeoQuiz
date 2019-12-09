@@ -19,15 +19,13 @@ public class RadioButton implements GameElement
         };
         activeElement = null;
     }
-
-    public void selectElement(RadioButtonElement ele)
-    {
-        if (this.activeElement == null)
-        {
-            this.activeElement = ele;
-            this.activeElement.setActive(true);
-        } else
-        {
+    public void selectElement(RadioButtonElement ele) {
+        if (this.activeElement == null) {
+            if (ele != null) {
+                this.activeElement = ele;
+                this.activeElement.setActive(true);
+            }
+        } else {
             this.activeElement.setActive(false);
             this.activeElement = ele;
             if (ele != null)

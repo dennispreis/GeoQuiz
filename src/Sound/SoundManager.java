@@ -1,11 +1,13 @@
 package Sound;
 
+import Languages.Language;
 import controlP5.ControlP5;
 import ddf.minim.AudioPlayer;
 import ddf.minim.AudioSample;
 import ddf.minim.Controller;
 import ddf.minim.Minim;
 import Main.GeoQuiz;
+import sun.security.jca.GetInstance;
 
 import java.util.HashMap;
 
@@ -14,6 +16,7 @@ public class SoundManager {
     private Minim minim;
     private HashMap<SoundName, AudioSample> sounds;
     private AudioPlayer backgroundPlayer;
+    private HashMap<Language, HashMap<Integer, AudioSample>> languages;
     private boolean isShowingMenu, isBackgroundPlaying;
     private ControlP5 soundMenu;
     private float volume;
@@ -23,6 +26,8 @@ public class SoundManager {
         this.soundMenu = soundMenu;
         sounds = new HashMap<>();
         loadSounds();
+        languages = new HashMap<>();
+        loadLanguages();
         backgroundPlayer = loadBackgroundSound("background.mp3");
         //backgroundPlayer.loop();
         this.isBackgroundPlaying = true;
@@ -94,9 +99,46 @@ public class SoundManager {
 
     //---------EVENT SOUNDS
 
-    public void triggerSound(SoundName name){
+    public void triggerSound(SoundName name) {
         sounds.get(name).trigger();
     }
+
+    //---------LANGUAGE SOUNDS
+
+    private void loadLanguages() {
+
+        languages.put(Language.GERMAN, new HashMap<>());
+        languages.put(Language.ENGLISH, new HashMap<>());
+
+        //35 == number of questions overall
+        for (int i = 0; i < 36; i++) {
+            languages.get(Language.ENGLISH).put(i, loadEnglishLanguageFile("test.mp3"));
+            try {
+                languages.get(Language.GERMAN).put(i, loadGermanLanguageFile(i+".mp3"));
+            } catch (Exception ignore) {
+                languages.get(Language.GERMAN).put(i, loadGermanLanguageFile("default.mp3"));
+            }
+        }
+
+    }
+
+    public void triggerLanguageAudio() {
+        int idx = GeoQuiz.getGameManager().getActualQuestion().getId();
+        Language language = GeoQuiz.getLanguageManager().getActiveLanguage();
+
+        languages.get(language).get(idx).stop();
+        languages.get(language).get(idx).trigger();
+
+    }
+
+    private AudioSample loadGermanLanguageFile(String filename) {
+        return minim.loadSample("Sound/Sounds/Questions/german/" + filename);
+    }
+
+    private AudioSample loadEnglishLanguageFile(String filename) {
+        return minim.loadSample("Sound/Sounds/Questions/english/" + filename);
+    }
+
 
     //---------BACKGROUND MUSIC
 
