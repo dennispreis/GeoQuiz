@@ -2,6 +2,7 @@ package UI;
 
 import DTOs.Question;
 import DTOs.Student;
+import DTOs.Teacher;
 import GameManager.Category;
 import GameManager.ChooseAble;
 import Images.ImageMap;
@@ -304,7 +305,7 @@ public class UIManager
                     Textfield tf = (Textfield) cp5.get("Login_Name");
                     tf.setText("peter");
                     tf = (Textfield) cp5.get("Login_Password");
-                    tf.setText("poop");
+                    tf.setText("password");
                 })
         });
 
@@ -666,7 +667,7 @@ public class UIManager
                         .setText(GeoQuiz.getLanguageManager().getString("achievement_9")).hide()
         });
     }
-
+    
     private void uielementsCreateStudentPractise()
     {
         String[] cats = new String[Category.values().length];
@@ -824,12 +825,43 @@ public class UIManager
     }
 
     private void uielementsCreateShowStudent_Progress() {
-        controller.put(Screen.SHOW_STUDENT_PROGRESS, new Controller[]{
-                cp5.addButton("Admin_Show_Student_Progress").setPosition(20, 20).setSize(100, 100).
+        Teacher teach = (Teacher)GeoQuiz.getUser();
+        Controller[] controlArray = new Controller[teach.getClassList().size()+3];
+        controlArray[0] = cp5.addButton("Admin_Show_Student_Progress").setPosition(20, 20).setSize(100, 100).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
                     switchScreen(Screen.MAIN_MENU_ADMIN);
-                })
-        });
+                });
+        controlArray[1] =  cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                        
+                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
+                    {   
+                        teach.getProfileHistory().increaseRange();
+                        System.out.println(teach.getProfileHistory().getEnd());
+                        System.out.println(teach.getProfileHistory().getStart());
+                        System.out.println(teach.getProfileHistory().getActualPage());
+                        
+                        System.out.println(teach.getProfileHistory().getHistoryRecord().size());
+                    }
+                });
+        controlArray[2] = cp5.addButton("Profile_History_Last").setPosition(630, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
+                });
+        for(int i = 0 ; i < teach.getClassList().size();i++)
+        {
+            String class_name = teach.getClassList().get(i).getName();
+            controlArray[i+3] = cp5.addButton(class_name).setPosition(85+100*i,75).setSize(80,40).onClick(
+            callbackEvent -> {
+                System.out.println("Class "+class_name+" Selected");
+                teach.setProfileHistory(class_name);
+            }
+            );
+        }
+        
+        controller.put(Screen.SHOW_STUDENT_PROGRESS, controlArray);
     }
 
 }

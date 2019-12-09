@@ -1,7 +1,9 @@
 package Main;
 
+import DAOs.MyPracticeDao;
 import DAOs.MyStudentDao;
 import DAOs.MyTeacherDao;
+import DAOs.PracticeDaoInterface;
 import DAOs.StudentDaoInterface;
 import DAOs.TeacherDaoInterface;
 import DTOs.*;
@@ -170,7 +172,7 @@ public class GeoQuiz extends PApplet
                 showNewTestBackground();
                 break;
             case SHOW_STUDENT_PROGRESS:
-                showStudentProgressBackground();
+                showAdminStudentProccess();
                 break;
             case ADMIN_STUDENTS:
                 showChangeStudentPasswordBackground();
@@ -374,7 +376,7 @@ public class GeoQuiz extends PApplet
                 }
             }
         }
-
+        System.out.println(userPreset);
         if (!userPreset || name.isEmpty() || password.isEmpty()) {
             //Feedback
         } else {
@@ -382,11 +384,12 @@ public class GeoQuiz extends PApplet
 
                 hashedPassword = ITeacherDao.getHash(name);
                 bruteForceResult = passwordProcess.bruteForceCheck(name, password, hashedPassword);
-
+                System.out.println(bruteForceResult);
                 if (bruteForceResult == 1) {
                     ID = ITeacherDao.getAccountId(name);
                     createUserInstance(ID, true);
                     user.setTeacher(true);
+                    System.out.println("Hello");
                     uiManager.createAdminElements();
                     switchScreen(Screen.MAIN_MENU_ADMIN);
                 } else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5)) {
@@ -602,6 +605,56 @@ public class GeoQuiz extends PApplet
         text("GeoQuiz!", 450, 110);
     }
 
+    private void showAdminStudentProccess(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CORNER);
+        rect(10, 120, width-15, height-200);
+
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("Student_Practice_List--Class"),200,50);
+     
+        textSize(25);
+        stroke(255);
+        line(12, 180, width-8, 180);
+        text(languageManager.getString("student_name"),50,170);
+        text(languageManager.getString("category"),250, 170);
+        text(languageManager.getString("level"), 410, 170);
+        text(languageManager.getString("score"),550,170);
+        text(languageManager.getString("date"), 665, 170);
+        textSize(20);
+        Teacher teach = (Teacher)user;
+        teach.setProfileHistory("Son");
+        List<HistoryRecord> history = teach.getProfileHistory().getHistoryRecord();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try
+        {
+            for (int i = teach.getProfileHistory().getStart(), historyIndex = 0; i < teach.getProfileHistory().getEnd(); i++, historyIndex++)
+            {
+                if (history.get(i) != null)
+                {
+                    text(history.get(i).getStudent_name(),50,215 + 30*historyIndex);
+                    text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 250, 215 + 30 * historyIndex);
+                    text(languageManager.getString(history.get(i).getLevel().name().toLowerCase()), 410, 215 + 30 * historyIndex);
+                    text(history.get(i).getScore(),550,215+30*historyIndex);
+                    text((formatter.format(history.get(i).getDate())), 665, 215 + 30 * historyIndex);
+                }
+            }
+            
+            
+            
+        } catch (IndexOutOfBoundsException ignore)
+        {
+        }
+        textAlign(CENTER, CENTER);
+        text((teach.getProfileHistory().getActualPage()) + " / " + (teach.getProfileHistory().getMaxPages()), 725, 540);
+
+    }
+    
     private void showStudentWork() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
@@ -663,14 +716,9 @@ public class GeoQuiz extends PApplet
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
 
-    private void showStudentProgressBackground() {
-        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
-    }
-
     private void showNewTestBackground() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
-
 
     //-------------------------------------Get Instances
 
