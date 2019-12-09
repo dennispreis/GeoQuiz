@@ -2,6 +2,7 @@ package UI;
 
 import DTOs.Question;
 import DTOs.Student;
+import DTOs.Teacher;
 import GameManager.Category;
 import GameManager.ChooseAble;
 import Images.ImageMap;
@@ -19,12 +20,14 @@ import java.util.HashMap;
 
 import static Main.GeoQuiz.switchScreen;
 
-public class UIManager {
+public class UIManager
+{
 
     private ControlP5 cp5;
     private HashMap<Screen, Controller[]> controller;
 
-    public UIManager(ControlP5 cp5) {
+    public UIManager(ControlP5 cp5)
+    {
         this.cp5 = cp5;
         controller = new HashMap<>();
         uielementsCreateLogin();
@@ -32,22 +35,29 @@ public class UIManager {
         uielementsHideAll();
     }
 
-    public void updateController(Screen oldScreen, Screen newScreen) {
+    public void updateController(Screen oldScreen, Screen newScreen)
+    {
         hideControllers(oldScreen);
         showControllers(newScreen);
     }
 
-    private void showControllers(Screen showScreen) {
-        for (Controller c : controller.get(showScreen)) {
+    private void showControllers(Screen showScreen)
+    {
+        System.out.println(controller.get(showScreen));
+        System.out.println(controller.size());
+        for (Controller c : controller.get(showScreen))
+        {
             c.show();
-            if (showScreen.equals(Screen.PROFILE_STUDENT)) {
+            if (showScreen.equals(Screen.PROFILE_STUDENT))
+            {
                 hideAchievementLabels();
                 hideAvatarPictures();
             }
         }
     }
 
-    private void hideAchievementLabels() {
+    private void hideAchievementLabels()
+    {
         cp5.get("Achievement_TextLabel_0").hide();
         cp5.get("Achievement_TextLabel_1").hide();
         cp5.get("Achievement_TextLabel_2").hide();
@@ -60,7 +70,8 @@ public class UIManager {
         cp5.get("Achievement_TextLabel_9").hide();
     }
 
-    private void hideAvatarPictures() {
+    private void hideAvatarPictures()
+    {
         cp5.get("Profile_Avatar_Lion").hide();
         cp5.get("Profile_Avatar_Eagle").hide();
         cp5.get("Profile_Avatar_Zebra").hide();
@@ -69,17 +80,21 @@ public class UIManager {
         cp5.get("Profile_Avatar_Coala").hide();
     }
 
-    private void hideControllers(Screen hideScreen) {
-        for (Controller c : controller.get(hideScreen)) {
+    private void hideControllers(Screen hideScreen)
+    {
+        for (Controller c : controller.get(hideScreen))
+        {
             c.hide();
         }
     }
 
-    private void uielementsHideAll() {
+    private void uielementsHideAll()
+    {
         cp5.getAll().forEach(ControllerInterface::hide);
     }
 
-    public void createStudentElements() {
+    public void createStudentElements()
+    {
         uielementsCreateStudentMainMenu();
         uielementsCreateStudenProfileBackground();
         uielementsCreateStudentGameFeedback();
@@ -90,7 +105,8 @@ public class UIManager {
         uielementsHideAll();
     }
 
-    public void createAdminElements() {
+    public void createAdminElements()
+    {
         uielementsCreateAdminChangePassword();
         uielementsCreateAdminPasscode();
         uielementsCreateAdminMainMenu();
@@ -100,8 +116,10 @@ public class UIManager {
         uielementsHideAll();
     }
 
-    private void expandOtherController() {
-        if (GeoQuiz.getSettings().getScreen().equals(Screen.PROFILE_STUDENT)) {
+    private void expandOtherController()
+    {
+        if (GeoQuiz.getSettings().getScreen().equals(Screen.PROFILE_STUDENT))
+        {
             cp5.get("Profile_Student_Nickname_Change").show();
             cp5.get("Profile_Show_Background").show();
             Textfield f = (Textfield) cp5.get("Profile_Student_Nickname");
@@ -109,8 +127,10 @@ public class UIManager {
         }
     }
 
-    private void hideOtherController() {
-        if (GeoQuiz.getSettings().getScreen().equals(Screen.PROFILE_STUDENT)) {
+    private void hideOtherController()
+    {
+        if (GeoQuiz.getSettings().getScreen().equals(Screen.PROFILE_STUDENT))
+        {
             cp5.get("Profile_Student_Nickname_Change").hide();
             cp5.get("Profile_Show_Background").hide();
             Textfield f = (Textfield) cp5.get("Profile_Student_Nickname");
@@ -118,23 +138,28 @@ public class UIManager {
         }
     }
 
-    private void hideAvatars() {
+    private void hideAvatars()
+    {
         Toggle t = (Toggle) cp5.get("Profile_Student_Avatar_Change");
-        if (t.getState()) {
+        if (t.getState())
+        {
             cp5.get("Profile_Avatar_Zebra").hide();
             cp5.get("Profile_Avatar_Coala").hide();
             cp5.get("Profile_Avatar_Penguin").hide();
         }
     }
 
-    private void showAvatars() {
+    private void showAvatars()
+    {
         Toggle t = (Toggle) cp5.get("Profile_Student_Avatar_Change");
-        if (t.getState()) {
+        if (t.getState())
+        {
             cp5.get("Profile_Avatar_Zebra").show();
             cp5.get("Profile_Avatar_Coala").show();
             cp5.get("Profile_Avatar_Penguin").show();
         }
     }
+
 
     private void changeAvatarVisibility(boolean state) {
         if (state) {
@@ -159,7 +184,8 @@ public class UIManager {
         if (GeoQuiz.getSoundManager().isShowingMenu()) {
             GeoQuiz.getSoundManager().showMenu();
             hideOtherController();
-        } else {
+        } else
+        {
             GeoQuiz.getSoundManager().hideMenu();
             expandOtherController();
         }
@@ -171,15 +197,16 @@ public class UIManager {
     }
 
     //-------CHANGE LANGUAGE
-
-    private void changeLoginLanguage() {
+    private void changeLoginLanguage()
+    {
         //LOGIN
         cp5.get("Login_Login").setLabel(GeoQuiz.getLanguageManager().getString("login"));
         cp5.get("Login_Name").setLabel(GeoQuiz.getLanguageManager().getString("name"));
         cp5.get("Login_Password").setLabel(GeoQuiz.getLanguageManager().getString("password"));
     }
 
-    private void changeAdminMenuLanguage() {
+    private void changeAdminMenuLanguage()
+    {
         //ADMIN MAIN MENU
         cp5.get("Change_Password").setLabel(GeoQuiz.getLanguageManager().getString("Change_Password"));
         cp5.get("Admin_Students").setLabel(GeoQuiz.getLanguageManager().getString("student"));
@@ -192,7 +219,8 @@ public class UIManager {
 
     }
 
-    private void changeStudentMenuLanguage() {
+    private void changeStudentMenuLanguage()
+    {
         //STUDENT PROFILE
         if (!GeoQuiz.getUser().isTeacher()) {
             Textlabel l;
@@ -232,8 +260,8 @@ public class UIManager {
     }
 
     //-------CONTROLLER GENERATOR
-
-    private void uielementsCreateLogin() {
+    private void uielementsCreateLogin()
+    {
 
         Color col = Color.decode("#7974fc");
 
@@ -277,7 +305,7 @@ public class UIManager {
                     Textfield tf = (Textfield) cp5.get("Login_Name");
                     tf.setText("peter");
                     tf = (Textfield) cp5.get("Login_Password");
-                    tf.setText("poop");
+                    tf.setText("password");
                 })
         });
 
@@ -366,7 +394,8 @@ public class UIManager {
         });
     }
 
-    private void uielementsCreateAdminPasscode() {
+    private void uielementsCreateAdminPasscode()
+    {
         Color col = Color.decode("#7974fc");
 
         controller.put(Screen.CHANGE_PASSWORD_ADMIN_PASSCODE, new Controller[]{
@@ -395,14 +424,14 @@ public class UIManager {
                         .onClick(callbackEvent -> {
                     GeoQuiz.switchScreen(Screen.MAIN_MENU_ADMIN);
                 })
-
         });
 
         Textfield tf = (Textfield) cp5.get("Passcode");
         tf.getCaptionLabel().setPaddingY(-90);
     }
 
-    private void uielementsCreateAdminChangePassword() {
+    private void uielementsCreateAdminChangePassword()
+    {
         Color col = Color.decode("#7974fc");
         String name = cp5.get(Textfield.class, "Login_Name").getText();
 
@@ -457,6 +486,7 @@ public class UIManager {
                     switchScreen(Screen.MAIN_MENU_STUDENT);
                 })
         });
+
     }
 
     private void uielementsCreateStudentProfile() {
@@ -637,11 +667,13 @@ public class UIManager {
                         .setText(GeoQuiz.getLanguageManager().getString("achievement_9")).hide()
         });
     }
-
-    private void uielementsCreateStudentPractise() {
+    
+    private void uielementsCreateStudentPractise()
+    {
         String[] cats = new String[Category.values().length];
         int idx = 0;
-        for (Category c : Category.values()) {
+        for (Category c : Category.values())
+        {
             cats[idx++] = c.name();
         }
 
@@ -662,6 +694,7 @@ public class UIManager {
                     changeQuestionLanguage();
                     switchScreen(Screen.PLAYING);
                 })
+
         });
     }
 
@@ -695,12 +728,16 @@ public class UIManager {
         });
     }
 
-    private void uielementsCreateStudenProfileBackground() {
-        controller.put(Screen.PROFILE_SHOW_BACKGROUND, new Controller[]{
-                cp5.addButton("Profile_Student_Background_Back").setPosition(20, 20).setSize(100, 100).
-                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
-                    switchScreen(Screen.PROFILE_STUDENT);
-                })
+    private void uielementsCreateStudenProfileBackground()
+    {
+        controller.put(Screen.PROFILE_SHOW_BACKGROUND, new Controller[]
+        {
+            cp5.addButton("Profile_Student_Background_Back").setPosition(20, 20).setSize(100, 100).
+            setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent
+            -> 
+            {
+                switchScreen(Screen.PROFILE_STUDENT);
+            })
         });
     }
 
@@ -725,7 +762,8 @@ public class UIManager {
     private void uielementsCreateSettingsMenu() {
         String[] languageList = new String[Language.values().length];
         int idx = 0;
-        for (Language l : Language.values()) {
+        for (Language l : Language.values())
+        {
             languageList[idx++] = l.getName();
         }
 
@@ -797,12 +835,43 @@ public class UIManager {
     }
 
     private void uielementsCreateShowStudent_Progress() {
-        controller.put(Screen.SHOW_STUDENT_PROGRESS, new Controller[]{
-                cp5.addButton("Admin_Show_Student_Progress").setPosition(20, 20).setSize(100, 100).
+        Teacher teach = (Teacher)GeoQuiz.getUser();
+        Controller[] controlArray = new Controller[teach.getClassList().size()+3];
+        controlArray[0] = cp5.addButton("Admin_Show_Student_Progress").setPosition(20, 20).setSize(100, 100).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
                     switchScreen(Screen.MAIN_MENU_ADMIN);
-                })
-        });
+                });
+        controlArray[1] =  cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                        
+                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
+                    {   
+                        teach.getProfileHistory().increaseRange();
+                        System.out.println(teach.getProfileHistory().getEnd());
+                        System.out.println(teach.getProfileHistory().getStart());
+                        System.out.println(teach.getProfileHistory().getActualPage());
+                        
+                        System.out.println(teach.getProfileHistory().getHistoryRecord().size());
+                    }
+                });
+        controlArray[2] = cp5.addButton("Profile_History_Last").setPosition(630, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
+                });
+        for(int i = 0 ; i < teach.getClassList().size();i++)
+        {
+            String class_name = teach.getClassList().get(i).getName();
+            controlArray[i+3] = cp5.addButton(class_name).setPosition(85+100*i,75).setSize(80,40).onClick(
+            callbackEvent -> {
+                System.out.println("Class "+class_name+" Selected");
+                teach.setProfileHistory(class_name);
+            }
+            );
+        }
+        
+        controller.put(Screen.SHOW_STUDENT_PROGRESS, controlArray);
     }
 
 }

@@ -5,6 +5,8 @@
  */
 package DAOs;
 
+import java.util.List;
+import DTOs.Class ;
 /**
  *
  * @author User
@@ -12,4 +14,5 @@ package DAOs;
 public interface ClassDaoInterface
 {
   //  calculateAverage
+    public List<Class> getClassByTeacherId(int id);
 }
