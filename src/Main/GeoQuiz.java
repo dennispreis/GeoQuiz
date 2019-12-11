@@ -133,7 +133,7 @@ public class GeoQuiz extends PApplet {
         uiManager = new UIManager(cp5);
         switchScreen(Screen.LOGIN);
         settings.setLoadingApplication(false);
-        thread("loadSounds");
+   //     thread("loadSounds");
     }
 
     public void loadSounds() {
@@ -405,7 +405,7 @@ public class GeoQuiz extends PApplet {
                 createUserInstance(ID, false);
                 user.setTeacher(false);
                 uiManager.createStudentElements();
-                gameManager = new GameManager(applet, cp5);
+                gameManager = new GameManager(applet, cp5,ID);
                 switchScreen(Screen.MAIN_MENU_STUDENT);
             }
         }
@@ -533,7 +533,7 @@ public class GeoQuiz extends PApplet {
         stroke(255);
         line(365, 205, 820, 205);
         text(languageManager.getString("category"), 380, 200);
-        text(languageManager.getString("level"), 525, 200);
+        text(languageManager.getString("score"), 525, 200);
         text(languageManager.getString("date"), 665, 200);
 
         Student stu = (Student) user;
@@ -544,7 +544,7 @@ public class GeoQuiz extends PApplet {
             for (int i = stu.getProfileHistory().getStart(), historyIndex = 0; i < stu.getProfileHistory().getEnd(); i++, historyIndex++) {
                 if (history.get(i) != null) {
                     text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 380, 225 + 30 * historyIndex);
-                    text(languageManager.getString(history.get(i).getLevel().name().toLowerCase()), 525, 225 + 30 * historyIndex);
+                    text(history.get(i).getScore(), 525, 225 + 30 * historyIndex);
                     text((formatter.format(history.get(i).getDate())), 665, 225 + 30 * historyIndex);
                 }
             }
@@ -621,9 +621,8 @@ public class GeoQuiz extends PApplet {
         line(12, 180, width - 8, 180);
         text(languageManager.getString("student_name"), 50, 170);
         text(languageManager.getString("category"), 250, 170);
-        text(languageManager.getString("level"), 410, 170);
-        text(languageManager.getString("score"), 550, 170);
-        text(languageManager.getString("date"), 665, 170);
+         text(languageManager.getString("score"), 450, 170);
+        text(languageManager.getString("date"), 650, 170);
         textSize(20);
 
         Teacher teach = (Teacher)user;
@@ -640,9 +639,8 @@ public class GeoQuiz extends PApplet {
                 {
                     text(history.get(i).getStudent_name(),50,215 + 30*historyIndex);
                     text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 250, 215 + 30 * historyIndex);
-                    text(languageManager.getString(history.get(i).getLevel().name().toLowerCase()), 410, 215 + 30 * historyIndex);
-                    text(history.get(i).getScore(),550,215+30*historyIndex);
-                    text((formatter.format(history.get(i).getDate())), 665, 215 + 30 * historyIndex);
+                     text(history.get(i).getScore(),450,215+30*historyIndex);
+                    text((formatter.format(history.get(i).getDate())), 650, 215 + 30 * historyIndex);
                 }
 
             }

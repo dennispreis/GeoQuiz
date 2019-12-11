@@ -68,10 +68,38 @@ public class GameManager {
         });
         levelChooser.updateActiveElement(levelChooser.getElements()[0]);
     }
+    public GameManager(PApplet applet, ControlP5 cp5,int user_id) {
+        this.id = user_id;
+        this.applet = applet;
+        this.category = Category.WORLD;
+        this.level = Level.EASY;
+        this.cp5 = cp5;
+        cp5.addTextarea("Question_Textarea").setPosition(150, 50).setSize(500, 300).hide();
+        this.IPracticeDao = new MyPracticeDao();
+        score = 0;
 
+
+        categoryChooser = new TypeChooser(applet).setElements(new ChooseAble[]{
+                new ChooseAble(applet, 175, 200, ImageName.CATEGORY_CITIES, Category.CITIES).setText("Cities"),
+                new ChooseAble(applet, 275, 200, ImageName.CATEGORY_MOUNTAINS, Category.MOUNTAINS).setText("Mountains"),
+                new ChooseAble(applet, 375, 200, ImageName.CATEGORY_RIVERS, Category.RIVERS).setText("Rivers"),
+                new ChooseAble(applet, 475, 200, ImageName.CATEGORY_WORLD, Category.WORLD).setText("World"),
+                new ChooseAble(applet, 575, 200, ImageName.PLACEHOLDER_SMALL, Category.ISLANDS).setText("Islands"),
+                new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
+        });
+        categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
+        levelChooser = new TypeChooser(applet).setElements(new ChooseAble[]
+        {
+            new ChooseAble(applet, 275, 400, ImageName.LEVEL_EASY, Level.EASY).setText("Easy"),
+            new ChooseAble(applet, 425, 400, ImageName.PLACEHOLDER_SMALL, Level.MEDIUM).setText("Medium"),
+            new ChooseAble(applet, 575, 400, ImageName.LEVEL_HARD, Level.HARD).setText("Hard")
+        });
+        levelChooser.updateActiveElement(levelChooser.getElements()[0]);
+    }
+    
     public GameManager(PApplet applet, int id, boolean test)
     {
-        this.id = 1;
+        this.id = id;
         this.applet = applet;
         this.category = Category.WORLD;
         this.level = Level.EASY;
@@ -100,7 +128,7 @@ public class GameManager {
     public void createQuestions() {
         List<Question> tmp;
         IPracticeDao = new MyPracticeDao();
-        tmp = IPracticeDao.getPractice(applet, 0, category.getName(), level.getName());
+        tmp = IPracticeDao.getPractice(applet, this.id, category.getName());
         questions = new Question[tmp.size()];
         tmp.toArray(questions);
         actuallQuestionIndex = 0;

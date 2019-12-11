@@ -60,7 +60,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
                 }
             } catch (SQLException e)
             {
-
+                e.printStackTrace();
             } finally
             {
                 try
@@ -158,7 +158,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
             }
         } catch (SQLException e)
         {
-
+            e.printStackTrace();
         } finally
         {
             try
@@ -230,7 +230,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
             }
         } catch (SQLException e)
         {
-
+            e.printStackTrace();
         } finally
         {
             try
