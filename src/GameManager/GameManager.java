@@ -37,6 +37,7 @@ public class GameManager {
     private MyPracticeDao IPracticeDao;
     private MyTestDao ITestDao;
     private int paper_id;
+    private boolean test;
     private int id;
 
     public GameManager(PApplet applet, ControlP5 cp5) {
@@ -96,17 +97,22 @@ public class GameManager {
         categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
     }
 
-    public void createQuestions(boolean isPractise) {
+    public void createQuestions() {
         List<Question> tmp;
-        if (isPractise) {
-            IPracticeDao = new MyPracticeDao();
-            tmp = IPracticeDao.getPractice(applet, 0, category.getName(), level.getName());
-        } else {
-            ITestDao = new MyTestDao();
-            tmp = ITestDao.getTestByID(applet, id, paper_id);
-
-        }
+        IPracticeDao = new MyPracticeDao();
+        tmp = IPracticeDao.getPractice(applet, 0, category.getName(), level.getName());
         questions = new Question[tmp.size()];
+        tmp.toArray(questions);
+        actuallQuestionIndex = 0;
+        actualQuestion = questions[actuallQuestionIndex];
+        maxScore = questions.length;
+    }
+      public void createQuestions(int id,int test_id){
+        List<Question> tmp=null;
+        ITestDao = new MyTestDao();
+        tmp = ITestDao.attemptTest(applet, id, test_id);
+        questions = new Question[tmp.size()];
+        System.out.println(tmp.size());
         tmp.toArray(questions);
         actuallQuestionIndex = 0;
         actualQuestion = questions[actuallQuestionIndex];

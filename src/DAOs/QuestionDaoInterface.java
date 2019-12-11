@@ -21,8 +21,6 @@ public interface QuestionDaoInterface
     
     public List<Question> getAllQuestionByType(PApplet applet, String type);
 
-    public List<Question> getAllQuestionByType(PApplet applet, String type);
-
     public List<Question> getQuestionByRegion(PApplet applet, String region);
 
     public List<Question> getQuestionByTypeRegion(PApplet applet, String type, String region);

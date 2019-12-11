@@ -692,7 +692,7 @@ public class UIManager {
                 cp5.addButton("Practise_Student_Go").setPosition(400, 350).setSize(100, 100).
                         setImage(ImageMap.getImage(ImageName.GO)).onClick(callbackEvent -> {
                     GeoQuiz.getGameManager().setChoosenCategory();
-                    GeoQuiz.getGameManager().createQuestions(true);
+                    GeoQuiz.getGameManager().createQuestions();
                     GeoQuiz.getGameManager().setPlaying(true);
                     GeoQuiz.getGameManager().updateQuestionText();
                     GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
