@@ -6,7 +6,10 @@
 package DTOs;
 
 import DAOs.MyPracticeDao;
+import DAOs.MyTestDao;
 import DAOs.PracticeDaoInterface;
+import DAOs.TestDaoInterface;
+import processing.core.PApplet;
 
 public class Student extends User {
 
@@ -14,7 +17,8 @@ public class Student extends User {
     private String nickname;
     private String avatar;
     private ProfileHistory profileHistory;
-    private static PracticeDaoInterface IPracticeDao;
+    private static PracticeDaoInterface IPracticeDao = new MyPracticeDao();
+    private static TestDaoInterface ITestDao = new MyTestDao();
 
     public Student(int class_id, String nickname, int id, String name, String avatar) {
         super(id, name);
@@ -24,6 +28,7 @@ public class Student extends User {
         this.avatar = avatar;
         profileHistory = IPracticeDao.getProfileHistory(id);
         profileHistory.setMaxPages();
+        
     }
 
     public int getClass_id() {
@@ -48,6 +53,10 @@ public class Student extends User {
 
     public ProfileHistory getProfileHistory() {
         return profileHistory;
+    }
+    
+    public void attemptTest(PApplet applet,int test_id){
+        ITestDao.attemptTest(applet, this.getId(), test_id);
     }
 }
 

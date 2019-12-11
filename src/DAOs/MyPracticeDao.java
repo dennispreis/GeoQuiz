@@ -236,7 +236,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
     }
 
     @Override
-    public boolean updateScore(int id, int score)
+    public boolean updateScore(int id, int score,String[] answers)
     {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -245,10 +245,11 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
         {
 
             conn = this.getConnection();
-            String query = "UPDATE practices SET score = ? WHERE practice_id = ?";
+            String query = "UPDATE practices SET score = ?,answers = ? WHERE practice_id = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, score);
-            ps.setInt(2, id);
+            ps.setString(2, answers.toString());
+            ps.setInt(3, id);
             return (ps.executeUpdate() == 1);
 
         } catch (Exception e)

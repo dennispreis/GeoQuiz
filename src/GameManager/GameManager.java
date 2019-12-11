@@ -71,6 +71,7 @@ public class GameManager
         this.applet = applet;
         this.category = Category.WORLD;
         this.level = Level.EASY;
+        this.test = test;
         if (test)
         {
             this.ITestDao = new MyTestDao();
@@ -117,7 +118,17 @@ public class GameManager
         actualQuestion = questions[actuallQuestionIndex];
         maxScore = questions.length;
     }
-
+    public void createQuestions(int id,int test_id){
+        List<Question> tmp=null;
+        ITestDao = new MyTestDao();
+        tmp = ITestDao.attemptTest(applet, id, test_id);
+        questions = new Question[tmp.size()];
+        System.out.println(tmp.size());
+        tmp.toArray(questions);
+        actuallQuestionIndex = 0;
+        actualQuestion = questions[actuallQuestionIndex];
+        maxScore = questions.length;
+    }
     public void showGameChoosing()
     {
         categoryChooser.show();
@@ -216,14 +227,17 @@ public class GameManager
 
     public void loadPractiseFeedback()
     {
+        String[] answers = new String[10];
         for (Question q : questions)
         {
+            int i = 0;
             if (q instanceof DragAndDrop_Question)
             {
                 DragAndDrop_Question dad_question = (DragAndDrop_Question) q;
                 //Get Text from AnswerElement
                 if (dad_question.getDragAndDrop().getAnswerRect().isOccupied())
                 {
+                    answers[i] = dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText();
                     if (dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText().equals(dad_question.getCorrect_answer()))
                     {
                         score++;
@@ -234,7 +248,13 @@ public class GameManager
                 Multiplichoice_Question mp_question = (Multiplichoice_Question) q;
                 //Get right array index and check if isActive()
                 System.out.println(mp_question.getCorrect_answer());
-
+                for(int j = 0 ; j<4;j++)
+                {
+                    if(mp_question.getCheckBox().getElements()[j].isActive())
+                    {
+                        answers[i] = Integer.toString(j);
+                    }
+                }
                 if (mp_question.getCheckBox().getElements()[Integer.parseInt(mp_question.getCorrect_answer()) - 1].isActive())
                 {
                     score++;
@@ -251,7 +271,12 @@ public class GameManager
                 {
                     tmp = 1;
                 }
-
+                if(tof_question.getRadioButton().getElements()[0].isActive())
+                {
+                    answers[i] = "TRUE";
+                }else{
+                    answers[i] = "FALSE";
+                }
                 if (tof_question.getRadioButton().getElements()[tmp].isActive())
                 {
                     score++;
@@ -260,6 +285,13 @@ public class GameManager
             {
                 ChoosePicture_Question cp_question = (ChoosePicture_Question) q;
                 //Get left or right picture and check if isChoosen()
+                
+                if(cp_question.getChoosePicture().getButton_left().isChoosen())
+                {
+                    answers[i] = "1";
+                }else{
+                    answers[i] = "2";
+                }
                 if ("1".equals(cp_question.getCorrect_answer()))
                 {
                     if (cp_question.getChoosePicture().getButton_left().isChoosen())
@@ -272,13 +304,14 @@ public class GameManager
                 }
 
             }
+            i++;
         }
         if (IPracticeDao != null)
         {
-            IPracticeDao.updateScore(this.id, score);
+            IPracticeDao.updateScore(this.id, score,answers);
         } else
         {
-            ITestDao.updateScore(id, score);
+            ITestDao.updateScore(id, score,answers);
         }
 
     }

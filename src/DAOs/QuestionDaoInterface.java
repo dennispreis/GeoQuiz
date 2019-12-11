@@ -18,6 +18,8 @@ public interface QuestionDaoInterface
     public List<Question> getRandQuestion(PApplet applet);
 
     public List<Question> getQuestionByType(PApplet applet, String type);
+    
+    public List<Question> getAllQuestionByType(PApplet applet, String type);
 
     public List<Question> getQuestionByRegion(PApplet applet, String region);
 

@@ -88,7 +88,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
     }
 
     @Override
-    public boolean updateScore(int id, int score)
+    public boolean updateScore(int id, int score,String[] answers)
     {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -96,12 +96,13 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
         try
         {
             conn = this.getConnection();
-            String query = "UPDATE tests SET score = ? WHERE test_id = ?";
+            String query = "UPDATE tests SET score = ?,answers = ? WHERE test_id = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, score);
-            ps.setInt(2, id);
+            ps.setString(2, answers.toString());
+            ps.setInt(3, id);
             return (ps.executeUpdate() == 1);
-
+ 
         } catch (Exception e)
         {
             e.printStackTrace();
@@ -214,7 +215,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
         {
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
-            String query = "SELECT `test_id`, `test_name`, `paper_id` FROM `tests` WJERE test_id = ?";
+            String query = "SELECT `test_id`, `test_name`, `paper_id` FROM `tests` WHERE test_id = ?";
             ps = con.prepareStatement(query);
             //Using a PreparedStatement to execute SQL...
             ps.setInt(1, test_id);
