@@ -148,6 +148,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
             ResultSet rs0 = ps.executeQuery();
             rs0.next();
             int type_id_in = rs0.getInt("type_id");
+            System.out.println(type_id_in);
             String query = "SELECT question_id,type_id,region_id,question_text,correct_answer FROM questions WHERE type_id =?  ORDER BY RAND() LIMIT 10";
             ps = con.prepareStatement(query);
             ps.setInt(1, type_id_in);
@@ -249,9 +250,8 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Question> questions = new ArrayList<>();
-        System.out.println("Here");
+
         try {
-            System.out.println("Hello");
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
 
@@ -268,13 +268,11 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
             //Using a PreparedStatement to execute SQL...
             rs = ps.executeQuery();
             while (rs.next()) {
-                
                 int id = rs.getInt("question_id");
                 int type_id = rs.getInt("type_id");
                 int region_id = rs.getInt("region_id");
                 String q_t = rs.getString("question_text");
                 String c_a = rs.getString("correct_answer");
-                System.out.println(id);
                 String query2 = "SELECT region FROM regions WHERE region_id = ?";
                 ps = con.prepareStatement(query2);
                 ps.setInt(1, region_id);
@@ -340,6 +338,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
             }
         } catch (SQLException e) {
                 e.printStackTrace();
+
         } finally {
             try {
                 if (rs != null) {
@@ -372,6 +371,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
             ps = con.prepareStatement(query0);
             ps.setString(1, region);
             ResultSet rs0 = ps.executeQuery();
+            rs0.next();
             int region_id_in = rs0.getInt("region_id");
             String query = "SELECT question_id,type_id,region_id,question_text,correct_answer FROM questions WHERE region_id =?  ORDER BY RAND() LIMIT 10";
             ps = con.prepareStatement(query);

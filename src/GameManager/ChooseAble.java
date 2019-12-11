@@ -32,7 +32,6 @@ public class ChooseAble {
     }
 
     public void show() {
-        if (!hide) {
             if (this.isActive) {
                 applet.fill(200, 100);
                 applet.stroke(2);
@@ -45,7 +44,6 @@ public class ChooseAble {
             applet.textAlign(CENTER, CENTER);
             applet.fill(255);
             applet.text(this.text, xPos + xSize / 2, yPos + ySize * 1.5f);
-        }
     }
 
     public void hide() {

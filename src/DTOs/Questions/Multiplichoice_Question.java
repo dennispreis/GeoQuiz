@@ -17,13 +17,6 @@ public class Multiplichoice_Question extends Question {
         this.checkBox = new myCheckBox(applet, a1, a2, a3, a4);
     }
 
-    /*
-    public Multiplichoice_Question(PApplet applet, int id, String type, String region, String question_text, String correct_answer) {
-        super(applet, id, type, region, question_text, correct_answer);
-        this.checkBox = new myCheckBox(applet);
-    }
-    */
-
     public myCheckBox getCheckBox() {
         return this.checkBox;
     }
@@ -35,11 +28,6 @@ public class Multiplichoice_Question extends Question {
     }
 
     public void show() {
-        applet.rectMode(CENTER);
-        applet.textAlign(CENTER, CENTER);
-        applet.fill(255);
-        applet.textSize(30);
-        applet.text(getQuestion_text(), applet.width / 2, 100);
         checkBox.show();
     }
 

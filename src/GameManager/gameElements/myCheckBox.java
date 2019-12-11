@@ -17,6 +17,7 @@ public class myCheckBox implements GameElement {
         };
     }
 
+
     public void show() {
         for (myCheckBoxElement element : elements) {
             element.show();

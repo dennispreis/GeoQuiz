@@ -29,6 +29,4 @@ public abstract class Feedback implements FeedbackAble {
         this.position = position;
         return this;
     }
-
-
 }

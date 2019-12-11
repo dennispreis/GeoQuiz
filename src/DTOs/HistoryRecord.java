@@ -104,12 +104,8 @@ public class HistoryRecord
     {
         this.score = score;
     }
-
     public String getTest_name()
     {
         return test_name;
     }
-    
-    
-    
 }

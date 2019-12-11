@@ -293,6 +293,4 @@ public class MyTeacherDao extends MySqlDao implements TeacherDaoInterface
             e.printStackTrace();
         }
     }
-
-
 }

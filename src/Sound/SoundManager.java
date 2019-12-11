@@ -34,9 +34,6 @@ public class SoundManager {
         this.volume = 60;
     }
 
-    private void loadSounds() {
-        sounds.put(SoundName.TEST_SOUND, loadEventSound("testSound.wav"));
-    }
 
     public ControlP5 getSoundMenu() {
         return this.soundMenu;
@@ -103,9 +100,14 @@ public class SoundManager {
         sounds.get(name).trigger();
     }
 
+    public void loadSounds() {
+        sounds.put(SoundName.TEST_SOUND, loadEventSound("testSound.wav"));
+    }
+
+
     //---------LANGUAGE SOUNDS
 
-    private void loadLanguages() {
+    public void loadLanguages() {
 
         languages.put(Language.GERMAN, new HashMap<>());
         languages.put(Language.ENGLISH, new HashMap<>());

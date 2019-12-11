@@ -35,6 +35,15 @@ public class myCheckBoxElement {
         return isActive;
     }
 
+    public void setPosition(float x, float y){
+        this.x = x;
+        this.y = y;
+    }
+
+    public String getText(){
+        return this.text;
+    }
+
     public void show() {
         applet.fill(col.getRGB());
         applet.stroke(0);
@@ -43,7 +52,7 @@ public class myCheckBoxElement {
         applet.rect(x, y, xS, yS);
         applet.textSize(30);
         applet.textAlign(LEFT, CENTER);
-        applet.text(this.text, x + xS * 2, y);
+        applet.text(this.text, x + xS, y);
         if (this.isActive) {
             applet.textAlign(CENTER, CENTER);
             applet.fill(200);

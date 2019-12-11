@@ -123,6 +123,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
             String query = "INSERT INTO tests (test_name,paper_id) VALUES(?,?)";
             ps = conn.prepareStatement(query);
             ps.setString(1, test_name);
+
             ps.setInt(2, insertId);
             ps.executeUpdate();
 
