@@ -1,9 +1,12 @@
 package UI;
 
 import DAOs.MyPaperDao;
+import DAOs.MyTestDao;
+import DAOs.TestDaoInterface;
 import DTOs.Question;
 import DTOs.Student;
 import DTOs.Teacher;
+import DTOs.Test;
 import GameManager.Category;
 import GameManager.ChooseAble;
 import Images.ImageMap;
@@ -461,12 +464,31 @@ public class UIManager {
     }
 
     private void uielementsCreateStudentWork() {
-        controller.put(Screen.WORK_STUDENT, new Controller[]{
-                cp5.addButton("Work_Student_Back").setPosition(20, 20).setSize(100, 100).
+        
+        TestDaoInterface ITestDao = new MyTestDao();
+        List<Test> testList = ITestDao.getAllTest();
+        Controller[] controlArray = new Controller[testList.size()+1];
+        controlArray[0] = cp5.addButton("Work_Student_Back").setPosition(20, 20).setSize(100, 100).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
                     switchScreen(Screen.MAIN_MENU_STUDENT);
-                })
-        });
+                });
+        int id = GeoQuiz.getUser().getId();
+        for(int i = 0 ; i < testList.size();i++)
+        {
+            int test_id = testList.get(i).getTest_id();
+            controlArray[i+1] = cp5.addButton("Attempt"+i).setPosition(650,200+30*i).setSize(15,15).setLabel(" ").onClick(
+            callBackEvent ->{
+                    GeoQuiz.getGameManager().setChoosenCategory();        
+                    GeoQuiz.getGameManager().createQuestions(id,test_id);
+                    GeoQuiz.getGameManager().setPlaying(true);
+                    GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
+                    changeQuestionLanguage();
+                    switchScreen(Screen.PLAYING);
+            }
+            );
+        }
+        
+        controller.put(Screen.WORK_STUDENT, controlArray);
 
     }
 
@@ -902,5 +924,6 @@ public class UIManager {
         controller.put(Screen.SHOW_STUDENT_TEST, controlArray);
 
     }
+    
 
 }

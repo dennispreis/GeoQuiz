@@ -146,6 +146,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
             ps = con.prepareStatement(query0);
             ps.setString(1, type);
             ResultSet rs0 = ps.executeQuery();
+            rs0.next();
             int type_id_in = rs0.getInt("type_id");
             String query = "SELECT question_id,type_id,region_id,question_text,correct_answer FROM questions WHERE type_id =?  ORDER BY RAND() LIMIT 10";
             ps = con.prepareStatement(query);
@@ -224,6 +225,121 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
             }
         } catch (SQLException e) {
 
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    freeConnection(con);
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+        return questions;     // may be empty  }
+    }
+
+    @Override
+    public List<Question> getAllQuestionByType(PApplet applet, String type) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Question> questions = new ArrayList<>();
+        System.out.println("Here");
+        try {
+            System.out.println("Hello");
+            //Get connection object using the methods in the super class (MySqlDao.java)...
+            con = this.getConnection();
+
+            String query0 = "SELECT type_id FROM types WHERE type = ?";
+            ps = con.prepareStatement(query0);
+            ps.setString(1, type);
+            ResultSet rs0 = ps.executeQuery();
+            rs0.next();
+            int type_id_in = rs0.getInt("type_id");  
+            System.out.println(type_id_in);
+            String query = "SELECT question_id,type_id,region_id,question_text,correct_answer FROM questions WHERE type_id =?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, type_id_in);
+            //Using a PreparedStatement to execute SQL...
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                
+                int id = rs.getInt("question_id");
+                int type_id = rs.getInt("type_id");
+                int region_id = rs.getInt("region_id");
+                String q_t = rs.getString("question_text");
+                String c_a = rs.getString("correct_answer");
+                System.out.println(id);
+                String query2 = "SELECT region FROM regions WHERE region_id = ?";
+                ps = con.prepareStatement(query2);
+                ps.setInt(1, region_id);
+                ResultSet rs2 = ps.executeQuery();
+                rs2.next();
+                String region = rs2.getString("region");
+
+                String query3 = "SELECT type FROM types WHERE type_id = ?";
+                ps = con.prepareStatement(query3);
+                ps.setInt(1, type_id);
+                rs2 = ps.executeQuery();
+                rs2.next();
+                String type2 = rs2.getString("type");
+
+                String query4 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_dd WHERE question_id = ?";
+                ps = con.prepareStatement(query4);
+                ps.setInt(1, id);
+                rs2 = ps.executeQuery();
+                if (rs2.next()) {
+                    String a1 = rs2.getString("answer_one");
+                    String a2 = rs2.getString("answer_two");
+                    String a3 = rs2.getString("answer_three");
+                    String a4 = rs2.getString("answer_four");
+                    DragAndDrop_Question q = new DragAndDrop_Question(applet, id, type2, region, q_t, c_a, a1, a2, a3, a4);
+                    questions.add(q);
+                } else {
+                    String query5 = "SELECT answer_one,answer_two,answer_three,answer_four FROM questions_mc WHERE question_id = ?";
+                    ps = con.prepareStatement(query5);
+                    ps.setInt(1, id);
+                    rs2 = ps.executeQuery();
+                    if (rs2.next()) {
+                        String a1 = rs2.getString("answer_one");
+                        String a2 = rs2.getString("answer_two");
+                        String a3 = rs2.getString("answer_three");
+                        String a4 = rs2.getString("answer_four");
+                        Multiplichoice_Question q = new Multiplichoice_Question(applet, id, type2, region, q_t, c_a, a1, a2, a3, a4);
+                        questions.add(q);
+                    } else {
+                        String query6 = "SELECT answer_one,answer_two,answer_one_dir,answer_two_dir FROM questions_pc WHERE question_id = ?";
+                        ps = con.prepareStatement(query6);
+                        ps.setInt(1, id);
+                        rs2 = ps.executeQuery();
+                        if (rs2.next()) {
+                            String a1 = rs2.getString("answer_one");
+                            String a2 = rs2.getString("answer_two");
+                            String a3 = rs2.getString("answer_one_dir");
+                            String a4 = rs2.getString("answer_two_dir");
+                            ChoosePicture_Question q = new ChoosePicture_Question(applet, id, type2, region, q_t, c_a, a1, a2, a3, a4);
+                            questions.add(q);
+                        } else {
+                            String query7 = "SELECT question_id FROM questions_tf WHERE question_id = ?";
+                            ps = con.prepareStatement(query7);
+                            ps.setInt(1, id);
+                            rs2 = ps.executeQuery();
+                            if (rs2.next()) {
+                                TrueOrFalse_Question q = new TrueOrFalse_Question(applet, id, type2, region, q_t, c_a);
+                                questions.add(q);
+                            }
+                        }
+                    }
+                }
+
+            }
+        } catch (SQLException e) {
+                e.printStackTrace();
         } finally {
             try {
                 if (rs != null) {

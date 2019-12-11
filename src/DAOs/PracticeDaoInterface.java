@@ -29,5 +29,5 @@ public interface PracticeDaoInterface
     
     public ProfileHistory getPracticeProfileHistoryByClass(String className);
     
-    public boolean updateScore(int id,int score);
+    public boolean updateScore(int id,int score,String[] answers);
 }

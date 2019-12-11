@@ -25,9 +25,9 @@ public class SoundManager {
         this.minim = minim;
         this.soundMenu = soundMenu;
         sounds = new HashMap<>();
-        loadSounds();
+        //loadSounds();
         languages = new HashMap<>();
-        loadLanguages();
+        //loadLanguages();
         backgroundPlayer = loadBackgroundSound("background.mp3");
         //backgroundPlayer.loop();
         this.isBackgroundPlaying = true;

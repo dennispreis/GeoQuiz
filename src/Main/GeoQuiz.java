@@ -1,11 +1,14 @@
 package Main;
 
 import DAOs.MyPracticeDao;
+import DAOs.MyQuestionDao;
 import DAOs.MyStudentDao;
 import DAOs.MyTeacherDao;
+import DAOs.MyTestDao;
 import DAOs.PracticeDaoInterface;
 import DAOs.StudentDaoInterface;
 import DAOs.TeacherDaoInterface;
+import DAOs.TestDaoInterface;
 import DTOs.*;
 import DTOs.Questions.ChoosePicture_Question;
 import DTOs.Questions.DragAndDrop_Question;
@@ -137,6 +140,11 @@ public class GeoQuiz extends PApplet {
         uiManager = new UIManager(cp5);
         switchScreen(Screen.LOGIN);
         settings.setLoadingApplication(false);
+        
+        MyQuestionDao myDao = new MyQuestionDao();
+        for(Question q : myDao.getAllQuestionByType(applet, "world")){
+            System.out.println("question id : " + q.getType());
+        }
     }
 
 
@@ -339,7 +347,6 @@ public class GeoQuiz extends PApplet {
     private boolean mouseWithIn(float x1, float y1, float x2, float y2) {
         return (mouseX > x1 && mouseX < x1 + x2 && mouseY > y1 && mouseY < y1 + y2);
     }
-
 
     private static void createUserInstance(int ID, boolean isTeacher) {
         if (isTeacher) {
@@ -645,8 +652,7 @@ public class GeoQuiz extends PApplet {
     
        
     }
-    
-    
+      
     private void showAdminStudentTest(){
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
         fill(100, 120);
@@ -700,6 +706,49 @@ public class GeoQuiz extends PApplet {
 
     private void showStudentWork() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CORNER);
+        rect(10, 120, width - 15, height - 200);
+
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("TestList"), 200, 50);
+
+        textSize(25);
+        stroke(255);
+        line(12, 180, width - 8, 180);
+        text(languageManager.getString("test_id"), 50, 170);
+        text(languageManager.getString("test_name"), 250, 170);
+        text(languageManager.getString("date_close"), 410, 170);
+        text(languageManager.getString("attempt"), 650, 170);
+        textSize(20);
+        TestDaoInterface ITestDao = new MyTestDao();
+        List<Test> testList =  ITestDao.getAllTest();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try
+        {
+            for (int i = 0;i< testList.size(); i++)
+            {
+                if (testList.get(i) != null)
+                {
+                    text(testList.get(i).getTest_id(),50,215 + 30*i);
+                    text(testList.get(i).getTest_name(), 250, 215 + 30 * i);
+                    text("Date",410,215+30*i);
+//                    text((formatter.format(testList.get(i).getDate())), 665, 215 + 30 * i);
+//                    text("Attempt",650,215+30*i);
+                }
+            }
+            
+            
+            
+        } catch (IndexOutOfBoundsException ignore)
+        {
+        }
+        textAlign(CENTER, CENTER);
+        
     }
 
     private void showChangePasswordBackground() {
