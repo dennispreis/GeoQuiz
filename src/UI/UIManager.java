@@ -1,6 +1,7 @@
 package UI;
 
 import DAOs.MyPaperDao;
+import DAOs.MyTestDao;
 import DTOs.Question;
 import DTOs.Student;
 import DTOs.Teacher;
@@ -139,7 +140,6 @@ public class UIManager {
         }
     }
 
-
     private void changeAvatarVisibility(boolean state) {
         if (state) {
             cp5.get("Profile_Avatar_Lion").show();
@@ -206,17 +206,19 @@ public class UIManager {
 
             //STUDENT PRACTISE
             ChooseAble[] tmp = GeoQuiz.getGameManager().getCategoryChooser().getElements();
-            tmp[0].setText(GeoQuiz.getLanguageManager().getString("city"));
-            tmp[1].setText(GeoQuiz.getLanguageManager().getString("mountain"));
-            tmp[2].setText(GeoQuiz.getLanguageManager().getString("river"));
+            tmp[0].setText(GeoQuiz.getLanguageManager().getString("cities"));
+            tmp[1].setText(GeoQuiz.getLanguageManager().getString("mountains"));
+            tmp[2].setText(GeoQuiz.getLanguageManager().getString("rivers"));
             tmp[3].setText(GeoQuiz.getLanguageManager().getString("world"));
-            tmp[4].setText(GeoQuiz.getLanguageManager().getString("island"));
-            tmp[5].setText(GeoQuiz.getLanguageManager().getString("lake"));
+            tmp[4].setText(GeoQuiz.getLanguageManager().getString("islands"));
+            tmp[5].setText(GeoQuiz.getLanguageManager().getString("lakes"));
 
+            /*
             tmp = GeoQuiz.getGameManager().getLevelChooser().getElements();
             tmp[0].setText(GeoQuiz.getLanguageManager().getString("easy"));
             tmp[1].setText(GeoQuiz.getLanguageManager().getString("medium"));
             tmp[2].setText(GeoQuiz.getLanguageManager().getString("hard"));
+            */
 
             //STUDENT GAME FEEDBACK
             cp5.get("Practise_Student_Game_Feedback_Back").setLabel(GeoQuiz.getLanguageManager().getString("back_to_menu"));
@@ -231,6 +233,8 @@ public class UIManager {
             for (Question q : GeoQuiz.getGameManager().getQuestions()) {
                 q.setQuestion_text(GeoQuiz.getLanguageManager().getQuestionsString(Integer.toString(q.getId())));
             }
+            Textarea ta = (Textarea) GeoQuiz.getGameManager().getCp5().get("Question_Textarea");
+            ta.setText(GeoQuiz.getLanguageManager().getQuestionsString(Integer.toString(GeoQuiz.getGameManager().getActualQuestion().getId())));
         }
     }
 
@@ -355,6 +359,7 @@ public class UIManager {
                         .setSize(400, 50)
                         .setLabel("Create Tests")
                         .onClick(callbackEvent -> {
+                            GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().updateActiveElement(GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().getElements()[0]);
                     GeoQuiz.switchScreen(Screen.CREATE_NEW_TEST);
                 }),
 
@@ -657,9 +662,9 @@ public class UIManager {
                 cp5.addButton("Practise_Student_Go").setPosition(400, 350).setSize(100, 100).
                         setImage(ImageMap.getImage(ImageName.GO)).onClick(callbackEvent -> {
                     GeoQuiz.getGameManager().setChoosenCategory();
-                    //   GeoQuiz.getGameManager().setChoosenLevel();
-                    GeoQuiz.getGameManager().createQuestions();
+                    GeoQuiz.getGameManager().createQuestions(true);
                     GeoQuiz.getGameManager().setPlaying(true);
+                    GeoQuiz.getGameManager().updateQuestionText();
                     GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
                     changeQuestionLanguage();
                     switchScreen(Screen.PLAYING);
@@ -787,27 +792,17 @@ public class UIManager {
                 cp5.addButton("Admin_Create_Test_CreateTest").setPosition(425, 75).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
-                    if (GeoQuiz.getTeacherManager().getTestManager().getNumOfQuestionsMarked() == 10) {
-                        MyPaperDao myPaper = new MyPaperDao();
-                        List<Question> qList = new ArrayList<>();
-
-                                /*
-
-                                Add test to database
-
-                                for(int i =0 ; i<10 ; i++){
-                                    qList.add();
-                                }
-
-                                myPaper.addNewPaper();
-                                */
+                    Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
+                    if (GeoQuiz.getTeacherManager().getTestManager().getMarkedQuestions().size() == 10 && !tf.getText().isEmpty()) {
+                        MyTestDao myDao = new MyTestDao();
+                        myDao.addTest(tf.getText(), GeoQuiz.getTeacherManager().getTestManager().getQuestionList());
                     }
                 }),
                 cp5.addButton("Admin_Create_Test_resetTest").setPosition(500, 75).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
                     GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
-                })
+                }),
         });
         Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
         tf.getCaptionLabel().setPaddingY(-90);
@@ -825,7 +820,7 @@ public class UIManager {
     private void uielementsCreateShowStudent_Progress() {
         Teacher teach = (Teacher) GeoQuiz.getUser();
         Controller[] controlArray = new Controller[teach.getClassList().size() + 3];
-        controlArray[0] = cp5.addButton("Admin_Show_Student_Progress").setPosition(20, 20).setSize(100, 100).
+        controlArray[0] = cp5.addButton("Admin_Show_Student_Progress_Back").setPosition(20, 20).setSize(50, 50).
                 setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
             switchScreen(Screen.MAIN_MENU_ADMIN);
         });

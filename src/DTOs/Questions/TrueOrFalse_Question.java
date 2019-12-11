@@ -29,11 +29,6 @@ public class TrueOrFalse_Question extends Question {
 
     @Override
     public void show() {
-        applet.rectMode(CENTER);
-        applet.textAlign(CENTER, CENTER);
-        applet.fill(255);
-        applet.textSize(30);
-        applet.text(getQuestion_text(), applet.width / 2, 100);
         radioButton.show();
     }
 

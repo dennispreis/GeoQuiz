@@ -48,6 +48,4 @@ public class Teacher extends User
     {
         this.classList = classList;
     }
-    
-    
 }

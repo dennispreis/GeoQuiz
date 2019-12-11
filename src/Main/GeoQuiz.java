@@ -1,11 +1,6 @@
 package Main;
 
-import DAOs.MyPracticeDao;
-import DAOs.MyStudentDao;
-import DAOs.MyTeacherDao;
-import DAOs.PracticeDaoInterface;
-import DAOs.StudentDaoInterface;
-import DAOs.TeacherDaoInterface;
+import DAOs.*;
 import DTOs.*;
 import DTOs.Questions.ChoosePicture_Question;
 import DTOs.Questions.DragAndDrop_Question;
@@ -19,6 +14,7 @@ import GameManager.gameElements.*;
 import Images.ImageName;
 import Languages.LanguageManager;
 import Sound.SoundManager;
+import Teacher.TestManager.NewTestManager;
 import Teacher.TestManager.QuestionRecord;
 import UI.UIManager;
 import controlP5.Button;
@@ -125,10 +121,10 @@ public class GeoQuiz extends PApplet {
     public void setup() {
         settings = new Settings();
         applet = this;
+        soundManager = new SoundManager(new Minim(this), new ControlP5(this));
         imageMap = new ImageMap(this);
         languageManager = new LanguageManager();
         cp5 = new ControlP5(this);
-        soundManager = new SoundManager(new Minim(this), new ControlP5(this));
         IStudentDao = new MyStudentDao();
         ITeacherDao = new MyTeacherDao();
         cp5.setFont(settings.getMyFont());
@@ -137,8 +133,13 @@ public class GeoQuiz extends PApplet {
         uiManager = new UIManager(cp5);
         switchScreen(Screen.LOGIN);
         settings.setLoadingApplication(false);
+        thread("loadSounds");
     }
 
+    public void loadSounds() {
+        soundManager.loadSounds();
+        soundManager.loadLanguages();
+    }
 
     public void draw() {
         switch (settings.getScreen()) {
@@ -205,8 +206,6 @@ public class GeoQuiz extends PApplet {
     }
 
     //------------------------------------Event methods given by Processing. Includes mouse and key events
-    public void keyPressed() {
-    }
 
     public void mousePressed() {
         if (settings.getScreen().equals(Screen.PLAYING)) {
@@ -257,25 +256,23 @@ public class GeoQuiz extends PApplet {
                     break;
                 }
             }
-            /*
-            for (ChooseAble ca : gameManager.getLevelChooser().getElements()) {
-                if (ca.isMouseWithIn()) {
-                    gameManager.getLevelChooser().updateActiveElement(ca);
-                    break;
-                }
-            }
-            */
         }
 
         if (settings.getScreen().equals(Screen.CREATE_NEW_TEST)) {
-            for (ChooseAble ca : teacherManager.getTestManager().getTypeChooser().getElements()) {
+            NewTestManager tm = teacherManager.getTestManager();
+            for (ChooseAble ca : tm.getTypeChooser().getElements()) {
                 if (ca.isMouseWithIn()) {
-                    teacherManager.getTestManager().getTypeChooser().updateActiveElement(ca);
+                    tm.getTypeChooser().updateActiveElement(ca);
+                    tm.setActiveCategory(ca);
+
                 }
             }
-            for (QuestionRecord qr : teacherManager.getTestManager().getQuestionRecordList()) {
-                if (qr.getMyQuestionCheckBox().isMouseWithIn() && qr.isHasToBeShown()) {
-                    teacherManager.getTestManager().updateRecordActive(qr);
+
+            if (!tm.getTypeChooser().getElements()[0].isActive()) {
+                for (QuestionRecord qr : tm.getPages().get(tm.getActiveCategory()).getQuestionRecordList()) {
+                    if (qr.getMyQuestionCheckBox().isMouseWithIn() && qr.isHasToBeShown()) {
+                        tm.getPages().get(tm.getActiveCategory()).updateRecordActive(qr);
+                    }
                 }
             }
         }
@@ -321,12 +318,13 @@ public class GeoQuiz extends PApplet {
     }
 
     public void mouseWheel(MouseEvent event) {
+
         if (settings.getScreen().equals(Screen.CREATE_NEW_TEST)) {
             if (!teacherManager.getTestManager().getTypeChooser().getElements()[0].isActive()) {
                 if (event.getCount() == 1) {
-                    teacherManager.getTestManager().nextPage();
+                    teacherManager.getTestManager().getPages().get(teacherManager.getTestManager().getActiveCategory()).nextPage();
                 } else if (event.getCount() == -1) {
-                    teacherManager.getTestManager().lastPage();
+                    teacherManager.getTestManager().getPages().get(teacherManager.getTestManager().getActiveCategory()).lastPage();
                 }
             }
         }
@@ -337,7 +335,6 @@ public class GeoQuiz extends PApplet {
     private boolean mouseWithIn(float x1, float y1, float x2, float y2) {
         return (mouseX > x1 && mouseX < x1 + x2 && mouseY > y1 && mouseY < y1 + y2);
     }
-
 
     private static void createUserInstance(int ID, boolean isTeacher) {
         if (isTeacher) {
@@ -394,7 +391,7 @@ public class GeoQuiz extends PApplet {
                     user.setTeacher(true);
                     System.out.println("Hello");
                     uiManager.createAdminElements();
-                    teacherManager = new TeacherManager(applet);
+                    teacherManager = new TeacherManager(applet, cp5);
                     switchScreen(Screen.MAIN_MENU_ADMIN);
                 } else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5)) {
                     cp5.get(Button.class, "Login_Login").hide();
@@ -406,7 +403,7 @@ public class GeoQuiz extends PApplet {
                 createUserInstance(ID, false);
                 user.setTeacher(false);
                 uiManager.createStudentElements();
-                gameManager = new GameManager(applet);
+                gameManager = new GameManager(applet, cp5);
                 switchScreen(Screen.MAIN_MENU_STUDENT);
             }
         }
@@ -449,6 +446,19 @@ public class GeoQuiz extends PApplet {
             //Feedback
 
         }
+    }
+
+    public static String getShortString(String s) {
+        if (s.length() >= 30) {
+            s = s.substring(0, 30);
+            int idx = 29;
+            while (s.toCharArray()[idx] != ' ') {
+                s = s.substring(0, idx);
+                idx--;
+            }
+            s += "...";
+        }
+        return s;
     }
 
     //------------------------------------Show Methods
@@ -633,7 +643,7 @@ public class GeoQuiz extends PApplet {
             }
 
             textAlign(CENTER, CENTER);
-            text((teach.getProfileHistory().getActualPage()) + " / " + (teach.getProfileHistory().getMaxPages()), 725, 540);
+            text((teach.getProfileHistory().getActualPage() + 1) + " / " + (teach.getProfileHistory().getMaxPages() + 1), 725, 540);
         }
 
     }
@@ -697,45 +707,7 @@ public class GeoQuiz extends PApplet {
 
     private void showNewTestBackground() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
-        teacherManager.getTestManager().getTypeChooser().show();
-
-        rectMode(CORNER);
-        stroke(0);
-        strokeWeight(2);
-        fill(100, 120);
-        textAlign(LEFT, TOP);
-
-
-        //Overview
-        if (teacherManager.getTestManager().getTypeChooser().getElements()[0].isActive()) {
-            rect(100, 150, 700, 425);
-
-            fill(255);
-            textSize(20);
-            text("Question marked :" + teacherManager.getTestManager().getNumOfQuestionsMarked(), 120, 160);
-            text("DragAndDrop : ", 120, 200);
-            text("Multiplichoice : ", 120, 230);
-            text("TrueOrFalse", 120, 260);
-            text("Picture Choosing : ", 120, 290);
-
-        } else {
-
-            rect(100, 150, 300, 425);
-            stroke(255);
-            line(105, 185, 395, 185);
-            textSize(20);
-            fill(255);
-            text(languageManager.getString("questionText"), 150, 165);
-            text((teacherManager.getTestManager().getPage() + 1) + " / " + (teacherManager.getTestManager().getMaxPage() + 1), 350, 165);
-
-            for (int i = teacherManager.getTestManager().getStart(); i < teacherManager.getTestManager().getEnd(); i++) {
-                try {
-                    teacherManager.getTestManager().getQuestionRecordList().get(i).show();
-                } catch (IndexOutOfBoundsException ignore) {
-
-                }
-            }
-        }
+        teacherManager.getTestManager().show();
     }
 
     //-------------------------------------Get Instances
@@ -775,6 +747,10 @@ public class GeoQuiz extends PApplet {
 
     public static TeacherManager getTeacherManager() {
         return teacherManager;
+    }
+
+    public static ControlP5 getCP5() {
+        return cp5;
     }
 
     public static PApplet getApplet() {

@@ -23,6 +23,7 @@ public class LanguageManager {
     private void loadLocalsIntoMap() {
         this.locals.put(Language.ENGLISH, new Locale("en", "EN"));
         this.locals.put(Language.GERMAN, new Locale("de", "DE"));
+        this.locals.put(Language.FRENCH, new Locale("fr", "FR"));
     }
 
     public String getString(String str) {

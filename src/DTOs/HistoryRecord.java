@@ -93,6 +93,4 @@ public class HistoryRecord
     {
         this.score = score;
     }
-    
-    
 }

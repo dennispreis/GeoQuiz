@@ -38,6 +38,15 @@ public class RadioButtonElement implements GameElement {
         return isActive;
     }
 
+    public void setPosition(float x, float y){
+        this.x = x;
+        this.y = y;
+    }
+
+    public String getText(){
+        return this.text;
+    }
+
     public void show() {
         applet.fill(col.getRGB());
         applet.stroke(0);

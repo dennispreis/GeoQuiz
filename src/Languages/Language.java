@@ -2,7 +2,8 @@ package Languages;
 
 public enum Language {
     GERMAN("german"),
-    ENGLISH("english");
+    ENGLISH("english"),
+    FRENCH("french");
 
     private String name;
 
