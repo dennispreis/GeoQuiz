@@ -827,11 +827,19 @@ public class UIManager {
                     if (GeoQuiz.getTeacherManager().getTestManager().getMarkedQuestions().size() == 10 && !tf.getText().isEmpty()) {
                         MyTestDao myDao = new MyTestDao();
                         myDao.addTest(tf.getText(), GeoQuiz.getTeacherManager().getTestManager().getQuestionList());
+                        cp5.addButton("dslkdjsalkdjsadjsaklj").setPosition(225,150).setSize(450,300).setLabel("Test Created")
+                                .onClick(callBackEvent->{
+                        cp5.getController("dslkdjsalkdjsadjsaklj").remove();
+                        ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
+                        GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
+                    });
+                  //  new FeedBackPop(GeoQuiz.getApplet(),1000).show();
                     }
                 }),
                 cp5.addButton("Admin_Create_Test_resetTest").setPosition(500, 75).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
+                        ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
                     GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
                 }),
         });
@@ -919,5 +927,39 @@ public class UIManager {
 
     }
     
+    private void uielementsCreateCreateNewQuestion(){
+        controller.put(Screen.CREATE_NEW_QUESTION, new Controller[]{
+                cp5.addButton("Admin_Create_Test_Logout").setPosition(20, 20).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                }),
+                cp5.addTextfield("Admin_Create_Test_TestName").setPosition(100, 75).setSize(300, 50)
+                        .setLabel("Test name").setAutoClear(false),
+                cp5.addButton("Admin_Create_Test_CreateTest").setPosition(425, 75).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
+                    if (GeoQuiz.getTeacherManager().getTestManager().getMarkedQuestions().size() == 10 && !tf.getText().isEmpty()) {
+                        MyTestDao myDao = new MyTestDao();
+                        myDao.addTest(tf.getText(), GeoQuiz.getTeacherManager().getTestManager().getQuestionList());
+                        cp5.addButton("dslkdjsalkdjsadjsaklj").setPosition(225,150).setSize(450,300).setLabel("Test Created")
+                                .onClick(callBackEvent->{
+                        cp5.getController("dslkdjsalkdjsadjsaklj").remove();
+                        ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
+                        GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
+                    });
+                  //  new FeedBackPop(GeoQuiz.getApplet(),1000).show();
+                    }
+                }),
+                cp5.addButton("Admin_Create_Test_resetTest").setPosition(500, 75).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                        ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
+                    GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
+                }),
+        });
+        Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
+        tf.getCaptionLabel().setPaddingY(-90);
+    }
 
 }
