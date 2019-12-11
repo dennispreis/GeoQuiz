@@ -7,6 +7,7 @@ package DAOs;
 
 import DTOs.ProfileHistory;
 import DTOs.Question;
+import DTOs.Test;
 import java.util.List;
 import processing.core.PApplet;
 
@@ -17,11 +18,15 @@ import processing.core.PApplet;
 public interface TestDaoInterface
 {
 
-    public List<Question> getTestByID(PApplet applet, int id, int paper_id);
+    public ProfileHistory getProfileHistory(String class_name);
 
-    public ProfileHistory getProfileHistory(int id);
-
-    public boolean updateScore(int id, int score);
+    public boolean updateScore(int id, int score,String[] answers);
 
     public void addTest(String test_name,List<Question> questionList);
+    
+    public List<Test> getAllTest();
+    
+    public List<Question> attemptTest(PApplet applet,int student_id,int test_id);
+    
+    public Test getTestObjectById(int test_id);
 }

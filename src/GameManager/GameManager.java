@@ -46,6 +46,42 @@ public class GameManager {
         this.level = Level.EASY;
         this.cp5 = cp5;
         cp5.addTextarea("Question_Textarea").setPosition(150, 50).setSize(500, 300).hide();
+        this.IPracticeDao = new MyPracticeDao();
+        score = 0;
+
+
+        categoryChooser = new TypeChooser(applet).setElements(new ChooseAble[]{
+                new ChooseAble(applet, 175, 200, ImageName.CATEGORY_CITIES, Category.CITIES).setText("Cities"),
+                new ChooseAble(applet, 275, 200, ImageName.CATEGORY_MOUNTAINS, Category.MOUNTAINS).setText("Mountains"),
+                new ChooseAble(applet, 375, 200, ImageName.CATEGORY_RIVERS, Category.RIVERS).setText("Rivers"),
+                new ChooseAble(applet, 475, 200, ImageName.CATEGORY_WORLD, Category.WORLD).setText("World"),
+                new ChooseAble(applet, 575, 200, ImageName.PLACEHOLDER_SMALL, Category.ISLANDS).setText("Islands"),
+                new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
+        });
+        categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
+        levelChooser = new TypeChooser(applet).setElements(new ChooseAble[]
+        {
+            new ChooseAble(applet, 275, 400, ImageName.LEVEL_EASY, Level.EASY).setText("Easy"),
+            new ChooseAble(applet, 425, 400, ImageName.PLACEHOLDER_SMALL, Level.MEDIUM).setText("Medium"),
+            new ChooseAble(applet, 575, 400, ImageName.LEVEL_HARD, Level.HARD).setText("Hard")
+        });
+        levelChooser.updateActiveElement(levelChooser.getElements()[0]);
+    }
+
+    public GameManager(PApplet applet, int id, boolean test)
+    {
+        this.id = 1;
+        this.applet = applet;
+        this.category = Category.WORLD;
+        this.level = Level.EASY;
+        this.test = test;
+        if (test)
+        {
+            this.ITestDao = new MyTestDao();
+        } else
+        {
+            this.IPracticeDao = null;
+        }
         score = 0;
 
         categoryChooser = new TypeChooser(applet).setElements(new ChooseAble[]
@@ -68,6 +104,7 @@ public class GameManager {
         } else {
             ITestDao = new MyTestDao();
             tmp = ITestDao.getTestByID(applet, id, paper_id);
+
         }
         questions = new Question[tmp.size()];
         tmp.toArray(questions);
@@ -164,13 +201,21 @@ public class GameManager {
         applet.text(GeoQuiz.getLanguageManager().getString("score") + " : " + score + " / " + maxScore, applet.width / 2, applet.height / 2);
     }
 
-    public void loadPractiseFeedback() {
-        for (Question q : questions) {
-            if (q instanceof DragAndDrop_Question) {
+    public void loadPractiseFeedback()
+    {
+        String[] answers = new String[10];
+        for (Question q : questions)
+        {
+            int i = 0;
+            if (q instanceof DragAndDrop_Question)
+            {
                 DragAndDrop_Question dad_question = (DragAndDrop_Question) q;
                 //Get Text from AnswerElement
-                if (dad_question.getDragAndDrop().getAnswerRect().isOccupied()) {
-                    if (dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText().equals(dad_question.getCorrect_answer())) {
+                if (dad_question.getDragAndDrop().getAnswerRect().isOccupied())
+                {
+                    answers[i] = dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText();
+                    if (dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText().equals(dad_question.getCorrect_answer()))
+                    {
                         score++;
                     }
                 }
@@ -178,8 +223,15 @@ public class GameManager {
                 Multiplichoice_Question mp_question = (Multiplichoice_Question) q;
                 //Get right array index and check if isActive()
                 System.out.println(mp_question.getCorrect_answer());
-
-                if (mp_question.getCheckBox().getElements()[Integer.parseInt(mp_question.getCorrect_answer()) - 1].isActive()) {
+                for(int j = 0 ; j<4;j++)
+                {
+                    if(mp_question.getCheckBox().getElements()[j].isActive())
+                    {
+                        answers[i] = Integer.toString(j);
+                    }
+                }
+                if (mp_question.getCheckBox().getElements()[Integer.parseInt(mp_question.getCorrect_answer()) - 1].isActive())
+                {
                     score++;
                 }
             } else if (q instanceof TrueOrFalse_Question) {
@@ -191,15 +243,30 @@ public class GameManager {
                 } else {
                     tmp = 1;
                 }
-
-                if (tof_question.getRadioButton().getElements()[tmp].isActive()) {
+                if(tof_question.getRadioButton().getElements()[0].isActive())
+                {
+                    answers[i] = "TRUE";
+                }else{
+                    answers[i] = "FALSE";
+                }
+                if (tof_question.getRadioButton().getElements()[tmp].isActive())
+                {
                     score++;
                 }
             } else if (q instanceof ChoosePicture_Question) {
                 ChoosePicture_Question cp_question = (ChoosePicture_Question) q;
                 //Get left or right picture and check if isChoosen()
-                if ("1".equals(cp_question.getCorrect_answer())) {
-                    if (cp_question.getChoosePicture().getButton_left().isChoosen()) {
+               
+                if(cp_question.getChoosePicture().getButton_left().isChoosen())
+                {
+                    answers[i] = "1";
+                }else{
+                    answers[i] = "2";
+                }
+                if ("1".equals(cp_question.getCorrect_answer()))
+                {
+                    if (cp_question.getChoosePicture().getButton_left().isChoosen())
+                    {
                         score++;
                     }
                 } else if (cp_question.getChoosePicture().getButton_right().isChoosen()) {
@@ -207,11 +274,14 @@ public class GameManager {
                 }
 
             }
+            i++;
         }
-        if (IPracticeDao != null) {
-            IPracticeDao.updateScore(this.id, score);
-        } else {
-            ITestDao.updateScore(id, score);
+        if (IPracticeDao != null)
+        {
+            IPracticeDao.updateScore(this.id, score,answers);
+        } else
+        {
+            ITestDao.updateScore(id, score,answers);
         }
 
     }

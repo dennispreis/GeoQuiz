@@ -8,7 +8,9 @@ package DTOs;
 import DAOs.ClassDaoInterface;
 import DAOs.MyClassDao;
 import DAOs.MyPracticeDao;
+import DAOs.MyTestDao;
 import DAOs.PracticeDaoInterface;
+import DAOs.TestDaoInterface;
 import java.util.List;
 
 /**
@@ -22,6 +24,8 @@ public class Teacher extends User
     private ProfileHistory classHistory;
     private static PracticeDaoInterface IPracticeDao = new MyPracticeDao();
     private static ClassDaoInterface IClassDao = new MyClassDao();
+    private static TestDaoInterface ITestDao = new MyTestDao();
+    
     public Teacher(int id, String name)
     {
         super(id, name);
@@ -34,6 +38,11 @@ public class Teacher extends User
         classHistory.setMaxPages();
     }
 
+    public void setProfileHistoryTest(String className)
+    {
+        this.classHistory = ITestDao.getProfileHistory(className);
+        classHistory.setMaxPages();
+    }
     public ProfileHistory getProfileHistory()
     {
         return this.classHistory;

@@ -250,6 +250,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Question> questions = new ArrayList<>();
+
         try {
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
@@ -259,7 +260,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
             ps.setString(1, type);
             ResultSet rs0 = ps.executeQuery();
             rs0.next();
-            int type_id_in = rs0.getInt("type_id");
+            int type_id_in = rs0.getInt("type_id");  
             System.out.println(type_id_in);
             String query = "SELECT question_id,type_id,region_id,question_text,correct_answer FROM questions WHERE type_id =?";
             ps = con.prepareStatement(query);
@@ -272,7 +273,6 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
                 int region_id = rs.getInt("region_id");
                 String q_t = rs.getString("question_text");
                 String c_a = rs.getString("correct_answer");
-
                 String query2 = "SELECT region FROM regions WHERE region_id = ?";
                 ps = con.prepareStatement(query2);
                 ps.setInt(1, region_id);
@@ -337,6 +337,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
 
             }
         } catch (SQLException e) {
+                e.printStackTrace();
 
         } finally {
             try {
@@ -355,7 +356,6 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
         }
         return questions;     // may be empty  }
     }
-
 
     @Override
     public List<Question> getQuestionByRegion(PApplet applet, String region) {

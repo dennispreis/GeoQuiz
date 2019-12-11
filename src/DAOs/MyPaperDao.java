@@ -170,7 +170,7 @@ public class MyPaperDao extends MySqlDao implements PaperDaoInterface {
         ResultSet rs = null;
         try {
             con = this.getConnection();
-            String query = "SELECT paper_id,question_id FROM paper WHERE paper_id=?";
+            String query = "SELECT paper_id,question_id FROM papers WHERE paper_id=?";
             ps = con.prepareStatement(query);
             ps.setInt(1, id);
             rs = ps.executeQuery();

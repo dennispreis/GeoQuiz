@@ -9,6 +9,7 @@ public class HistoryRecord
 {
     private String student_name;
     private int record_id;
+    private String test_name;
     private Category category;
     private Level level;
     private int score;
@@ -29,6 +30,16 @@ public class HistoryRecord
         this.record_id = record_id;
         this.category = category;
         this.level = level;
+        this.score = score;
+        this.date = date;
+    }
+
+    
+    public HistoryRecord(String student_name,String test_name,int record_id, int score, Date date)
+    {
+        this.student_name = student_name;
+        this.test_name = test_name;
+        this.record_id = record_id;
         this.score = score;
         this.date = date;
     }
@@ -92,5 +103,9 @@ public class HistoryRecord
     public void setScore(int score)
     {
         this.score = score;
+    }
+    public String getTest_name()
+    {
+        return test_name;
     }
 }
