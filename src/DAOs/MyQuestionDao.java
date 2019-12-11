@@ -211,7 +211,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
                             ChoosePicture_Question q = new ChoosePicture_Question(applet, id, type2, region, q_t, c_a, a1, a2, a3, a4);
                             questions.add(q);
                         } else {
-                            String query7 = "SELECT question_id FROM question_tf WHERE questions_id = ?";
+                            String query7 = "SELECT question_id FROM questions_tf WHERE question_id = ?";
                             ps = con.prepareStatement(query7);
                             ps.setInt(1, id);
                             rs2 = ps.executeQuery();
@@ -225,7 +225,7 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
 
             }
         } catch (SQLException e) {
-
+            e.printStackTrace();
         } finally {
             try {
                 if (rs != null) {

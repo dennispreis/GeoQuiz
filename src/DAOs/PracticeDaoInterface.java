@@ -5,6 +5,7 @@
  */
 package DAOs;
 
+import DTOs.Practice;
 import DTOs.ProfileHistory;
 import DTOs.Question;
 import java.util.List;
@@ -17,13 +18,13 @@ import processing.core.PApplet;
 public interface PracticeDaoInterface
 {
 
-    public List<Question> getPractice(PApplet applet,int id,String category);
+    public Practice getPractice(PApplet applet,int id,String category);
 
-    public List<Question> getPracticeByType(PApplet applet, String type,int id,String category);
+    public Practice getPracticeByType(PApplet applet, String type,int id,String category);
 
-    public List<Question> getPracticeByRegion(PApplet applet, String region,int id,String category);
+    public Practice getPracticeByRegion(PApplet applet, String region,int id,String category);
 
-    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region,int id,String category);
+    public Practice getPracticeByTypeRegion(PApplet applet, String type, String region,int id,String category);
 
     public ProfileHistory getProfileHistory(int id);
     

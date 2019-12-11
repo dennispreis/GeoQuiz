@@ -26,7 +26,7 @@ public interface TestDaoInterface
     
     public List<Test> getAllTest();
     
-    public List<Question> attemptTest(PApplet applet,int student_id,int test_id);
+    public Test attemptTest(PApplet applet,int student_id,int test_id);
     
     public Test getTestObjectById(int test_id);
 }

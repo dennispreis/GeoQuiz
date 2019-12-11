@@ -184,7 +184,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
     }
 
     @Override
-    public List<Question> attemptTest(PApplet applet,int student_id, int test_id)
+    public Test attemptTest(PApplet applet,int student_id, int test_id)
     {
         Connection con = null;
         PreparedStatement ps = null;
@@ -202,7 +202,9 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        t.setPaper_id(p.getId());
+        t.setQuestionList(p.getQuestions());
+        return t;
     }
 
     @Override

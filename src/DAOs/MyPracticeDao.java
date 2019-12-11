@@ -7,6 +7,7 @@ package DAOs;
 
 import DTOs.HistoryRecord;
 import DTOs.Paper;
+import DTOs.Practice;
 import DTOs.ProfileHistory;
 import DTOs.Question;
 
@@ -33,90 +34,126 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
     private PaperDaoInterface IPaperDao = new MyPaperDao();
 
     @Override
-    public List<Question> getPractice(PApplet applet, int id, String category)
+    public Practice getPractice(PApplet applet, int id, String category)
     {
         Connection con = null;
         PreparedStatement ps = null;
-        Paper p = IPaperDao.getRandPaper(applet);
+        Paper p = IPaperDao.getPaperByType(applet,category);
+        int insertId = 0;
         try
         {
             con = this.getConnection();
             String query = "INSERT INTO practices (paper_id,student_id,category) VALUES (?,?,?)";
-            ps = con.prepareStatement(query);
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getId());
             ps.setInt(2, id);
             ps.setString(3, category);
             ps.executeUpdate();
+            
+            
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    insertId = generatedKeys.getInt(1);
+                }
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        return (new Practice(insertId,p));
     }
 
-    public List<Question> getPracticeByType(PApplet applet, String type, int id, String category)
+    public Practice getPracticeByType(PApplet applet, String type, int id, String category)
     {
         Connection con = null;
         PreparedStatement ps = null;
         Paper p = IPaperDao.getPaperByType(applet, type);
+         int insertId = 0;
         try
         {
             con = this.getConnection();
             String query = "INSERT INTO practices (paper_id,student_id,category) VALUES (?,?,?)";
-            ps = con.prepareStatement(query);
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getId());
             ps.setInt(2, id);
             ps.setString(3, category);
             ps.executeUpdate();
+            
+            
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    insertId = generatedKeys.getInt(1);
+                }
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        return (new Practice(insertId,p));
     }
 
     @Override
-    public List<Question> getPracticeByRegion(PApplet applet, String region, int id, String category)
+    public Practice getPracticeByRegion(PApplet applet, String region, int id, String category)
     {
         Connection con = null;
         PreparedStatement ps = null;
         Paper p = IPaperDao.getPaperByRegion(applet, region);
+        int insertId = 0;
         try
         {
             con = this.getConnection();
             String query = "INSERT INTO practices (paper_id,student_id,category) VALUES (?,?,?)";
-            ps = con.prepareStatement(query);
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getId());
             ps.setInt(2, id);
             ps.setString(3, category);
             ps.executeUpdate();
+            
+            
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    insertId = generatedKeys.getInt(1);
+                }
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        return (new Practice(insertId,p));
     }
 
     @Override
-    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region, int id, String category)
+    public Practice getPracticeByTypeRegion(PApplet applet, String type, String region, int id, String category)
     {
         Connection con = null;
         PreparedStatement ps = null;
         Paper p = IPaperDao.getPaperByTypeRegion(applet, type, region);
+         int insertId = 0;
         try
         {
             con = this.getConnection();
             String query = "INSERT INTO practices (paper_id,student_id,category) VALUES (?,?,?)";
-            ps = con.prepareStatement(query);
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getId());
             ps.setInt(2, id);
             ps.setString(3, category);
             ps.executeUpdate();
+            
+            
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    insertId = generatedKeys.getInt(1);
+                }
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        return (new Practice(insertId,p));
     }
 
     @Override

@@ -319,6 +319,7 @@ public class UIManager {
                         setSize(200, 200).
                         setLabel("Profile").
                         setImage(ImageMap.getImage(ImageName.STUDENT_PROFILE)).onClick(callbackEvent -> {
+                            ((Student)GeoQuiz.getUser()).updateProfileHistory();
                     switchScreen(Screen.PROFILE_STUDENT);
                 }),
                 cp5.addButton("Main_Menu_Student_Logout").

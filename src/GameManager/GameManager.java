@@ -3,11 +3,13 @@ package GameManager;
 import DAOs.MyPracticeDao;
 import DAOs.MyQuestionDao;
 import DAOs.MyTestDao;
+import DTOs.Practice;
 import DTOs.Question;
 import DTOs.Questions.ChoosePicture_Question;
 import DTOs.Questions.DragAndDrop_Question;
 import DTOs.Questions.Multiplichoice_Question;
 import DTOs.Questions.TrueOrFalse_Question;
+import DTOs.Test;
 import GameManager.gameElements.DragAndDrop;
 import Images.ImageName;
 import Main.GeoQuiz;
@@ -27,7 +29,6 @@ public class GameManager {
     private PApplet applet;
     private ControlP5 cp5;
     private GameProperty category;
-    private GameProperty level;
     private Question[] questions;
     private Question actualQuestion;
     private int actuallQuestionIndex;
@@ -38,13 +39,13 @@ public class GameManager {
     private MyTestDao ITestDao;
     private int paper_id;
     private boolean test;
+    private int record_id;
     private int id;
 
     public GameManager(PApplet applet, ControlP5 cp5) {
         this.id = 1;
         this.applet = applet;
         this.category = Category.WORLD;
-        this.level = Level.EASY;
         this.cp5 = cp5;
         cp5.addTextarea("Question_Textarea").setPosition(150, 50).setSize(500, 300).hide();
         this.IPracticeDao = new MyPracticeDao();
@@ -72,7 +73,6 @@ public class GameManager {
         this.id = user_id;
         this.applet = applet;
         this.category = Category.WORLD;
-        this.level = Level.EASY;
         this.cp5 = cp5;
         cp5.addTextarea("Question_Textarea").setPosition(150, 50).setSize(500, 300).hide();
         this.IPracticeDao = new MyPracticeDao();
@@ -102,7 +102,6 @@ public class GameManager {
         this.id = id;
         this.applet = applet;
         this.category = Category.WORLD;
-        this.level = Level.EASY;
         this.test = test;
         if (test)
         {
@@ -126,9 +125,11 @@ public class GameManager {
     }
 
     public void createQuestions() {
+        Practice p = IPracticeDao.getPractice(applet, this.id, category.getName());
         List<Question> tmp;
         IPracticeDao = new MyPracticeDao();
-        tmp = IPracticeDao.getPractice(applet, this.id, category.getName());
+        tmp = p.getQuestionList();
+        this.record_id = p.getPractice_id();
         questions = new Question[tmp.size()];
         tmp.toArray(questions);
         actuallQuestionIndex = 0;
@@ -136,9 +137,11 @@ public class GameManager {
         maxScore = questions.length;
     }
       public void createQuestions(int id,int test_id){
+        Test t = ITestDao.attemptTest(applet, test_id, test_id);
         List<Question> tmp=null;
         ITestDao = new MyTestDao();
-        tmp = ITestDao.attemptTest(applet, id, test_id);
+        tmp = t.getQuestionList();
+        this.record_id = t.getTest_id();
         questions = new Question[tmp.size()];
         System.out.println(tmp.size());
         tmp.toArray(questions);
@@ -176,16 +179,9 @@ public class GameManager {
         return actualQuestion;
     }
 
-    public GameProperty getLevel() {
-        return level;
-    }
 
     public Question[] getQuestions() {
         return questions;
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
     }
 
     public GameProperty getCategory() {
@@ -312,10 +308,10 @@ public class GameManager {
         }
         if (IPracticeDao != null)
         {
-            IPracticeDao.updateScore(this.id, score,answers);
+            IPracticeDao.updateScore(record_id, score,answers);
         } else
         {
-            ITestDao.updateScore(id, score,answers);
+            ITestDao.updateScore(record_id, score,answers);
         }
 
     }
@@ -324,9 +320,6 @@ public class GameManager {
         this.category = categoryChooser.getActiveElement().getGameProperty();
     }
 
-    public void setChoosenLevel() {
-        this.level = levelChooser.getActiveElement().getGameProperty();
-    }
 
     public int getPaper_id() {
         return paper_id;
