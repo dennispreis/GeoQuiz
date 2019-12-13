@@ -104,6 +104,7 @@ public class UIManager {
         uielementsCreateShowStudent_Test();
         uielementsCreateCreateNewTest();
         uielementsCreateChangeStudentPassword();
+        uielementsCreateCreateNewQuestion();
         uielementsHideAll();
     }
 
@@ -335,7 +336,7 @@ public class UIManager {
         controller.put(Screen.MAIN_MENU_ADMIN, new Controller[]{
 
                 cp5.addButton("Change_Password")
-                        .setPosition(255, 200)
+                        .setPosition(255, 180)
                         .setSize(400, 50)
                         .setLabel(GeoQuiz.getLanguageManager().getString("Change_Password"))
                         .onClick(callbackEvent -> {
@@ -343,7 +344,7 @@ public class UIManager {
                 }),
 
                 cp5.addButton("Admin_Students")
-                        .setPosition(255, 280)
+                        .setPosition(255, 240)
                         .setSize(400, 50)
                         .setLabel(GeoQuiz.getLanguageManager().getString("student"))
                         .onClick(callbackEvent -> {
@@ -351,7 +352,7 @@ public class UIManager {
                 }),
 
                 cp5.addButton("View_Student_Progress")
-                        .setPosition(255, 360)
+                        .setPosition(255, 300)
                         .setSize(400, 50)
                         .setLabel(GeoQuiz.getLanguageManager().getString("View_Student_Progress"))
                         .onClick(callbackEvent -> {
@@ -359,7 +360,7 @@ public class UIManager {
                 }),
                 
                 cp5.addButton("View_Student_Test")
-                        .setPosition(255, 440)
+                        .setPosition(255, 360)
                         .setSize(400, 50)
                         .setLabel(GeoQuiz.getLanguageManager().getString("View_Student_Test"))
                         .onClick(callbackEvent -> {
@@ -367,14 +368,20 @@ public class UIManager {
                 }),
 
                 cp5.addButton("Create_New_Test")
-                        .setPosition(255, 520)
+                        .setPosition(255, 420)
                         .setSize(400, 50)
                         .setLabel("Create Tests")
                         .onClick(callbackEvent -> {
                             GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().updateActiveElement(GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().getElements()[0]);
                     GeoQuiz.switchScreen(Screen.CREATE_NEW_TEST);
                 }),
-
+                cp5.addButton("Create_New_Question")
+                        .setPosition(255, 480)
+                        .setSize(400, 50)
+                        .setLabel("Create Question")
+                        .onClick(callbackEvent -> {
+                     GeoQuiz.switchScreen(Screen.CREATE_NEW_QUESTION);
+                }),
                 cp5.addButton("Main_Menu_Admin_Logout")
                         .setPosition(20, 20)
                         .setSize(200, 50)
@@ -928,14 +935,41 @@ public class UIManager {
     }
     
     private void uielementsCreateCreateNewQuestion(){
+        
         controller.put(Screen.CREATE_NEW_QUESTION, new Controller[]{
-                cp5.addButton("Admin_Create_Test_Logout").setPosition(20, 20).setSize(50, 50).
+                cp5.addButton("Admin_Create_Question_Logout").setPosition(20, 20).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
                     switchScreen(Screen.MAIN_MENU_ADMIN);
                 }),
-                cp5.addTextfield("Admin_Create_Test_TestName").setPosition(100, 75).setSize(300, 50)
-                        .setLabel("Test name").setAutoClear(false),
-                cp5.addButton("Admin_Create_Test_CreateTest").setPosition(425, 75).setSize(50, 50)
+                cp5.addTextfield("Admin_Create_Question_QuestionText").setPosition(100, 75).setSize(700, 50)
+                        .setLabel("Question Text").setAutoClear(false),
+                cp5.addButton("Admin_Create_Question_MultipleChoice").setPosition(75,350).setSize(300,50).setLabel("MultipleChoice")
+                    .onClick(callBackEvent->{
+                        this.clearQuestionButton();
+                        cp5.addTextfield("Tf1").setPosition(400,200).setSize(300,50).setLabel("Answer 1");
+                        cp5.addTextfield("Tf2").setPosition(400,300).setSize(300,50).setLabel("Answer 2");
+                        cp5.addTextfield("Tf3").setPosition(400,400).setSize(300,50).setLabel("Answer 3");
+                        cp5.addTextfield("Tf4").setPosition(400,500).setSize(300,50).setLabel("Answer 4");
+                        
+                    }),
+                cp5.addButton("Admin_Create_Question_TrueORFalse").setPosition(75,200).setSize(300,50).setLabel("TrueFalse")
+                    .onClick(callBackEvent->{
+                        
+                        this.clearQuestionButton();
+                        
+                        cp5.addRadioButton("Tf9").setPosition(400,200).setSize(100,100).addItem("TRUE", 1).addItem("FALSE",2);
+                    }),
+                cp5.addButton("Admin_Create_Question_Drag And Drop").setPosition(75,275).setSize(300,50).setLabel("DragAndDrop")
+                    .onClick(callBackEvent->{
+                        
+                        this.clearQuestionButton();
+                        cp5.addTextfield("Tf5").setPosition(400,200).setSize(300,50).setLabel("Answer 1");
+                        cp5.addTextfield("Tf6").setPosition(400,300).setSize(300,50).setLabel("Answer 2");
+                        cp5.addTextfield("Tf7").setPosition(400,400).setSize(300,50).setLabel("Answer 3");
+                        cp5.addTextfield("Tf8").setPosition(400,500).setSize(300,50).setLabel("Answer 4");
+                        
+                    }),
+                cp5.addButton("Admin_Create_Question_CreateQuestion").setPosition(825, 75).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
                     Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
@@ -948,18 +982,28 @@ public class UIManager {
                         ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
                         GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
                     });
-                  //  new FeedBackPop(GeoQuiz.getApplet(),1000).show();
                     }
                 }),
-                cp5.addButton("Admin_Create_Test_resetTest").setPosition(500, 75).setSize(50, 50)
-                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-                        .onClick(callbackEvent -> {
-                        ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
-                    GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
-                }),
+                
         });
         Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
         tf.getCaptionLabel().setPaddingY(-90);
     }
 
+    private void clearQuestionButton(){
+
+        try{cp5.getController("Tf1").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf2").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf3").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf4").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf5").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf6").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf7").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf8").remove();}catch(NullPointerException e){}
+        try{cp5.getGroup("Tf9").remove();}catch(NullPointerException e){}
+        try{cp5.getController("correctAnswer1").remove();}catch(NullPointerException e){}
+        try{cp5.getController("correctAnswer2").remove();}catch(NullPointerException e){}
+        
+    }
 }
+

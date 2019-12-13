@@ -6,6 +6,7 @@ import DTOs.Questions.ChoosePicture_Question;
 import DTOs.Questions.DragAndDrop_Question;
 import DTOs.Questions.Multiplichoice_Question;
 import DTOs.Questions.TrueOrFalse_Question;
+import Feedback.Feedback;
 import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
 import Feedback.PasscodeNotFoundFeedback;
@@ -184,6 +185,9 @@ public class GeoQuiz extends PApplet {
                 break;
             case CREATE_NEW_TEST:
                 showNewTestBackground();
+                break;
+            case CREATE_NEW_QUESTION:
+                showNewQuestionBackground();
                 break;
             case SHOW_STUDENT_PROGRESS:
                 showAdminStudentProccess();
@@ -402,11 +406,20 @@ public class GeoQuiz extends PApplet {
                 }
             } else {
                 ID = IStudentDao.getAccountId(name, password);
-                createUserInstance(ID, false);
-                user.setTeacher(false);
-                uiManager.createStudentElements();
-                gameManager = new GameManager(applet, cp5,ID);
-                switchScreen(Screen.MAIN_MENU_STUDENT);
+                if (ID == -1)
+                {
+                    (new NamePasswordNotFoundFeedBack(applet, 5000))
+                            .setPosition(new PVector(750, 350))
+                            .setSize(new PVector(170, 50)).show();
+                }
+                else
+                {
+                    createUserInstance(ID, false);
+                    user.setTeacher(false);
+                    uiManager.createStudentElements();
+                    gameManager = new GameManager(applet, cp5,ID);
+                    switchScreen(Screen.MAIN_MENU_STUDENT);
+                }
             }
         }
     }
@@ -808,6 +821,10 @@ public class GeoQuiz extends PApplet {
     private void showNewTestBackground() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
         teacherManager.getTestManager().show();
+    }
+    
+    private void showNewQuestionBackground(){
+         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
 
     //-------------------------------------Get Instances
