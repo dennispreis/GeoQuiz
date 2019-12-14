@@ -165,6 +165,9 @@ public class GeoQuiz extends PApplet {
             case VIEW_STUDENT_PROGRESS_ADMIN:
                 showStudentPracticeView();
                 break;
+            case TEST_LIST:
+                showAdminTestList();
+                break;
             case PROFILE_STUDENT:
                 showStudentProfile();
                 break;
@@ -716,6 +719,51 @@ public class GeoQuiz extends PApplet {
         textAlign(CENTER, CENTER);
         text((teach.getProfileHistory().getActualPage()+1) + " / " + (teach.getProfileHistory().getMaxPages()+1), 725, 540);
         }
+    }
+    
+    private void showAdminTestList(){
+          background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CORNER);
+        rect(10, 120, width - 15, height - 200);
+
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("TestList"), 200, 50);
+
+        textSize(25);
+        stroke(255);
+        line(12, 180, width - 8, 180);
+        text(languageManager.getString("test_id"), 50, 170);
+        text(languageManager.getString("test_name"), 250, 170);
+        text(languageManager.getString("date_close"), 410, 170);
+        text(languageManager.getString("attempt"), 650, 170);
+        textSize(20);
+        TestDaoInterface ITestDao = new MyTestDao();
+        List<Test> testList =  ITestDao.getAllTest();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try
+        {
+            for (int i = 0;i< testList.size(); i++)
+            {
+                if (testList.get(i) != null)
+                {
+                    text(testList.get(i).getTest_id(),50,215 + 30*i);
+                    text(testList.get(i).getTest_name(), 250, 215 + 30 * i);
+                    text("Date",410,215+30*i);
+                }
+            }
+            
+            
+            
+        } catch (IndexOutOfBoundsException ignore)
+        {
+        }
+        textAlign(CENTER, CENTER);
+        
     }
 
     private void showStudentWork() {
