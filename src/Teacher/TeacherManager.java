@@ -18,4 +18,7 @@ public class TeacherManager {
         return this.testManager;
     }
 
+    public void updateQuestionList(){
+        this.testManager.loadPages();
+    }
 }

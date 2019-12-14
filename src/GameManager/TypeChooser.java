@@ -17,7 +17,7 @@ public class TypeChooser {
             ca.show();
         }
     }
-
+    
     public TypeChooser setElements(ChooseAble[] arr) {
         this.elements = arr;
         return this;
