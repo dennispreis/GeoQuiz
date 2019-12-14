@@ -72,7 +72,8 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface {
 
             statement.executeQuery(query);
             resultSet = statement.getResultSet();
-            resultSet.next();
+            
+            if(resultSet.next()){
 
             int id = resultSet.getInt("account_id");
             String name = resultSet.getString("username");
@@ -81,6 +82,7 @@ public class MyStudentDao extends MySqlDao implements StudentDaoInterface {
             String nickname = resultSet.getString("nickname");
 
             return new Student(class_id, nickname, id, name, avatar);
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
