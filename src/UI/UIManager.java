@@ -109,6 +109,7 @@ public class UIManager {
         uielementsCreateChangeStudentPassword();
         uielementsCreateCreateNewQuestion();
         uielementsCreateShowTestList();
+        uielementsCreateShowOneTest();
         uielementsHideAll();
     }
 
@@ -495,7 +496,7 @@ public class UIManager {
             int test_id = testList.get(i).getTest_id();
             controlArray[i+1] = cp5.addButton("Attempt"+i).setPosition(650,200+30*i).setSize(15,15).setLabel(" ").onClick(
             callBackEvent ->{
-                    GeoQuiz.getGameManager().setChoosenCategory();        
+                    GeoQuiz.getGameManager().setChoosenCategory();
                     GeoQuiz.getGameManager().createQuestions(id,test_id);
                     GeoQuiz.getGameManager().setPlaying(true);
                     GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
@@ -523,17 +524,23 @@ public class UIManager {
             int test_id = testList.get(i).getTest_id();
             controlArray[i+1] = cp5.addButton("Attempt"+i).setPosition(650,200+30*i).setSize(15,15).setLabel(" ").onClick(
             callBackEvent ->{
-                    GeoQuiz.getGameManager().setChoosenCategory();        
-                    GeoQuiz.getGameManager().createQuestions(id,test_id);
-                    GeoQuiz.getGameManager().setPlaying(true);
-                    GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
+                    GeoQuiz.getTestQuestionList().setQuestionList(test_id);;
                     changeQuestionLanguage();
-                    switchScreen(Screen.PLAYING);
+                    switchScreen(Screen.SHOW_ONE_TEST);
             }
             );
         }
         
         controller.put(Screen.TEST_LIST, controlArray);
+    }
+    
+    private void uielementsCreateShowOneTest(){
+      controller.put(Screen.SHOW_ONE_TEST, new Controller[]{
+                cp5.addButton("Admin_Show_One_Logout").setPosition(20, 20).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.CREATE_NEW_TEST);
+                })
+        });
     }
     
     private void uielementsCreateStudentProfile() {

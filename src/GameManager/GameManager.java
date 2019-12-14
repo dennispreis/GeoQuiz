@@ -36,7 +36,7 @@ public class GameManager {
     private boolean isPlaying;
     private TypeChooser categoryChooser;
     private MyPracticeDao IPracticeDao;
-    private MyTestDao ITestDao;
+    private static MyTestDao ITestDao = new MyTestDao();
     private int paper_id;
     private boolean test;
     private int record_id;
@@ -90,13 +90,7 @@ public class GameManager {
         this.applet = applet;
         this.category = Category.WORLD;
         this.test = test;
-        if (test)
-        {
-            this.ITestDao = new MyTestDao();
-        } else
-        {
-            this.IPracticeDao = null;
-        }
+       
         score = 0;
 
         categoryChooser = new TypeChooser(applet).setElements(new ChooseAble[]
@@ -114,6 +108,7 @@ public class GameManager {
     public void createQuestions() {
         Practice p = IPracticeDao.getPractice(applet, this.id, category.getName());
         List<Question> tmp;
+        this.test = false;
         IPracticeDao = new MyPracticeDao();
         tmp = p.getQuestionList();
         this.record_id = p.getPractice_id();
@@ -124,9 +119,9 @@ public class GameManager {
         maxScore = questions.length;
     }
       public void createQuestions(int id,int test_id){
-        Test t = ITestDao.attemptTest(applet, test_id, test_id);
+        Test t = ITestDao.attemptTest(applet, id, test_id);
+        this.test = true;
         List<Question> tmp=null;
-        ITestDao = new MyTestDao();
         tmp = t.getQuestionList();
         this.record_id = t.getTest_id();
         questions = new Question[tmp.size()];
@@ -290,7 +285,17 @@ public class GameManager {
             }
             i++;
         }
-        if (IPracticeDao != null)
+        
+        String answer_attempt = "";
+        for(int i = 0 ; i < answers.length;i++)
+        {
+            answer_attempt = answer_attempt+answers[i];
+            if(i !=answers.length-1)
+            {
+                answer_attempt +=",";
+            }
+        }
+        if (!test)
         {
             IPracticeDao.updateScore(record_id, score,answers);
         } else
@@ -313,4 +318,7 @@ public class GameManager {
         this.paper_id = paper_id;
     }
 
+    public int getId(){
+        return this.id;
+    }
 }

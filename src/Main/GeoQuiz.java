@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.List;
 
 import Images.ImageMap;
+import Teacher.TestManager.TestQuestionList;
 import processing.event.MouseEvent;
 
 import java.time.LocalDateTime;
@@ -51,6 +52,7 @@ public class GeoQuiz extends PApplet {
     private static UIManager uiManager;
     private static PApplet applet;
     private static TeacherManager teacherManager;
+    private static TestQuestionList testQuestionList;
 
     //------------------------------------Inner classes
     public class Settings {
@@ -167,6 +169,9 @@ public class GeoQuiz extends PApplet {
                 break;
             case TEST_LIST:
                 showAdminTestList();
+                break;
+            case SHOW_ONE_TEST:
+                showOneTest();
                 break;
             case PROFILE_STUDENT:
                 showStudentProfile();
@@ -401,6 +406,7 @@ public class GeoQuiz extends PApplet {
                     System.out.println("Hello");
                     uiManager.createAdminElements();
                     teacherManager = new TeacherManager(applet, cp5);
+                    testQuestionList = new TestQuestionList(applet,cp5);
                     switchScreen(Screen.MAIN_MENU_ADMIN);
                 } else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5)) {
                     cp5.get(Button.class, "Login_Login").hide();
@@ -766,6 +772,15 @@ public class GeoQuiz extends PApplet {
         
     }
 
+    private void showOneTest(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+         textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("QuestionList"), 200, 50);
+        testQuestionList.show();
+    }
+    
     private void showStudentWork() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
         fill(100, 120);
@@ -914,6 +929,10 @@ public class GeoQuiz extends PApplet {
         return teacherManager;
     }
 
+    public static TestQuestionList getTestQuestionList(){
+        return testQuestionList;
+    }
+    
     public static ControlP5 getCP5() {
         return cp5;
     }

@@ -15,14 +15,14 @@ import static processing.core.PConstants.TOP;
 
 public class QuestionRecord {
 
-    private ControlP5 cp5;
-    private PApplet applet;
-    private Question question;
-    private String shrinkedQuestionText;
-    private MyQuestionCheckBox myQuestionCheckBox;
-    private boolean hasToBeShown;
-    private float xPos, yPos, xSize, ySize;
-    private int num;
+    protected ControlP5 cp5;
+    protected PApplet applet;
+    protected Question question;
+    protected String shrinkedQuestionText;
+    protected MyQuestionCheckBox myQuestionCheckBox;
+    protected boolean hasToBeShown;
+    protected float xPos, yPos, xSize, ySize;
+    protected int num;
 
     public QuestionRecord(PApplet applet, Question question, int num, float x, float y) {
         this.applet = applet;
