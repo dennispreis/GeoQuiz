@@ -375,6 +375,7 @@ public class UIManager {
                         .setSize(400, 50)
                         .setLabel("Create Tests")
                         .onClick(callbackEvent -> {
+                              try{GeoQuiz.getTeacherManager().updateQuestionList();}catch(NullPointerException e){}
                             GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().updateActiveElement(GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().getElements()[0]);
                     GeoQuiz.switchScreen(Screen.CREATE_NEW_TEST);
                 }),
@@ -507,6 +508,33 @@ public class UIManager {
 
     }
 
+    private void uielementsCreateShowTestList(){
+        TestDaoInterface ITestDao = new MyTestDao();
+        List<Test> testList = ITestDao.getAllTest();
+        Controller[] controlArray = new Controller[testList.size()+1];
+        controlArray[0] = cp5.addButton("Test_List_Back").setPosition(20, 20).setSize(100, 100).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                });
+        int id = GeoQuiz.getUser().getId();
+        for(int i = 0 ; i < testList.size();i++)
+        {
+            int test_id = testList.get(i).getTest_id();
+            controlArray[i+1] = cp5.addButton("Attempt"+i).setPosition(650,200+30*i).setSize(15,15).setLabel(" ").onClick(
+            callBackEvent ->{
+                    GeoQuiz.getGameManager().setChoosenCategory();        
+                    GeoQuiz.getGameManager().createQuestions(id,test_id);
+                    GeoQuiz.getGameManager().setPlaying(true);
+                    GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
+                    changeQuestionLanguage();
+                    switchScreen(Screen.PLAYING);
+            }
+            );
+        }
+        
+        controller.put(Screen.TEST_LIST, controlArray);
+    }
+    
     private void uielementsCreateStudentProfile() {
         controller.put(Screen.PROFILE_STUDENT, new Controller[]{
 
@@ -817,12 +845,12 @@ public class UIManager {
                             changeStudentMenuLanguage();
                         }
                     }
-
                 })
         });
     }
 
     private void uielementsCreateCreateNewTest() {
+      
         controller.put(Screen.CREATE_NEW_TEST, new Controller[]{
                 cp5.addButton("Admin_Create_Test_Logout").setPosition(20, 20).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
@@ -977,8 +1005,8 @@ public class UIManager {
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
                     Textfield tf = (Textfield) cp5.get("Admin_Create_Question_QuestionText");
-                    Textfield a1,a2,a3,a4;
-                    String correct_answer;
+                    Textfield a1=null,a2=null,a3=null,a4=null;
+                    String correct_answer = "";
                     int questionType=0;
                     try{
                         a1 = (Textfield) cp5.get("Tf1");
@@ -1002,7 +1030,7 @@ public class UIManager {
                             a4 = (Textfield) cp5.get("Tf8");
                              for(int i = 1 ; i <= 5;i++)
                             {
-                            if(((RadioButton)cp5.get("Ca1")).getState(i))
+                            if(((RadioButton)cp5.get("Ca2")).getState(i))
                             {
                                 correct_answer =  ((Textfield) cp5.get("Tf"+(4+i))).getText();
                             }
@@ -1011,7 +1039,7 @@ public class UIManager {
                         }
                         catch(NullPointerException e1)
                         {
-                            correct_answer = Boolean.toString(((RadioButton) cp5.get("Tf9")).getState("TRUE"));
+                                correct_answer = Boolean.toString(((RadioButton) cp5.get("Tf9")).getState("TRUE"));
                              questionType = 3;
                         }
                     }
@@ -1019,7 +1047,18 @@ public class UIManager {
                         if (!tf.getText().isEmpty()) 
                         {
                             QuestionDaoInterface IQuestionDao = new MyQuestionDao();
-                            
+                            switch(questionType)
+                            {
+                                case 1:
+                                    IQuestionDao.addMCQuestion("world", "World", tf.getText(), correct_answer, a1.getText(), a2.getText(), a2.getText(), a2.getText());
+                                    break;
+                                case 2:    
+                                    IQuestionDao.addDDQuestion("world", "World", tf.getText(), correct_answer, a1.getText(), a2.getText(), a2.getText(), a2.getText());
+                                    break;
+                                case 3:
+                                    IQuestionDao.addTFQuestion("world", "World", tf.getText(), correct_answer);
+                                    break;
+                            }
                             cp5.addButton("vnueuhdhasdskjsahdsakj").setPosition(225,150).setSize(450,300).setLabel("Question Created")
                                 .onClick(callBackEvent->{
                             cp5.getController("vnueuhdhasdskjsahdsakj").remove();

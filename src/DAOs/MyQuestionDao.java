@@ -713,6 +713,89 @@ public class MyQuestionDao extends MySqlDao implements QuestionDaoInterface {
     }
 
     @Override
+    public boolean addMCQuestion(String type,String region,String question_text,String correct_answer,String a1,String a2,String a3,String a4)
+    {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        boolean success = false;
+        try {
+            conn = this.getConnection();
+            String query = "CALL createMCQ(?,?,?,?,?,?,?,?)";
+            ps = conn.prepareStatement(query);
+            ps.setString(1, type);
+            ps.setString(2,region);
+            ps.setString(3, question_text);
+            ps.setString(4,correct_answer);
+            ps.setString(5, a1);
+            ps.setString(6, a2);
+            ps.setString(7, a3);
+            ps.setString(8, a4);
+            if (ps.executeUpdate() == 1) {
+
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean addTFQuestion(String type,String region,String question_text,String correct_answer)
+    {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        boolean success = false;
+        try {
+            conn = this.getConnection();
+            String query = "CALL createTFQ(?,?,?,?)";
+            ps = conn.prepareStatement(query);
+            ps.setString(1, type);
+            ps.setString(2,region);
+            ps.setString(3, question_text);
+            ps.setString(4,correct_answer);
+            if (ps.executeUpdate() == 1) {
+
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    @Override
+    public boolean addDDQuestion(String type,String region,String question_text,String correct_answer,String a1,String a2,String a3,String a4)
+     {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        boolean success = false;
+        try {
+            conn = this.getConnection();
+            String query = "CALL createDDQ(?,?,?,?,?,?,?,?)";
+            ps = conn.prepareStatement(query);
+            ps.setString(1, type);
+            ps.setString(2,region);
+            ps.setString(8, question_text);
+            ps.setString(3,correct_answer);
+            ps.setString(4, a1);
+            ps.setString(5, a2);
+            ps.setString(6, a3);
+            ps.setString(7, a4);
+            if (ps.executeUpdate() == 1) {
+
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    @Override
     public boolean updateQuestion(int id, String field, String value) {
         Connection con = null;
         PreparedStatement ps = null;
