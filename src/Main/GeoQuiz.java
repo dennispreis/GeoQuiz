@@ -52,7 +52,6 @@ public class GeoQuiz extends PApplet {
     private static PApplet applet;
     private static TeacherManager teacherManager;
 
-
     //------------------------------------Inner classes
     public class Settings {
 
@@ -134,6 +133,7 @@ public class GeoQuiz extends PApplet {
         uiManager = new UIManager(cp5);
         switchScreen(Screen.LOGIN);
         settings.setLoadingApplication(false);
+
    //     thread("loadSounds");
     }
 
@@ -824,7 +824,7 @@ public class GeoQuiz extends PApplet {
     }
     
     private void showNewQuestionBackground(){
-         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
     }
 
     //-------------------------------------Get Instances

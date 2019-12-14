@@ -1,7 +1,9 @@
 package UI;
 
 import DAOs.MyPaperDao;
+import DAOs.MyQuestionDao;
 import DAOs.MyTestDao;
+import DAOs.QuestionDaoInterface;
 import DAOs.TestDaoInterface;
 import DTOs.Question;
 import DTOs.Student;
@@ -9,6 +11,7 @@ import DTOs.Teacher;
 import DTOs.Test;
 import GameManager.Category;
 import GameManager.ChooseAble;
+import GameManager.TypeChooser;
 import Images.ImageMap;
 import Images.ImageName;
 import Languages.Language;
@@ -935,31 +938,32 @@ public class UIManager {
     }
     
     private void uielementsCreateCreateNewQuestion(){
-        
+        int choice =0;    
+                     
         controller.put(Screen.CREATE_NEW_QUESTION, new Controller[]{
                 cp5.addButton("Admin_Create_Question_Logout").setPosition(20, 20).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                      this.clearQuestionButton();
                     switchScreen(Screen.MAIN_MENU_ADMIN);
                 }),
                 cp5.addTextfield("Admin_Create_Question_QuestionText").setPosition(100, 75).setSize(700, 50)
                         .setLabel("Question Text").setAutoClear(false),
-                cp5.addButton("Admin_Create_Question_MultipleChoice").setPosition(75,350).setSize(300,50).setLabel("MultipleChoice")
+                cp5.addButton("Admin_Create_Question_MultipleChoice").setPosition(75,400).setSize(300,50).setLabel("MultipleChoice")
                     .onClick(callBackEvent->{
                         this.clearQuestionButton();
-                        cp5.addTextfield("Tf1").setPosition(400,200).setSize(300,50).setLabel("Answer 1");
+                       cp5.addTextfield("Tf1").setPosition(400,200).setSize(300,50).setLabel("Answer 1");
                         cp5.addTextfield("Tf2").setPosition(400,300).setSize(300,50).setLabel("Answer 2");
                         cp5.addTextfield("Tf3").setPosition(400,400).setSize(300,50).setLabel("Answer 3");
                         cp5.addTextfield("Tf4").setPosition(400,500).setSize(300,50).setLabel("Answer 4");
-                        
+                        cp5.addRadioButton("Ca1").setPosition(725,200).setSize(50,50).addItem("√",1).addItem("√ ",2).addItem("√  ",3).addItem("√   ",4).setSpacingRow(50);
                     }),
-                cp5.addButton("Admin_Create_Question_TrueORFalse").setPosition(75,200).setSize(300,50).setLabel("TrueFalse")
+                cp5.addButton("Admin_Create_Question_TrueORFalse").setPosition(75,250).setSize(300,50).setLabel("TrueFalse")
                     .onClick(callBackEvent->{
                         
                         this.clearQuestionButton();
-                        
                         cp5.addRadioButton("Tf9").setPosition(400,200).setSize(100,100).addItem("TRUE", 1).addItem("FALSE",2);
                     }),
-                cp5.addButton("Admin_Create_Question_Drag And Drop").setPosition(75,275).setSize(300,50).setLabel("DragAndDrop")
+                cp5.addButton("Admin_Create_Question_Drag And Drop").setPosition(75,325).setSize(300,50).setLabel("DragAndDrop")
                     .onClick(callBackEvent->{
                         
                         this.clearQuestionButton();
@@ -967,26 +971,71 @@ public class UIManager {
                         cp5.addTextfield("Tf6").setPosition(400,300).setSize(300,50).setLabel("Answer 2");
                         cp5.addTextfield("Tf7").setPosition(400,400).setSize(300,50).setLabel("Answer 3");
                         cp5.addTextfield("Tf8").setPosition(400,500).setSize(300,50).setLabel("Answer 4");
-                        
+                        cp5.addRadioButton("Ca2").setPosition(725,200).setSize(50,50).addItem("√ ",1).addItem("√  ",2).addItem("√   ",3).addItem("√",4).setSpacingRow(50); 
                     }),
                 cp5.addButton("Admin_Create_Question_CreateQuestion").setPosition(825, 75).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
-                    Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
-                    if (GeoQuiz.getTeacherManager().getTestManager().getMarkedQuestions().size() == 10 && !tf.getText().isEmpty()) {
-                        MyTestDao myDao = new MyTestDao();
-                        myDao.addTest(tf.getText(), GeoQuiz.getTeacherManager().getTestManager().getQuestionList());
-                        cp5.addButton("dslkdjsalkdjsadjsaklj").setPosition(225,150).setSize(450,300).setLabel("Test Created")
-                                .onClick(callBackEvent->{
-                        cp5.getController("dslkdjsalkdjsadjsaklj").remove();
-                        ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
-                        GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
-                    });
+                    Textfield tf = (Textfield) cp5.get("Admin_Create_Question_QuestionText");
+                    Textfield a1,a2,a3,a4;
+                    String correct_answer;
+                    int questionType=0;
+                    try{
+                        a1 = (Textfield) cp5.get("Tf1");
+                        a2 = (Textfield) cp5.get("Tf2");
+                        a3 = (Textfield) cp5.get("Tf3");
+                        a4 = (Textfield) cp5.get("Tf4");
+                        for(int i = 1 ; i <= 5;i++)
+                        {
+                            if(((RadioButton)cp5.get("Ca1")).getState(i))
+                            {
+                                correct_answer = Integer.toString(i);
+                            }
+                        }
+                        questionType = 1;
+                    }catch(NullPointerException e)
+                    {
+                        try{
+                            a1 = (Textfield) cp5.get("Tf5");
+                            a2 = (Textfield) cp5.get("Tf6");
+                            a3 = (Textfield) cp5.get("Tf7");
+                            a4 = (Textfield) cp5.get("Tf8");
+                             for(int i = 1 ; i <= 5;i++)
+                            {
+                            if(((RadioButton)cp5.get("Ca1")).getState(i))
+                            {
+                                correct_answer =  ((Textfield) cp5.get("Tf"+(4+i))).getText();
+                            }
+                            }
+                              questionType = 2;
+                        }
+                        catch(NullPointerException e1)
+                        {
+                            correct_answer = Boolean.toString(((RadioButton) cp5.get("Tf9")).getState("TRUE"));
+                             questionType = 3;
+                        }
                     }
-                }),
+                    finally{
+                        if (!tf.getText().isEmpty()) 
+                        {
+                            QuestionDaoInterface IQuestionDao = new MyQuestionDao();
+                            
+                            cp5.addButton("vnueuhdhasdskjsahdsakj").setPosition(225,150).setSize(450,300).setLabel("Question Created")
+                                .onClick(callBackEvent->{
+                            cp5.getController("vnueuhdhasdskjsahdsakj").remove();
+                            });
+                    }
+                        else{
+                            cp5.addButton("cuqwqhejnd").setPosition(225,150).setSize(450,300).setLabel("Please input QuestionText")
+                                .onClick(callBackEvent->{
+                            cp5.getController("cuqwqhejnd").remove();
+                            });
+                        }
+                    }
+                    }),
                 
         });
-        Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
+        Textfield tf = (Textfield) cp5.get("Admin_Create_Question_QuestionText");
         tf.getCaptionLabel().setPaddingY(-90);
     }
 
@@ -1001,8 +1050,8 @@ public class UIManager {
         try{cp5.getController("Tf7").remove();}catch(NullPointerException e){}
         try{cp5.getController("Tf8").remove();}catch(NullPointerException e){}
         try{cp5.getGroup("Tf9").remove();}catch(NullPointerException e){}
-        try{cp5.getController("correctAnswer1").remove();}catch(NullPointerException e){}
-        try{cp5.getController("correctAnswer2").remove();}catch(NullPointerException e){}
+        try{cp5.getGroup("Ca1").remove();}catch(NullPointerException e){}
+        try{cp5.getGroup("Ca2").remove();}catch(NullPointerException e){}
         
     }
 }

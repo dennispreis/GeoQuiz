@@ -34,7 +34,7 @@ public class GameManager {
     private int actuallQuestionIndex;
     private int score, maxScore;
     private boolean isPlaying;
-    private TypeChooser categoryChooser, levelChooser;
+    private TypeChooser categoryChooser;
     private MyPracticeDao IPracticeDao;
     private MyTestDao ITestDao;
     private int paper_id;
@@ -61,13 +61,7 @@ public class GameManager {
                 new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
         });
         categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
-        levelChooser = new TypeChooser(applet).setElements(new ChooseAble[]
-        {
-            new ChooseAble(applet, 275, 400, ImageName.LEVEL_EASY, Level.EASY).setText("Easy"),
-            new ChooseAble(applet, 425, 400, ImageName.PLACEHOLDER_SMALL, Level.MEDIUM).setText("Medium"),
-            new ChooseAble(applet, 575, 400, ImageName.LEVEL_HARD, Level.HARD).setText("Hard")
-        });
-        levelChooser.updateActiveElement(levelChooser.getElements()[0]);
+      
     }
     public GameManager(PApplet applet, ControlP5 cp5,int user_id) {
         this.id = user_id;
@@ -88,13 +82,6 @@ public class GameManager {
                 new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
         });
         categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
-        levelChooser = new TypeChooser(applet).setElements(new ChooseAble[]
-        {
-            new ChooseAble(applet, 275, 400, ImageName.LEVEL_EASY, Level.EASY).setText("Easy"),
-            new ChooseAble(applet, 425, 400, ImageName.PLACEHOLDER_SMALL, Level.MEDIUM).setText("Medium"),
-            new ChooseAble(applet, 575, 400, ImageName.LEVEL_HARD, Level.HARD).setText("Hard")
-        });
-        levelChooser.updateActiveElement(levelChooser.getElements()[0]);
     }
     
     public GameManager(PApplet applet, int id, boolean test)
@@ -171,9 +158,6 @@ public class GameManager {
         return categoryChooser;
     }
 
-    public TypeChooser getLevelChooser() {
-        return levelChooser;
-    }
 
     public Question getActualQuestion() {
         return actualQuestion;
