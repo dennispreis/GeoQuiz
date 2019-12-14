@@ -108,6 +108,7 @@ public class UIManager {
         uielementsCreateCreateNewTest();
         uielementsCreateChangeStudentPassword();
         uielementsCreateCreateNewQuestion();
+        uielementsCreateShowTestList();
         uielementsHideAll();
     }
 
@@ -514,7 +515,7 @@ public class UIManager {
         Controller[] controlArray = new Controller[testList.size()+1];
         controlArray[0] = cp5.addButton("Test_List_Back").setPosition(20, 20).setSize(100, 100).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
-                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                    switchScreen(Screen.CREATE_NEW_TEST);
                 });
         int id = GeoQuiz.getUser().getId();
         for(int i = 0 ; i < testList.size();i++)
@@ -880,6 +881,11 @@ public class UIManager {
                         ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
                     GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
                 }),
+                cp5.addButton("TestList").setPosition(725,75).setSize(100,50).onClick(
+                callbackEvent -> {
+                       GeoQuiz.switchScreen(Screen.TEST_LIST);
+                }
+                )
         });
         Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
         tf.getCaptionLabel().setPaddingY(-90);
