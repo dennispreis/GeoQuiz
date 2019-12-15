@@ -2,7 +2,10 @@ package GameManager;
 
 import DAOs.MyPracticeDao;
 import DAOs.MyQuestionDao;
+import DAOs.MyRecordPracticeDao;
+import DAOs.MyRecordTestDao;
 import DAOs.MyTestDao;
+import DAOs.TestDaoInterface;
 import DTOs.Practice;
 import DTOs.Question;
 import DTOs.Questions.ChoosePicture_Question;
@@ -19,10 +22,12 @@ import controlP5.Textlabel;
 import processing.core.PApplet;
 
 import java.awt.font.ImageGraphicAttribute;
+import java.util.ArrayList;
 import java.util.List;
 
 import static processing.core.PConstants.CENTER;
 import static processing.core.PConstants.LEFT;
+import DAOs.RecordDaoInterface;
 
 public class GameManager {
 
@@ -36,7 +41,9 @@ public class GameManager {
     private boolean isPlaying;
     private TypeChooser categoryChooser;
     private MyPracticeDao IPracticeDao;
-    private MyTestDao ITestDao;
+    private static TestDaoInterface ITestDao = new MyTestDao();
+    private static RecordDaoInterface IRecordPracticeDao = new MyRecordPracticeDao();
+    private static RecordDaoInterface IRecordTestDao = new MyRecordTestDao();
     private int paper_id;
     private boolean test;
     private int record_id;
@@ -90,13 +97,7 @@ public class GameManager {
         this.applet = applet;
         this.category = Category.WORLD;
         this.test = test;
-        if (test)
-        {
-            this.ITestDao = new MyTestDao();
-        } else
-        {
-            this.IPracticeDao = null;
-        }
+       
         score = 0;
 
         categoryChooser = new TypeChooser(applet).setElements(new ChooseAble[]
@@ -114,6 +115,7 @@ public class GameManager {
     public void createQuestions() {
         Practice p = IPracticeDao.getPractice(applet, this.id, category.getName());
         List<Question> tmp;
+        this.test = false;
         IPracticeDao = new MyPracticeDao();
         tmp = p.getQuestionList();
         this.record_id = p.getPractice_id();
@@ -124,9 +126,9 @@ public class GameManager {
         maxScore = questions.length;
     }
       public void createQuestions(int id,int test_id){
-        Test t = ITestDao.attemptTest(applet, test_id, test_id);
+        Test t = ITestDao.attemptTest(applet, id, test_id);
+        this.test = true;
         List<Question> tmp=null;
-        ITestDao = new MyTestDao();
         tmp = t.getQuestionList();
         this.record_id = t.getTest_id();
         questions = new Question[tmp.size()];
@@ -217,17 +219,19 @@ public class GameManager {
 
     public void loadPractiseFeedback()
     {
-        String[] answers = new String[10];
+        ArrayList<Integer> questionId = new ArrayList<>();
+        ArrayList<String> answers = new ArrayList<>();
+        int i = 0;
         for (Question q : questions)
         {
-            int i = 0;
             if (q instanceof DragAndDrop_Question)
             {
                 DragAndDrop_Question dad_question = (DragAndDrop_Question) q;
                 //Get Text from AnswerElement
+                answers.add(dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText());
+                questionId.add(q.getId());
                 if (dad_question.getDragAndDrop().getAnswerRect().isOccupied())
                 {
-                    answers[i] = dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText();
                     if (dad_question.getDragAndDrop().getAnswerRect().getDragAndDropElement().getText().equals(dad_question.getCorrect_answer()))
                     {
                         score++;
@@ -236,12 +240,12 @@ public class GameManager {
             } else if (q instanceof Multiplichoice_Question) {
                 Multiplichoice_Question mp_question = (Multiplichoice_Question) q;
                 //Get right array index and check if isActive()
-                System.out.println(mp_question.getCorrect_answer());
+                questionId.add(q.getId());
                 for(int j = 0 ; j<4;j++)
                 {
                     if(mp_question.getCheckBox().getElements()[j].isActive())
                     {
-                        answers[i] = Integer.toString(j);
+                        answers.add(Integer.toString(j+1));
                     }
                 }
                 if (mp_question.getCheckBox().getElements()[Integer.parseInt(mp_question.getCorrect_answer()) - 1].isActive())
@@ -251,6 +255,7 @@ public class GameManager {
             } else if (q instanceof TrueOrFalse_Question) {
                 TrueOrFalse_Question tof_question = (TrueOrFalse_Question) q;
                 //Get array index and check for isActive()
+                 questionId.add(q.getId());
                 int tmp;
                 if ("TRUE".equals(tof_question.getCorrect_answer())) {
                     tmp = 0;
@@ -259,9 +264,9 @@ public class GameManager {
                 }
                 if(tof_question.getRadioButton().getElements()[0].isActive())
                 {
-                    answers[i] = "TRUE";
+                    answers.add("TRUE");
                 }else{
-                    answers[i] = "FALSE";
+                    answers.add("FALSE");
                 }
                 if (tof_question.getRadioButton().getElements()[tmp].isActive())
                 {
@@ -270,12 +275,12 @@ public class GameManager {
             } else if (q instanceof ChoosePicture_Question) {
                 ChoosePicture_Question cp_question = (ChoosePicture_Question) q;
                 //Get left or right picture and check if isChoosen()
-               
+               questionId.add(q.getId());
                 if(cp_question.getChoosePicture().getButton_left().isChoosen())
                 {
-                    answers[i] = "1";
+                    answers.add("1");
                 }else{
-                    answers[i] = "2";
+                    answers.add("2");
                 }
                 if ("1".equals(cp_question.getCorrect_answer()))
                 {
@@ -290,12 +295,16 @@ public class GameManager {
             }
             i++;
         }
-        if (IPracticeDao != null)
+        
+     
+        if (!test)
         {
-            IPracticeDao.updateScore(record_id, score,answers);
+            IPracticeDao.updateScore(record_id, score);
+            IRecordPracticeDao.storeAnswer(record_id, questionId, answers);
         } else
         {
-            ITestDao.updateScore(record_id, score,answers);
+            ITestDao.updateScore(record_id, score,id);
+            IRecordTestDao.storeAnswer(record_id, questionId, answers);
         }
 
     }
@@ -313,4 +322,7 @@ public class GameManager {
         this.paper_id = paper_id;
     }
 
+    public int getId(){
+        return this.id;
+    }
 }

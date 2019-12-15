@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.List;
 
 import Images.ImageMap;
+import Teacher.TestManager.TestQuestionList;
 import processing.event.MouseEvent;
 
 import java.time.LocalDateTime;
@@ -51,7 +52,8 @@ public class GeoQuiz extends PApplet {
     private static UIManager uiManager;
     private static PApplet applet;
     private static TeacherManager teacherManager;
-
+    private static TestQuestionList testQuestionList;
+    
     //------------------------------------Inner classes
     public class Settings {
 
@@ -133,6 +135,7 @@ public class GeoQuiz extends PApplet {
         uiManager = new UIManager(cp5);
         switchScreen(Screen.LOGIN);
         settings.setLoadingApplication(false);
+        testQuestionList = new TestQuestionList(applet,cp5);
 
    //     thread("loadSounds");
     }
@@ -163,10 +166,19 @@ public class GeoQuiz extends PApplet {
                 showChangePasswordBackground();
                 break;
             case VIEW_STUDENT_PROGRESS_ADMIN:
-                showStudentPracticeView();
+                showStudentPracticeTemplete();  
+                break;
+            case VIEW_STUDENT_PROGRESS_CLASS:
+                showAdminStudentProccess();
                 break;
             case TEST_LIST:
                 showAdminTestList();
+                break;
+            case SHOW_ONE_TEST:
+                showOneTest();
+                break;
+            case SHOW_ONE_RECORD:
+                showOneRecord();
                 break;
             case PROFILE_STUDENT:
                 showStudentProfile();
@@ -196,6 +208,9 @@ public class GeoQuiz extends PApplet {
                 showAdminStudentProccess();
                 break;
             case SHOW_STUDENT_TEST:
+                showAdminStudentTest();
+                break;
+            case SHOW_STUDENT_TEST_CLASS:
                 showAdminStudentTest();
                 break;
             case ADMIN_STUDENTS:
@@ -558,6 +573,7 @@ public class GeoQuiz extends PApplet {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
             for (int i = stu.getProfileHistory().getStart(), historyIndex = 0; i < stu.getProfileHistory().getEnd(); i++, historyIndex++) {
+                    int recordId = history.get(i).getRecord_id();
                 if (history.get(i) != null) {
                     text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 380, 225 + 30 * historyIndex);
                     text(history.get(i).getScore(), 525, 225 + 30 * historyIndex);
@@ -619,6 +635,29 @@ public class GeoQuiz extends PApplet {
         text("GeoQuiz!", 450, 110);
     }
 
+    private void showStudentPracticeTemplete(){
+   background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CORNER);
+        rect(10, 120, width - 15, height - 200);
+
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("Student_Practice_List--Class"), 200, 50);
+
+        textSize(25);
+        stroke(255);
+        line(12, 180, width - 8, 180);
+        text(languageManager.getString("student_name"), 50, 170);
+        text(languageManager.getString("category"), 250, 170);
+         text(languageManager.getString("score"), 450, 170);
+        text(languageManager.getString("date"), 650, 170);
+        textSize(20);       
+    }
+    
     private void showAdminStudentProccess() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
         fill(100, 120);
@@ -658,7 +697,6 @@ public class GeoQuiz extends PApplet {
                      text(history.get(i).getScore(),450,215+30*historyIndex);
                     text((formatter.format(history.get(i).getDate())), 650, 215 + 30 * historyIndex);
                 }
-
             }
             } catch (IndexOutOfBoundsException ignore) {
             }
@@ -693,7 +731,7 @@ public class GeoQuiz extends PApplet {
         text(languageManager.getString("date"), 665, 170);
         textSize(20);
         Teacher teach = (Teacher)user;
-        if(teach.getClassList()==null)
+        if(teach.getProfileHistory()!=null)
         {
         List<HistoryRecord> history = teach.getProfileHistory().getHistoryRecord();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -740,7 +778,7 @@ public class GeoQuiz extends PApplet {
         text(languageManager.getString("test_id"), 50, 170);
         text(languageManager.getString("test_name"), 250, 170);
         text(languageManager.getString("date_close"), 410, 170);
-        text(languageManager.getString("attempt"), 650, 170);
+        text(languageManager.getString("show"), 650, 170);
         textSize(20);
         TestDaoInterface ITestDao = new MyTestDao();
         List<Test> testList =  ITestDao.getAllTest();
@@ -766,6 +804,24 @@ public class GeoQuiz extends PApplet {
         
     }
 
+    private void showOneTest(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+         textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("QuestionList"), 200, 50);
+        testQuestionList.show();
+    }
+    
+    private void showOneRecord(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("QuestionList"), 200, 50);
+        testQuestionList.showAnswer();
+    }
+    
     private void showStudentWork() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
         fill(100, 120);
@@ -914,6 +970,10 @@ public class GeoQuiz extends PApplet {
         return teacherManager;
     }
 
+    public static TestQuestionList getTestQuestionList(){
+        return testQuestionList;
+    }
+    
     public static ControlP5 getCP5() {
         return cp5;
     }

@@ -20,6 +20,8 @@ public class Practice
 
     private List<Question> questionList;
 
+    private String[] answer;
+    
     public Practice(int practice_id, Paper p)
     {
         this.paper_id = p.getId();
@@ -80,4 +82,6 @@ public class Practice
         this.paper_id = paper_id;
     }
 
+  
+    
 }
