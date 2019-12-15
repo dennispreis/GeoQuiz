@@ -28,7 +28,7 @@ public class MyRecordTestDao extends MySqlDao implements RecordDaoInterface
         try
         {
             conn = this.getConnection();
-            String query = "INSERT INTO `practice_result` (`record_id`, `question_id`, `answer`) VALUES (?, ?, ?)";
+            String query = "INSERT INTO `test_result` (`record_id`, `question_id`, `answer`) VALUES (?, ?, ?)";
             for (int i = 0; i < questionId.size(); i++)
             {
                 ps = conn.prepareStatement(query);

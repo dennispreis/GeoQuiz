@@ -234,10 +234,11 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             {
                 String studentName = rs.getString("student_name");
                 String category = rs.getString("category");
+                int practice_id = rs.getInt("practice_id");
                 int score = rs.getInt("score");
                 Date date_attempt = rs.getDate("data_attempt");
 
-                HistoryRecord h = new HistoryRecord(studentName, idx, cm.getCategory(category.toLowerCase()),  score, date_attempt);
+                HistoryRecord h = new HistoryRecord(studentName, practice_id, cm.getCategory(category.toLowerCase()),  score, date_attempt);
                 ph.getHistoryRecord().add(h);
                 idx++;
             }

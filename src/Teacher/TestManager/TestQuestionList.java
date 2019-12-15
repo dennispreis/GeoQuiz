@@ -100,7 +100,9 @@ public class TestQuestionList
     public void setQuestionPracticeListWithAnswer(int practice_id)
     {
         Practice p = IPracticeDao.getPracticeByID(applet, practice_id);
+        System.out.println(practice_id);
         this.setPracticeAnswer(practice_id);
+        System.out.println(p.getQuestionList());
         this.markedQuestions = new MarkableQuestionList(applet,p.getQuestionList(),answer);
     }
     

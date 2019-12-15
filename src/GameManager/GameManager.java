@@ -303,7 +303,7 @@ public class GameManager {
             IRecordPracticeDao.storeAnswer(record_id, questionId, answers);
         } else
         {
-            ITestDao.updateScore(record_id, score);
+            ITestDao.updateScore(record_id, score,id);
             IRecordTestDao.storeAnswer(record_id, questionId, answers);
         }
 
