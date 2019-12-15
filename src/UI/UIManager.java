@@ -5,6 +5,7 @@ import DAOs.MyQuestionDao;
 import DAOs.MyTestDao;
 import DAOs.QuestionDaoInterface;
 import DAOs.TestDaoInterface;
+import DTOs.ProfileHistory;
 import DTOs.Question;
 import DTOs.Student;
 import DTOs.Teacher;
@@ -96,6 +97,7 @@ public class UIManager {
         uielementsCreateStudentWork();
         uielementsCreateStudentPractise();
         uielementsCreateStudentProfile();
+        uielementsCreateShowOneRecord();
         uielementsHideAll();
     }
 
@@ -524,7 +526,7 @@ public class UIManager {
             int test_id = testList.get(i).getTest_id();
             controlArray[i+1] = cp5.addButton("Attempt"+i).setPosition(650,200+30*i).setSize(15,15).setLabel(" ").onClick(
             callBackEvent ->{
-                    GeoQuiz.getTestQuestionList().setQuestionList(test_id);;
+                    GeoQuiz.getTestQuestionList().setQuestionTestList(test_id);;
                     changeQuestionLanguage();
                     switchScreen(Screen.SHOW_ONE_TEST);
             }
@@ -543,89 +545,93 @@ public class UIManager {
         });
     }
     
+    private void uielementsCreateShowOneRecord(){
+           controller.put(Screen.SHOW_ONE_RECORD, new Controller[]{
+                cp5.addButton("Admin_Show_One_Record_Logout").setPosition(20, 20).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.PROFILE_STUDENT);
+                })
+        });
+    }
+    
     private void uielementsCreateStudentProfile() {
-        controller.put(Screen.PROFILE_STUDENT, new Controller[]{
-
-                //---------General ui elements
-
-                cp5.addToggle("Profile_Student_Avatar_Change").setPosition(100, 300).setSize(25, 25).setLabel("")
+        
+        Student student = (Student) GeoQuiz.getUser();
+        ProfileHistory profileHistory = student.getProfileHistory();
+        Controller[] controlArray = new Controller[33+profileHistory.getHistoryRecord().size()];
+        
+        //---------General ui elements
+        controlArray[0] =   cp5.addToggle("Profile_Student_Avatar_Change").setPosition(100, 300).setSize(25, 25).setLabel("")
                         .onChange(callbackEvent -> {
                     Toggle t = (Toggle) callbackEvent.getController();
                     changeAvatarVisibility(t.getState());
-                }),
-
-                cp5.addButton("Profile_Show_Background").setPosition(770, 100).setSize(50, 50).
+                });
+        controlArray[1] =cp5.addButton("Profile_Show_Background").setPosition(770, 100).setSize(50, 50).
                         setLabel("Map").onClick(callbackEvent -> {
                     switchScreen(Screen.PROFILE_SHOW_BACKGROUND);
-                }).setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL)),
-
-                cp5.addButton("Profile_History_Next").setPosition(770, 375).setSize(50, 50)
+                }).setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL));
+        controlArray[2] =  cp5.addButton("Profile_History_Next").setPosition(770, 375).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
                     Student stu = (Student) GeoQuiz.getUser();
                     if ((stu.getProfileHistory().getActualPage() < stu.getProfileHistory().getMaxPages()))
                         stu.getProfileHistory().increaseRange();
-                }),
-                cp5.addButton("Profile_History_Last").setPosition(630, 375).setSize(50, 50)
+                });
+        controlArray[3] =    cp5.addButton("Profile_History_Last").setPosition(630, 375).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
                     Student stu = (Student) GeoQuiz.getUser();
                     if (stu.getProfileHistory().getStart() != 0) stu.getProfileHistory().decreaseRange();
-                }),
-
-                cp5.addButton("Profile_Student_Nickname_Change").setPosition(700, 100).setSize(50, 50)
+                });
+        
+        controlArray[4] =    cp5.addButton("Profile_Student_Nickname_Change").setPosition(700, 100).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
                         .onClick(callbackEvent -> {
                     Textfield tf = (Textfield) cp5.get("Profile_Student_Nickname");
                     ((Student) GeoQuiz.getUser()).setNickname(tf.getText());
                     GeoQuiz.getIStudentDao().saveStudentNickName((Student) GeoQuiz.getUser());
-                }),
-
-                cp5.addTextfield("Profile_Student_Nickname").setPosition(365, 100).setSize(320, 50).
-                        setText(((Student) GeoQuiz.getUser()).getNickname()).setLabel(""),
-
-                cp5.addButton("Profile_Student_Back").setPosition(20, 20).setSize(100, 100).
+                });
+        controlArray[5] =   cp5.addTextfield("Profile_Student_Nickname").setPosition(365, 100).setSize(320, 50).
+                        setText(((Student) GeoQuiz.getUser()).getNickname()).setLabel("");
+        controlArray[6] = cp5.addButton("Profile_Student_Back").setPosition(20, 20).setSize(100, 100).
                         setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
                     switchScreen(Screen.MAIN_MENU_STUDENT);
-                }),
-
-                //---------Profile avatars
-
-                cp5.addButton("Profile_Avatar_Lion").setPosition(100, 350).setSize(50, 50)
+                });
+ //---------Profile avatars
+        controlArray[7] =   cp5.addButton("Profile_Avatar_Lion").setPosition(100, 350).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.AVATAR_LION_SMALL)).hide()
                         .onClick(callbackEvent -> {
                     ((Student) GeoQuiz.getUser()).setAvatar(ImageName.AVATAR_LION.name());
                     GeoQuiz.getIStudentDao().saveStudentAvatar((Student) GeoQuiz.getUser());
-                }),
-                cp5.addButton("Profile_Avatar_Dolphin").setPosition(160, 350).setSize(50, 50)
+                });
+        controlArray[8] =    cp5.addButton("Profile_Avatar_Dolphin").setPosition(160, 350).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.AVATAR_DOLPHIN_SMALL)).hide().onClick(callbackEvent -> {
                     ((Student) GeoQuiz.getUser()).setAvatar(ImageName.AVATAR_DOLPHIN.name());
                     GeoQuiz.getIStudentDao().saveStudentAvatar((Student) GeoQuiz.getUser());
-                }),
-                cp5.addButton("Profile_Avatar_Eagle").setPosition(220, 350).setSize(50, 50)
+                });
+        controlArray[9] = cp5.addButton("Profile_Avatar_Eagle").setPosition(220, 350).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.AVATAR_EAGLE_SMALL)).hide().onClick(callbackEvent -> {
                     ((Student) GeoQuiz.getUser()).setAvatar(ImageName.AVATAR_EAGLE.name());
                     GeoQuiz.getIStudentDao().saveStudentAvatar((Student) GeoQuiz.getUser());
-                }),
-                cp5.addButton("Profile_Avatar_Zebra").setPosition(100, 410).setSize(50, 50)
+                });
+        controlArray[10] =     cp5.addButton("Profile_Avatar_Zebra").setPosition(100, 410).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.AVATAR_ZEBRA_SMALL)).hide().onClick(callbackEvent -> {
                     ((Student) GeoQuiz.getUser()).setAvatar(ImageName.AVATAR_ZEBRA.name());
                     GeoQuiz.getIStudentDao().saveStudentAvatar((Student) GeoQuiz.getUser());
-                }),
-                cp5.addButton("Profile_Avatar_Coala").setPosition(160, 410).setSize(50, 50)
+                });
+        controlArray[11] =  cp5.addButton("Profile_Avatar_Coala").setPosition(160, 410).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.AVATAR_COALA_SMALL)).hide().onClick(callbackEvent -> {
                     ((Student) GeoQuiz.getUser()).setAvatar(ImageName.AVATAR_COALA.name());
                     GeoQuiz.getIStudentDao().saveStudentAvatar((Student) GeoQuiz.getUser());
-                }),
-                cp5.addButton("Profile_Avatar_Penguin").setPosition(220, 410).setSize(50, 50)
+                });
+        controlArray[12] =   cp5.addButton("Profile_Avatar_Penguin").setPosition(220, 410).setSize(50, 50)
                         .setImage(ImageMap.getImage(ImageName.AVATAR_PENGUIN_SMALL)).hide().onClick(callbackEvent -> {
                     ((Student) GeoQuiz.getUser()).setAvatar(ImageName.AVATAR_PENGUIN.name());
                     GeoQuiz.getIStudentDao().saveStudentAvatar((Student) GeoQuiz.getUser());
-                }),
+                });
+         //---------Achievements
 
-                //---------Achievements
-
-                cp5.addButton("Profile_Student_Achievement_0").setPosition(80, 500).setSize(50, 50).
+        controlArray[13] =   cp5.addButton("Profile_Student_Achievement_0").setPosition(80, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_0)).
                         onEnter(callbackEvent -> {
                             cp5.getController("Achievement_TextLabel_0").show();
@@ -634,12 +640,11 @@ public class UIManager {
                         onLeave(callbackEvent -> {
                     cp5.getController("Achievement_TextLabel_0").hide();
                     showAvatars();
-                }),
+                });
+        controlArray[14] =   
                 cp5.addTextlabel("Achievement_TextLabel_0").setPosition(80, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_0")).hide(),
-
-
-                cp5.addButton("Profile_Student_Achievement_1").setPosition(160, 500).setSize(50, 50).
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_0")).hide();
+        controlArray[15] =    cp5.addButton("Profile_Student_Achievement_1").setPosition(160, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_1)).
                         onEnter(callbackEvent -> {
                             cp5.getController("Achievement_TextLabel_1").show();
@@ -648,11 +653,10 @@ public class UIManager {
                         onLeave(callbackEvent -> {
                     cp5.getController("Achievement_TextLabel_1").hide();
                     showAvatars();
-                }),
-                cp5.addLabel("Achievement_TextLabel_1").setPosition(160, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_1")).hide(),
-
-                cp5.addButton("Profile_Student_Achievement_2").setPosition(240, 500).setSize(50, 50).
+                });
+        controlArray[16] =   cp5.addLabel("Achievement_TextLabel_1").setPosition(160, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_1")).hide();
+        controlArray[17] =   cp5.addButton("Profile_Student_Achievement_2").setPosition(240, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_2)).
                         onEnter(callbackEvent -> {
                             cp5.getController("Achievement_TextLabel_2").show();
@@ -661,11 +665,10 @@ public class UIManager {
                         onLeave(callbackEvent -> {
                     cp5.getController("Achievement_TextLabel_2").hide();
                     showAvatars();
-                }),
-                cp5.addLabel("Achievement_TextLabel_2").setPosition(240, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_2")).hide(),
-
-                cp5.addButton("Profile_Student_Achievement_3").setPosition(320, 500).setSize(50, 50).
+                });
+        controlArray[18] =   cp5.addLabel("Achievement_TextLabel_2").setPosition(240, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_2")).hide();
+        controlArray[19] =    cp5.addButton("Profile_Student_Achievement_3").setPosition(320, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_3)).
                         onEnter(callbackEvent -> {
                             cp5.getController("Achievement_TextLabel_3").show();
@@ -674,52 +677,59 @@ public class UIManager {
                         onLeave(callbackEvent -> {
                     cp5.getController("Achievement_TextLabel_3").hide();
                     showAvatars();
-                }),
-                cp5.addLabel("Achievement_TextLabel_3").setPosition(320, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_3")).hide(),
-
-                cp5.addButton("Profile_Student_Achievement_4").setPosition(400, 500).setSize(50, 50).
+                });
+        controlArray[20] =    cp5.addLabel("Achievement_TextLabel_3").setPosition(320, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_3")).hide();
+        controlArray[21] =   cp5.addButton("Profile_Student_Achievement_4").setPosition(400, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_4)).
                         onEnter(callbackEvent -> cp5.getController("Achievement_TextLabel_4").show()).
-                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_4").hide()),
-                cp5.addLabel("Achievement_TextLabel_4").setPosition(400, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_4")).hide(),
-
-                cp5.addButton("Profile_Student_Achievement_5").setPosition(480, 500).setSize(50, 50).
+                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_4").hide());
+        controlArray[22] =    cp5.addLabel("Achievement_TextLabel_4").setPosition(400, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_4")).hide();
+        controlArray[23] =   cp5.addButton("Profile_Student_Achievement_5").setPosition(480, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_5)).
                         onEnter(callbackEvent -> cp5.getController("Achievement_TextLabel_5").show()).
-                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_5").hide()),
-                cp5.addLabel("Achievement_TextLabel_5").setPosition(480, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_5")).hide(),
-
-                cp5.addButton("Profile_Student_Achievement_6").setPosition(560, 500).setSize(50, 50).
+                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_5").hide());
+        controlArray[24] =   cp5.addLabel("Achievement_TextLabel_5").setPosition(480, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_5")).hide();
+        controlArray[25] =  cp5.addButton("Profile_Student_Achievement_6").setPosition(560, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_6)).
                         onEnter(callbackEvent -> cp5.getController("Achievement_TextLabel_6").show()).
-                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_6").hide()),
-                cp5.addLabel("Achievement_TextLabel_6").setPosition(560, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_6")).hide(),
-
-                cp5.addButton("Profile_Student_Achievement_7").setPosition(640, 500).setSize(50, 50).
+                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_6").hide());
+        controlArray[26] =    cp5.addLabel("Achievement_TextLabel_6").setPosition(560, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_6")).hide();
+        controlArray[27] =       cp5.addButton("Profile_Student_Achievement_7").setPosition(640, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_7)).
                         onEnter(callbackEvent -> cp5.getController("Achievement_TextLabel_7").show()).
-                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_7").hide()),
-                cp5.addLabel("Achievement_TextLabel_7").setPosition(640, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_7")).hide(),
-
-                cp5.addButton("Profile_Student_Achievement_8").setPosition(720, 500).setSize(50, 50).
+                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_7").hide());
+        controlArray[28] =  cp5.addLabel("Achievement_TextLabel_7").setPosition(640, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_7")).hide();
+        controlArray[29] =  cp5.addButton("Profile_Student_Achievement_8").setPosition(720, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_8)).
                         onEnter(callbackEvent -> cp5.getController("Achievement_TextLabel_8").show()).
-                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_8").hide()),
-                cp5.addLabel("Achievement_TextLabel_8").setPosition(720, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_8")).hide(),
-
-                cp5.addButton("Profile_Student_Achievement_9").setPosition(800, 500).setSize(50, 50).
+                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_8").hide());
+        controlArray[30] =      cp5.addLabel("Achievement_TextLabel_8").setPosition(720, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_8")).hide();
+        controlArray[31] =      cp5.addButton("Profile_Student_Achievement_9").setPosition(800, 500).setSize(50, 50).
                         setImage(ImageMap.getImage(ImageName.ACHIEV_9)).
                         onEnter(callbackEvent -> cp5.getController("Achievement_TextLabel_9").show()).
-                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_9").hide()),
-                cp5.addLabel("Achievement_TextLabel_9").setPosition(800, 450)
-                        .setText(GeoQuiz.getLanguageManager().getString("achievement_9")).hide()
-        });
+                        onLeave(callbackEvent -> cp5.getController("Achievement_TextLabel_9").hide());
+        controlArray[32] =   cp5.addLabel("Achievement_TextLabel_9").setPosition(800, 450)
+                        .setText(GeoQuiz.getLanguageManager().getString("achievement_9")).hide();
+
+        for(int i = 0 ; i <profileHistory.getHistoryRecord().size();i++ )
+        {
+            int practice_id = profileHistory.getHistoryRecord().get(i).getRecord_id();
+            controlArray[i+33] = cp5.addButton("check"+i).setPosition(800,210+30*i).setSize(15,15).setLabel(" ").onClick(
+            callBackEvent ->{
+                    GeoQuiz.getTestQuestionList().setQuestionPracticeList(practice_id);
+                    changeQuestionLanguage();
+                    switchScreen(Screen.SHOW_ONE_RECORD);
+            }
+            );
+        }
+        
+        controller.put(Screen.PROFILE_STUDENT, controlArray);
     }
 
     private void uielementsCreateStudentPractise() {
@@ -968,7 +978,8 @@ public class UIManager {
             controlArray[i + 3] = cp5.addButton(class_name).setPosition(85 + 100 * i, 75).setSize(80, 40).onClick(
                     callbackEvent -> {
                         System.out.println("Class " + class_name + " Selected");
-                        teach.setProfileHistory(class_name);
+                        teach.setProfileHistoryTest(class_name);
+                        System.out.println(teach.getProfileHistory().getHistoryRecord().size());
                     }
             );
         }

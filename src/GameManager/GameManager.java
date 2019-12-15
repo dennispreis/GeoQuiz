@@ -297,10 +297,10 @@ public class GameManager {
         }
         if (!test)
         {
-            IPracticeDao.updateScore(record_id, score,answers);
+            IPracticeDao.updateScore(record_id, score,answer_attempt);
         } else
         {
-            ITestDao.updateScore(record_id, score,answers);
+            ITestDao.updateScore(record_id, score,answer_attempt);
         }
 
     }

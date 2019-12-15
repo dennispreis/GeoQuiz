@@ -6,10 +6,13 @@
 package Teacher.TestManager;
 
 import DAOs.MyPaperDao;
+import DAOs.MyPracticeDao;
 import DAOs.MyTestDao;
 import DAOs.PaperDaoInterface;
+import DAOs.PracticeDaoInterface;
 import DAOs.TestDaoInterface;
 import DTOs.Paper;
+import DTOs.Practice;
 import DTOs.Test;
 import Main.GeoQuiz;
 import Teacher.TestManager.MarkableQuestionList;
@@ -30,17 +33,25 @@ public class TestQuestionList
 {
     private static TestDaoInterface ITestDao = new MyTestDao();
     private static PaperDaoInterface IPaperDao = new MyPaperDao();
+    private static PracticeDaoInterface IPracticeDao = new MyPracticeDao();
     private ControlP5 cp5;
     private PApplet applet;
     private MarkableQuestionList markedQuestions;
     private int numOfMarkedQuestions;
-
+    private String[] answer;
+    
     public TestQuestionList(PApplet applet, ControlP5 cp5)
     {
         this.applet = applet;
         this.cp5 = cp5;
     }
-
+    
+    public TestQuestionList(PApplet applet, ControlP5 cp5,String[] answers)
+    {
+        this.applet = applet;
+        this.cp5 = cp5;
+        answer = answers;
+    }
     public void show()
     {
         applet.rectMode(CORNER);
@@ -60,10 +71,47 @@ public class TestQuestionList
         }
     }
     
-    public void setQuestionList(int test_id)
+    public void showAnswer()
+    {
+        applet.rectMode(CORNER);
+        applet.stroke(0);
+        applet.strokeWeight(2);
+        applet.fill(100, 120);
+        applet.textAlign(LEFT, TOP);
+        applet.rect(100, 150, 300, 425);
+        applet.stroke(255);
+        applet.line(105, 185, 395, 185);
+        applet.textSize(20);
+        applet.fill(255);
+        applet.text(GeoQuiz.getLanguageManager().getString("questionText"), 150, 165);
+        for (int i = 0; i < markedQuestions.getQuestionRecordList().size(); i++)
+        {
+            markedQuestions.getQuestionRecordList().get(i).showWithAnswer();
+        }
+    }
+    
+    public void setQuestionTestList(int test_id)
     {
         Test t = ITestDao.getTestObjectById(test_id);
         Paper p = IPaperDao.getPaperByID(applet, t.getPaper_id());
         this.markedQuestions = new MarkableQuestionList(applet,p.getQuestions());
+    }
+    
+    public void setQuestionPracticeList(int practice_id)
+    {
+        Practice p = IPracticeDao.getPracticeByID(applet, practice_id);
+        this.markedQuestions = new MarkableQuestionList(applet,p.getQuestionList(),p.getAnswer());
+    }
+    
+    public void setAnswer(String[] answers)
+    {
+        this.answer = answers;
+    }
+    
+    public void setQuestionTestListWithAnswer(int test_id)
+    {
+        Test t = ITestDao.getTestObjectById(test_id);
+        Paper p = IPaperDao.getPaperByID(applet, t.getPaper_id());
+        this.markedQuestions = new MarkableQuestionList(applet,p.getQuestions(),answer);
     }
 }

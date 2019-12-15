@@ -53,7 +53,7 @@ public class GeoQuiz extends PApplet {
     private static PApplet applet;
     private static TeacherManager teacherManager;
     private static TestQuestionList testQuestionList;
-
+    
     //------------------------------------Inner classes
     public class Settings {
 
@@ -135,6 +135,7 @@ public class GeoQuiz extends PApplet {
         uiManager = new UIManager(cp5);
         switchScreen(Screen.LOGIN);
         settings.setLoadingApplication(false);
+        testQuestionList = new TestQuestionList(applet,cp5);
 
    //     thread("loadSounds");
     }
@@ -172,6 +173,9 @@ public class GeoQuiz extends PApplet {
                 break;
             case SHOW_ONE_TEST:
                 showOneTest();
+                break;
+            case SHOW_ONE_RECORD:
+                showOneRecord();
                 break;
             case PROFILE_STUDENT:
                 showStudentProfile();
@@ -406,7 +410,6 @@ public class GeoQuiz extends PApplet {
                     System.out.println("Hello");
                     uiManager.createAdminElements();
                     teacherManager = new TeacherManager(applet, cp5);
-                    testQuestionList = new TestQuestionList(applet,cp5);
                     switchScreen(Screen.MAIN_MENU_ADMIN);
                 } else if (bruteForceResult == -1 && !(ITeacherDao.getAttempt(name) < 5)) {
                     cp5.get(Button.class, "Login_Login").hide();
@@ -699,7 +702,7 @@ public class GeoQuiz extends PApplet {
         text(languageManager.getString("date"), 665, 170);
         textSize(20);
         Teacher teach = (Teacher)user;
-        if(teach.getClassList()==null)
+        if(teach.getProfileHistory()!=null)
         {
         List<HistoryRecord> history = teach.getProfileHistory().getHistoryRecord();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -746,7 +749,7 @@ public class GeoQuiz extends PApplet {
         text(languageManager.getString("test_id"), 50, 170);
         text(languageManager.getString("test_name"), 250, 170);
         text(languageManager.getString("date_close"), 410, 170);
-        text(languageManager.getString("attempt"), 650, 170);
+        text(languageManager.getString("show"), 650, 170);
         textSize(20);
         TestDaoInterface ITestDao = new MyTestDao();
         List<Test> testList =  ITestDao.getAllTest();
@@ -779,6 +782,15 @@ public class GeoQuiz extends PApplet {
         textAlign(CORNER);
         text(languageManager.getString("QuestionList"), 200, 50);
         testQuestionList.show();
+    }
+    
+    private void showOneRecord(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("QuestionList"), 200, 50);
+        testQuestionList.showAnswer();
     }
     
     private void showStudentWork() {

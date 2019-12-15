@@ -20,7 +20,7 @@ public interface TestDaoInterface
 
     public ProfileHistory getProfileHistory(String class_name);
 
-    public boolean updateScore(int id, int score,String[] answers);
+    public boolean updateScore(int id, int score,String answers);
 
     public void addTest(String test_name,List<Question> questionList);
     
