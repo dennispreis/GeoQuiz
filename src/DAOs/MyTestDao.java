@@ -88,7 +88,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
     }
 
     @Override
-    public boolean updateScore(int id, int score,String answers)
+    public boolean updateScore(int id, int score)
     {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -96,11 +96,10 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
         try
         {
             conn = this.getConnection();
-            String query = "UPDATE tests SET score = ?,answers = ? WHERE test_id = ?";
+            String query = "UPDATE tests SET score = ? WHERE test_id = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, score);
-            ps.setString(2, answers);
-            ps.setInt(3, id);
+            ps.setInt(2, id);
             return (ps.executeUpdate() == 1);
  
         } catch (Exception e)

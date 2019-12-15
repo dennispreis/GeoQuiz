@@ -7,6 +7,8 @@ package Teacher.TestManager;
 
 import DAOs.MyPaperDao;
 import DAOs.MyPracticeDao;
+import DAOs.MyRecordPracticeDao;
+import DAOs.MyRecordTestDao;
 import DAOs.MyTestDao;
 import DAOs.PaperDaoInterface;
 import DAOs.PracticeDaoInterface;
@@ -20,10 +22,12 @@ import Teacher.TestManager.QuestionRecord;
 import controlP5.ControlP5;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import processing.core.PApplet;
 import static processing.core.PConstants.CORNER;
 import static processing.core.PConstants.LEFT;
 import static processing.core.PConstants.TOP;
+import DAOs.RecordDaoInterface;
 
 /**
  *
@@ -34,11 +38,13 @@ public class TestQuestionList
     private static TestDaoInterface ITestDao = new MyTestDao();
     private static PaperDaoInterface IPaperDao = new MyPaperDao();
     private static PracticeDaoInterface IPracticeDao = new MyPracticeDao();
+    private static RecordDaoInterface IRecordPracticeDao = new MyRecordPracticeDao();
+    private static RecordDaoInterface IRecordTestDao = new MyRecordTestDao();
     private ControlP5 cp5;
     private PApplet applet;
     private MarkableQuestionList markedQuestions;
     private int numOfMarkedQuestions;
-    private String[] answer;
+    private Map<Integer,String> answer;
     
     public TestQuestionList(PApplet applet, ControlP5 cp5)
     {
@@ -46,12 +52,6 @@ public class TestQuestionList
         this.cp5 = cp5;
     }
     
-    public TestQuestionList(PApplet applet, ControlP5 cp5,String[] answers)
-    {
-        this.applet = applet;
-        this.cp5 = cp5;
-        answer = answers;
-    }
     public void show()
     {
         applet.rectMode(CORNER);
@@ -97,21 +97,28 @@ public class TestQuestionList
         this.markedQuestions = new MarkableQuestionList(applet,p.getQuestions());
     }
     
-    public void setQuestionPracticeList(int practice_id)
+    public void setQuestionPracticeListWithAnswer(int practice_id)
     {
         Practice p = IPracticeDao.getPracticeByID(applet, practice_id);
-        this.markedQuestions = new MarkableQuestionList(applet,p.getQuestionList(),p.getAnswer());
+        this.setPracticeAnswer(practice_id);
+        this.markedQuestions = new MarkableQuestionList(applet,p.getQuestionList(),answer);
     }
     
-    public void setAnswer(String[] answers)
+    public void setPracticeAnswer(int record_id)
     {
-        this.answer = answers;
+        this.answer = IRecordPracticeDao.getAnswerList(record_id);
+    }
+    
+    public void setTestAnswer(int record_id)
+    {
+        this.answer = IRecordTestDao.getAnswerList(record_id);
     }
     
     public void setQuestionTestListWithAnswer(int test_id)
     {
         Test t = ITestDao.getTestObjectById(test_id);
         Paper p = IPaperDao.getPaperByID(applet, t.getPaper_id());
+        this.setTestAnswer(test_id);
         this.markedQuestions = new MarkableQuestionList(applet,p.getQuestions(),answer);
     }
 }

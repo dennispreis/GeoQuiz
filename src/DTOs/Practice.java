@@ -29,15 +29,6 @@ public class Practice
         this.questionList = p.getQuestions();
     }
 
-      
-    public Practice(int practice_id, Paper p,String answers)
-    {
-        this.paper_id = p.getId();
-        this.practice_id = practice_id;
-        this.questionList = p.getQuestions();
-        this.setAnswers(answers);
-    }
-
     
     
     public List<Question> getQuestionList()
@@ -91,15 +82,6 @@ public class Practice
         this.paper_id = paper_id;
     }
 
-    public void setAnswers(String answer)
-    {
-        this.answer = answer.split(",");
-    }
-    
-    public String[] getAnswer()
-    {
-        return answer;
-    }
-
+  
     
 }

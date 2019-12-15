@@ -167,39 +167,39 @@ public class QuestionRecord {
                 DragAndDrop_Question dad = (DragAndDrop_Question) q;
                 applet.stroke(200);
                 applet.strokeWeight(3);
-                if (q.getCorrect_answer().toLowerCase().equals(dad.getDragAndDrop().getSolutions()[0].getText().toLowerCase()))
+                if (answer.toLowerCase().equals(dad.getDragAndDrop().getSolutions()[0].getText().toLowerCase()))
                 {
                     applet.rect(480, 380, 140, 90);
 
-                } else if (q.getCorrect_answer().toLowerCase().equals(dad.getDragAndDrop().getSolutions()[1].getText().toLowerCase()))
+                } else if (answer.toLowerCase().equals(dad.getDragAndDrop().getSolutions()[1].getText().toLowerCase()))
                 {
                     applet.rect(680, 380, 140, 90);      
-                } else if (q.getCorrect_answer().toLowerCase().equals(dad.getDragAndDrop().getSolutions()[2].getText().toLowerCase()))
+                } else if (answer.toLowerCase().equals(dad.getDragAndDrop().getSolutions()[2].getText().toLowerCase()))
                 {
                     applet.rect(480, 480, 140, 90);
-                } else if (q.getCorrect_answer().toLowerCase().equals(dad.getDragAndDrop().getSolutions()[3].getText().toLowerCase()))
+                } else if (answer.toLowerCase().equals(dad.getDragAndDrop().getSolutions()[3].getText().toLowerCase()))
                 {
                     applet.rect(680, 480, 140, 90);
                 }
                 if (q.getCorrect_answer().toLowerCase().equals(dad.getDragAndDrop().getSolutions()[0].getText().toLowerCase()))
                 {
-                    applet.fill(255, 0, 0);
+                    applet.stroke(255,0,0);
                     applet.line(480,380,500,400);
                     applet.line(500,400,600,380);
 
                 } else if (q.getCorrect_answer().toLowerCase().equals(dad.getDragAndDrop().getSolutions()[1].getText().toLowerCase()))
                 {
-                    applet.fill(255, 0, 0);
+                    applet.stroke(255,0,0);
                     applet.line(680,380,700,400);
                     applet.line(700,400,800,380);
                 } else if (q.getCorrect_answer().toLowerCase().equals(dad.getDragAndDrop().getSolutions()[2].getText().toLowerCase()))
                 {
-                    applet.fill(255, 0, 0);
+                    applet.stroke(255,0,0);
                     applet.line(480,480,500,500);
                     applet.line(500,500,600,480);
                 } else if (q.getCorrect_answer().toLowerCase().equals(dad.getDragAndDrop().getSolutions()[3].getText().toLowerCase()))
                 {
-                    applet.fill(255, 0, 0);
+                    applet.stroke(255,0,0);
                     applet.line(680,480,700,500);
                     applet.line(700,500,800,480);
                 }
@@ -220,11 +220,16 @@ public class QuestionRecord {
                 {
                     mq.getCheckBox().getElements()[i].setPosition(475, 350 + (60 * i));
                     mq.getCheckBox().getElements()[i].show();
-                    if ((Integer.parseInt(q.getCorrect_answer()) - 1) == i)
+                    if ((Integer.parseInt(answer)-1) == i)
                     {
                         mq.getCheckBox().getElements()[i].setActive(true);
-                        //applet.line(0,0,0,0);
-                        //applet.line(0,0,0,0);
+                        applet.stroke(255,0,0);
+                    }
+                    if ((Integer.parseInt(q.getCorrect_answer())-1) == i)
+                    {
+                        applet.stroke(255,0,0);
+                        applet.line(460,345+(60*i),480,365+(60*i));
+                        applet.line(480,365+(60*i),580,345+(60*i));
                     }
                 }
             } else if (q instanceof TrueOrFalse_Question)
@@ -234,11 +239,15 @@ public class QuestionRecord {
                 {
                     tof.getRadioButton().getElements()[i].setPosition(475, 400 + (60 * i));
                     tof.getRadioButton().show();
-                    if (q.getCorrect_answer().toLowerCase().equals(tof.getRadioButton().getElements()[i].getText().toLowerCase()))
+                    if (answer.toLowerCase().equals(tof.getRadioButton().getElements()[i].getText().toLowerCase()))
                     {
                         tof.getRadioButton().getElements()[i].setActive(true);
-                        //applet.line(0,0,0,0);
-                        //applet.line(0,0,0,0);
+                    }
+                    if (q.getCorrect_answer().toLowerCase().equals(tof.getRadioButton().getElements()[i].getText().toLowerCase()))
+                    {
+                        applet.stroke(255,0,0);
+                        applet.line(460,395+(60*i),480,415+(60*i));
+                        applet.line(480,415+(60*i),580,395+(60*i));
                     }
                 }
             }

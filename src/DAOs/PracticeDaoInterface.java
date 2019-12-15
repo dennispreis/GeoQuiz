@@ -30,7 +30,7 @@ public interface PracticeDaoInterface
     
     public ProfileHistory getPracticeProfileHistoryByClass(String className);
     
-    public boolean updateScore(int id,int score,String answers);
+    public boolean updateScore(int id,int score);
     
     public Practice getPracticeByID(PApplet applet,int id);
 }

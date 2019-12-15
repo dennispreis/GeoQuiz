@@ -557,6 +557,7 @@ public class UIManager {
     private void uielementsCreateStudentProfile() {
         
         Student student = (Student) GeoQuiz.getUser();
+        student.updateProfileHistory();
         ProfileHistory profileHistory = student.getProfileHistory();
         Controller[] controlArray = new Controller[33+profileHistory.getHistoryRecord().size()];
         
@@ -717,12 +718,14 @@ public class UIManager {
         controlArray[32] =   cp5.addLabel("Achievement_TextLabel_9").setPosition(800, 450)
                         .setText(GeoQuiz.getLanguageManager().getString("achievement_9")).hide();
 
-        for(int i = 0 ; i <profileHistory.getHistoryRecord().size();i++ )
+        System.out.println("ProfileHistory Size"+profileHistory.getHistoryRecord().size());
+        for(int i = 0 ; i < profileHistory.getHistoryRecord().size();i++)
         {
             int practice_id = profileHistory.getHistoryRecord().get(i).getRecord_id();
             controlArray[i+33] = cp5.addButton("check"+i).setPosition(800,210+30*i).setSize(15,15).setLabel(" ").onClick(
             callBackEvent ->{
-                    GeoQuiz.getTestQuestionList().setQuestionPracticeList(practice_id);
+                    GeoQuiz.getTestQuestionList().setQuestionPracticeListWithAnswer(practice_id);
+                    System.out.println("Sout" +practice_id);
                     changeQuestionLanguage();
                     switchScreen(Screen.SHOW_ONE_RECORD);
             }
@@ -1063,7 +1066,7 @@ public class UIManager {
                         }
                         catch(NullPointerException e1)
                         {
-                                correct_answer = Boolean.toString(((RadioButton) cp5.get("Tf9")).getState("TRUE"));
+                             correct_answer = Boolean.toString(((RadioButton) cp5.get("Tf9")).getState("TRUE"));
                              questionType = 3;
                         }
                     }
@@ -1074,10 +1077,10 @@ public class UIManager {
                             switch(questionType)
                             {
                                 case 1:
-                                    IQuestionDao.addMCQuestion("world", "World", tf.getText(), correct_answer, a1.getText(), a2.getText(), a2.getText(), a2.getText());
+                                    IQuestionDao.addMCQuestion("world", "World", tf.getText(), correct_answer, a1.getText(), a2.getText(), a3.getText(), a4.getText());
                                     break;
                                 case 2:    
-                                    IQuestionDao.addDDQuestion("world", "World", tf.getText(), correct_answer, a1.getText(), a2.getText(), a2.getText(), a2.getText());
+                                    IQuestionDao.addDDQuestion("world", "World", tf.getText(), correct_answer, a1.getText(), a2.getText(), a3.getText(), a4.getText());
                                     break;
                                 case 3:
                                     IQuestionDao.addTFQuestion("world", "World", tf.getText(), correct_answer);

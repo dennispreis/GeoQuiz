@@ -181,7 +181,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
                     int score = rs.getInt("score");
                     Date date_attempt = rs.getDate("data_attempt");
 
-                    HistoryRecord h = new HistoryRecord(id, cm.getCategory(category.toLowerCase()), score, date_attempt);
+                    HistoryRecord h = new HistoryRecord(practice_id, cm.getCategory(category.toLowerCase()), score, date_attempt);
                     ph.getHistoryRecord().add(h);
                     idx++;
                 }
@@ -269,20 +269,18 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
     }
 
     @Override
-    public boolean updateScore(int id, int score,String answers)
+    public boolean updateScore(int id, int score)
     {
         Connection conn = null;
         PreparedStatement ps = null;
         boolean success = false;
         try
         {
-
             conn = this.getConnection();
-            String query = "UPDATE practices SET score = ?,answers = ? WHERE practice_id = ?";
+            String query = "UPDATE practices SET score = ? WHERE practice_id = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, score);
-            ps.setString(2, answers);
-            ps.setInt(3, id);
+            ps.setInt(2, id);
             return (ps.executeUpdate() == 1);
 
         } catch (Exception e)
@@ -301,7 +299,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
         try
         {
             con = this.getConnection();
-            String query = "SELECT `practice_id`, `paper_id`,`answers` FROM `practices` WHERE practice_id = ?";
+            String query = "SELECT `practice_id`, `paper_id` FROM `practices` WHERE practice_id = ?";
             ps = con.prepareStatement(query);
             ps.setInt(1, id);
             rs = ps.executeQuery();
@@ -311,9 +309,8 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             {
                 int practice_id = rs.getInt("practice_id");
                 int paper_id = rs.getInt("paper_id");
-                String answers = rs.getString("answers");
                 Paper p = IPaperDao.getPaperByID(applet, paper_id);
-                Practice practice = new Practice(practice_id,p,answers);
+                Practice practice = new Practice(practice_id,p);
                 return practice;
             }
             
