@@ -55,6 +55,7 @@ public class GeoQuiz extends PApplet
     private static TeacherManager teacherManager;
     private static ImageName backgroundImage;
     private static TestQuestionList testQuestionList;
+    private static MyTestStudentDao ITestStudentDao = new MyTestStudentDao();
     //------------------------------------Inner classes
     public class Settings
     {
@@ -192,6 +193,7 @@ public class GeoQuiz extends PApplet
                 showAdminTestList();
                 break;
             case SHOW_ONE_TEST:
+            case SHOW_ONE_TEST_TEMPLATE:
                 showOneTest();
                 break;
             case SHOW_ONE_RECORD:
@@ -826,7 +828,7 @@ public class GeoQuiz extends PApplet
         line(12, 180, width - 8, 180);
         text(languageManager.getString("student_name"), 50, 170);
         text(languageManager.getString("category"), 250, 170);
-         text(languageManager.getString("score"), 450, 170);
+        text(languageManager.getString("score"), 450, 170);
         text(languageManager.getString("date"), 650, 170);
         textSize(20);
 
@@ -840,10 +842,10 @@ public class GeoQuiz extends PApplet
             {
                 for (int i = teach.getProfileHistory().getStart(), historyIndex = 0; i < teach.getProfileHistory().getEnd(); i++, historyIndex++)
                 {
-                    if (history.get(i) != null)
+                    if (history.get(i) != null&& null != history.get(i).getCategory())
                     {
-                   text(history.get(i).getStudent_name(),50,215 + 30*historyIndex);
-                    text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 250, 215 + 30 * historyIndex);
+                    text(history.get(i).getStudent_name(),50,215 + 30*historyIndex);
+                    text(history.get(i).getCategory().name().toLowerCase(), 250, 215 + 30 * historyIndex);
                      text(history.get(i).getScore(),450,215+30*historyIndex);
                     text((formatter.format(history.get(i).getDate())), 650, 215 + 30 * historyIndex);
 
@@ -884,7 +886,7 @@ public class GeoQuiz extends PApplet
         text(languageManager.getString("date"), 665, 170);
         textSize(20);
         Teacher teach = (Teacher) user;
-        if (teach.getClassList() == null)
+        if (teach.getProfileHistory()!= null )
         {
             List<HistoryRecord> history = teach.getProfileHistory().getHistoryRecord();
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -892,7 +894,7 @@ public class GeoQuiz extends PApplet
             {
                 for (int i = teach.getProfileHistory().getStart(), historyIndex = 0; i < teach.getProfileHistory().getEnd(); i++, historyIndex++)
                 {
-                    if (history.get(i) != null)
+                    if (history.get(i) != null && history.get(i).getTest_name()!=null)
                     {
                         text(history.get(i).getStudent_name(), 50, 215 + 30 * historyIndex);
                         text(history.get(i).getTest_name(), 250, 215 + 30 * historyIndex);
@@ -993,6 +995,7 @@ public class GeoQuiz extends PApplet
         text(languageManager.getString("test_name"), 250, 170);
         text(languageManager.getString("date_close"), 410, 170);
         text(languageManager.getString("attempt"), 650, 170);
+        text(languageManager.getString("score"),750,170);
         textSize(20);
         TestDaoInterface ITestDao = new MyTestDao();
         List<Test> testList = ITestDao.getAllTest();
@@ -1003,9 +1006,14 @@ public class GeoQuiz extends PApplet
             {
                 if (testList.get(i) != null)
                 {
+                    int score = ITestStudentDao.checkAttempt(user.getId(),testList.get(i).getTest_id() );
                     text(testList.get(i).getTest_id(), 50, 215 + 30 * i);
                     text(testList.get(i).getTest_name(), 250, 215 + 30 * i);
                     text("Date", 410, 215 + 30 * i);
+                    if(score!=0)
+                    {
+                        text(score,750, 215 + 30 * i);
+                    }
 //                    text((formatter.format(testList.get(i).getDate())), 665, 215 + 30 * i);
 //                    text("Attempt",650,215+30*i);
                 }
