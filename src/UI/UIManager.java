@@ -1329,7 +1329,7 @@ public class UIManager
                 }
             }),
             cp5.addButton("Admin_Create_Test_resetTest").setPosition(500, 75).setSize(50, 50)
-            .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+            .setImage(ImageMap.getImage(ImageName.RESET))
             .onClick(callbackEvent -> 
             {
                 ((Textfield) cp5.get("Admin_Create_Test_TestName")).setText("");
@@ -1518,13 +1518,7 @@ public class UIManager
                 .setImage(ImageMap.getImage(ImageName.LEFT))
                 .onClick(callbackEvent -> {
                     if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
-                .setImage(ImageMap.getImage(ImageName.LEFT))
-                .onClick(callbackEvent -> 
-                        {
-                            if (teach.getProfileHistory().getStart() != 0)
-                            {
-                                teach.getProfileHistory().decreaseRange();
-                            }
+
                 });
         for (int i = 0; i < teach.getClassList().size(); i++)
         {
@@ -1588,7 +1582,7 @@ public class UIManager
                 cp5.addRadioButton("Ca2").setPosition(725, 200).setSize(50, 50).addItem("√ ", 1).addItem("√  ", 2).addItem("√   ", 3).addItem("√", 4).setSpacingRow(50);
             }),
             cp5.addButton("Admin_Create_Question_CreateQuestion").setPosition(825, 75).setSize(50, 50)
-            .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+            .setImage(ImageMap.getImage(ImageName.SAVE))
             .onClick(callbackEvent -> 
             {
                 Textfield tf = (Textfield) cp5.get("Admin_Create_Question_QuestionText");

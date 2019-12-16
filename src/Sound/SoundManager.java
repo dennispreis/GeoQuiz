@@ -118,13 +118,13 @@ public class SoundManager {
             try {
                 languages.get(Language.ENGLISH).put(i, loadEnglishLanguageFile(i + ".mp3"));
             } catch (Exception ignore) {
-                languages.get(Language.GERMAN).put(i, loadGermanLanguageFile("default.mp3"));
+                languages.get(Language.ENGLISH).put(i, loadGermanLanguageFile("default.mp3"));
             }
 
             try {
-                //languages.get(Language.FRENCH).put(i, loadFrenchLanguageFile(i + ".mp3"));
+                languages.get(Language.FRENCH).put(i, loadFrenchLanguageFile(i + ".mp3"));
             } catch (Exception ignore) {
-                //languages.get(Language.GERMAN).put(i, loadGermanLanguageFile("default.mp3"));
+                languages.get(Language.FRENCH).put(i, loadGermanLanguageFile("default.mp3"));
             }
 
         }

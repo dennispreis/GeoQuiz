@@ -152,7 +152,7 @@ public class GeoQuiz extends PApplet
         switchScreen(Screen.LOGIN);
         settings.setLoadingApplication(false);
         testQuestionList = new TestQuestionList(applet,cp5);
-   //     thread("loadSounds");
+        thread("loadSounds");
     }
 
     public void loadSounds()

@@ -125,6 +125,8 @@ public class ImageMap {
 
         images.put(ImageName.OVERVIEW, applet.loadImage("Images/overview.png"));
 
+        images.put(ImageName.RESET, applet.loadImage("Images/reset.png"));
+
         return images;
     }
 

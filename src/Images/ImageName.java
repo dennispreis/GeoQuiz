@@ -18,6 +18,7 @@ public enum ImageName
     SAVE,
     READ,
     OVERVIEW,
+    RESET,
     //STUDENT IMAGES
     STUDENT_WORK,
     STUDENT_PRACTISE,
