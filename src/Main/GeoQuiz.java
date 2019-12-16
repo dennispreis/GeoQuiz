@@ -51,7 +51,8 @@ public class GeoQuiz extends PApplet
     private static UIManager uiManager;
     private static PApplet applet;
     private static TeacherManager teacherManager;
-    private static List<FeedbackAble> feedbackList;
+
+    private static ImageName backgroundImage;
 
     //------------------------------------Inner classes
     public class Settings
@@ -501,7 +502,6 @@ public class GeoQuiz extends PApplet
                 ID = IStudentDao.getAccountId(name, password);
                 if (ID == -1)
                 {
-                    
 
                 }
                 else
@@ -531,6 +531,26 @@ public class GeoQuiz extends PApplet
             ITeacherDao.setHash(name, hash);
             ITeacherDao.setAttempt(name, 0);
             switchScreen(Screen.LOGIN);
+        }
+
+    }
+
+    public static void changePasswordStudent()
+    {
+        String name = cp5.get(Textfield.class, "Change_Password_Name").getText();
+        String password = cp5.get(Textfield.class, "Change_Password_Password").getText();
+
+        if (password.isEmpty())
+        {
+            (new NamePasswordNotFoundFeedBack(applet, 500000000))
+                    .setPosition(new PVector(750, 350))
+                    .setSize(new PVector(170, 50)).show();
+
+        }
+        else
+        {
+            IStudentDao.changePasswordStudent(name, password);
+            switchScreen(Screen.MAIN_MENU_ADMIN);
         }
 
     }
@@ -656,7 +676,8 @@ public class GeoQuiz extends PApplet
 
     private void showStudentProfile()
     {
-        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+
+        background(imageMap.getImage(ImageName.BACKGROUND_GREEN));
         fill(100, 120);
         stroke(0);
         strokeWeight(2);
