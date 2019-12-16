@@ -94,6 +94,7 @@ public class ImageMap {
         images.put(ImageName.ACHIEV_7, applet.loadImage("Images/Achievements/achiev_8.png"));
         images.put(ImageName.ACHIEV_8, applet.loadImage("Images/Achievements/achiev_9.png"));
         images.put(ImageName.ACHIEV_9, applet.loadImage("Images/Achievements/achiev_10.png"));
+        images.put(ImageName.LOCK, applet.loadImage("Images/Achievements/achiev_lock.png"));
 
         images.put(ImageName.CATEGORY_CITIES, applet.loadImage("Images/Category/cities.png"));
         images.put(ImageName.CATEGORY_MOUNTAINS, applet.loadImage("Images/Category/mountains.png"));

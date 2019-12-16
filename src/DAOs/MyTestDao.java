@@ -42,7 +42,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
             {
                 //Get connection object using the methods in the super class (MySqlDao.java)...
                 con = this.getConnection();
-                String query = "SELECT `student_name`, `test_id`, `TestName`, `score`, `date_attempt` FROM `class_view_test` WHERE testName= ?";
+                String query = "SELECT `student_name`, `test_id`, `TestName`, `score`, `date_attempt` FROM `class_view_test` WHERE class_name= ?";
                 ps = con.prepareStatement(query);
                 ps.setString(1, class_name);
                 //Using a PreparedStatement to execute SQL...
@@ -53,14 +53,14 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
                     String student_name = rs.getString("student_name");
                     String test_name = rs.getString("TestName");
                     int score = rs.getInt("score");
-                    Date date_attempt = rs.getDate("data_attempt");
+                    Date date_attempt = rs.getDate("date_attempt");
 
                     HistoryRecord h = new HistoryRecord(student_name, test_name, test_id, score, date_attempt);
                     ph.getHistoryRecord().add(h);
                 }
             } catch (SQLException e)
             {
-
+                e.printStackTrace();
             } finally
             {
                 try
@@ -88,7 +88,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
     }
 
     @Override
-    public boolean updateScore(int id, int score,String[] answers)
+    public boolean updateScore(int id, int score,int student_id)
     {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -96,11 +96,11 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
         try
         {
             conn = this.getConnection();
-            String query = "UPDATE tests SET score = ?,answers = ? WHERE test_id = ?";
+            String query = "UPDATE tests_students SET score = ? WHERE test_id = ? AND student_id = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, score);
-            ps.setString(2, answers.toString());
-            ps.setInt(3, id);
+            ps.setInt(2, id);
+            ps.setInt(3, student_id);
             return (ps.executeUpdate() == 1);
  
         } catch (Exception e)
@@ -158,7 +158,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
             }
         } catch (SQLException e)
         {
-
+            e.printStackTrace();
         } finally
         {
             try
@@ -184,7 +184,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
     }
 
     @Override
-    public List<Question> attemptTest(PApplet applet,int student_id, int test_id)
+    public Test attemptTest(PApplet applet,int student_id, int test_id)
     {
         Connection con = null;
         PreparedStatement ps = null;
@@ -202,7 +202,9 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        t.setPaper_id(p.getId());
+        t.setQuestionList(p.getQuestions());
+        return t;
     }
 
     @Override
@@ -230,7 +232,7 @@ public class MyTestDao extends MySqlDao implements TestDaoInterface
             }
         } catch (SQLException e)
         {
-
+            e.printStackTrace();
         } finally
         {
             try

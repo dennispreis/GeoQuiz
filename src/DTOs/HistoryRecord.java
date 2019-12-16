@@ -11,25 +11,22 @@ public class HistoryRecord
     private int record_id;
     private String test_name;
     private Category category;
-    private Level level;
     private int score;
     private Date date;
 
-    public HistoryRecord(int record_id, Category category, Level level, int score, Date date)
+    public HistoryRecord(int record_id, Category category, int score, Date date)
     {
         this.record_id = record_id;
         this.category = category;
-        this.level = level;
         this.score = score;
         this.date = date;
     }
 
-    public HistoryRecord(String student_name,int record_id, Category category, Level level, int score, Date date)
+    public HistoryRecord(String student_name,int record_id, Category category, int score, Date date)
     {
         this.student_name = student_name;
         this.record_id = record_id;
         this.category = category;
-        this.level = level;
         this.score = score;
         this.date = date;
     }
@@ -63,16 +60,6 @@ public class HistoryRecord
     public void setDate(Date date)
     {
         this.date = date;
-    }
-
-    public Level getLevel()
-    {
-        return level;
-    }
-
-    public void setLevel(Level level)
-    {
-        this.level = level;
     }
 
     public Category getCategory()

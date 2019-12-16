@@ -1,10 +1,10 @@
 package Images;
 
-public enum ImageName {
+public enum ImageName
+{
 
     PLACEHOLDER,
     PLACEHOLDER_SMALL,
-
     //GENERELL IMAGES
     BACKGROUND,
     LOGOUT,
@@ -18,17 +18,14 @@ public enum ImageName {
     SAVE,
     READ,
     OVERVIEW,
-
     //STUDENT IMAGES
     STUDENT_WORK,
     STUDENT_PRACTISE,
     STUDENT_PROFILE,
-
     //LEVEL IMAGES
     LEVEL_EASY,
     LEVEL_MEDIUM,
     LEVEL_HARD,
-
     //CATEGORY IMAGES
     CATEGORY_CITIES,
     CATEGORY_MOUNTAINS,
@@ -48,7 +45,7 @@ public enum ImageName {
     ACHIEV_7,
     ACHIEV_8,
     ACHIEV_9,
-
+    LOCK,
     //BACKGROUND IMAGES
     BACKGROUND_0,
     BACKGROUND_1,
@@ -64,7 +61,6 @@ public enum ImageName {
     BACKGROUND_BROWN,
     BACKGROUD_LILA,
     BACKGROUND_PLAY,
-
     //AVATAR IMAGES
     AVATAR_LION,
     AVATAR_ZEBRA,

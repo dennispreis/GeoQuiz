@@ -6,6 +6,7 @@ import processing.core.PApplet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MarkableQuestionList {
 
@@ -15,6 +16,7 @@ public class MarkableQuestionList {
 
     private int start, end, page, maxPage;
     private int numOfRecords, numOfRecordOnOnePage;
+    private Map<Integer,String> answers;
 
     MarkableQuestionList(PApplet applet, List<Question> questionList) {
         this.applet = applet;
@@ -28,6 +30,19 @@ public class MarkableQuestionList {
         maxPage = (((int) Math.ceil((double) numOfRecords / numOfRecordOnOnePage)) - 1);
     }
 
+    MarkableQuestionList(PApplet applet, List<Question> questionList,Map<Integer,String> answers) {
+        this.applet = applet;
+        start = 0;
+        numOfRecordOnOnePage = 12;
+        this.questionList = questionList;
+        this.answers = answers;
+        setQuestionListWithAnswer();
+        numOfRecords = questionRecordList.size();
+        end = numOfRecordOnOnePage;
+        page = 0;
+        maxPage = (((int) Math.ceil((double) numOfRecords / numOfRecordOnOnePage)) - 1);
+    }
+    
     private void setQuestionList() {
         if (questionList == null) System.out.println("null");
         questionRecordList = new ArrayList<>();
@@ -39,6 +54,18 @@ public class MarkableQuestionList {
         }
     }
 
+    private void setQuestionListWithAnswer()
+    {
+         if (questionList == null) System.out.println("null");
+        questionRecordList = new ArrayList<>();
+        System.out.println(questionList.size());
+        for (int i = 0, j = 0; i < questionList.size(); i++, j++) {
+            if (j == numOfRecordOnOnePage) j = 0;
+            questionRecordList.add(new QuestionRecord(applet, questionList.get(i), i, 120, 200 + 30 * j,answers.get(questionList.get(i).getId())));
+            if (i < numOfRecordOnOnePage) questionRecordList.get(i).setHasToBeShown(true);
+        }
+    }
+    
     public void show() {
         applet.rect(100, 150, 300, 425);
         applet.stroke(255);
