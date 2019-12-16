@@ -153,13 +153,13 @@ public class NewTestManager {
 
     private void loadTypeChooser() {
         typeChooser = new TypeChooser(applet).setElements(new ChooseAble[]{
-                new ChooseAble(applet, 575, 75, ImageName.PLACEHOLDER_SMALL, Category.TMP).setText(""),
+                new ChooseAble(applet, 575, 75, ImageName.OVERVIEW, Category.TMP).setText(""),
                 new ChooseAble(applet, 20, 150, ImageName.CATEGORY_CITIES, Category.CITIES).setText(""),
                 new ChooseAble(applet, 20, 225, ImageName.CATEGORY_MOUNTAINS, Category.MOUNTAINS).setText(""),
                 new ChooseAble(applet, 20, 300, ImageName.CATEGORY_WORLD, Category.WORLD).setText(""),
                 new ChooseAble(applet, 20, 375, ImageName.CATEGORY_RIVERS, Category.RIVERS).setText(""),
-                new ChooseAble(applet, 20, 450, ImageName.PLACEHOLDER_SMALL, Category.ISLANDS).setText(""),
-                new ChooseAble(applet, 20, 525, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("")
+                new ChooseAble(applet, 20, 450, ImageName.CATEGORY_ISLANDS, Category.ISLANDS).setText(""),
+                new ChooseAble(applet, 20, 525, ImageName.CATEGORY_LAKES, Category.LAKES).setText("")
 
         });
         typeChooser.updateActiveElement(typeChooser.getElements()[0]);

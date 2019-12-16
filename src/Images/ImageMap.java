@@ -100,6 +100,8 @@ public class ImageMap {
         images.put(ImageName.CATEGORY_MOUNTAINS, applet.loadImage("Images/Category/mountains.png"));
         images.put(ImageName.CATEGORY_RIVERS, applet.loadImage("Images/Category/river.png"));
         images.put(ImageName.CATEGORY_WORLD, applet.loadImage("Images/Category/world.png"));
+        images.put(ImageName.CATEGORY_LAKES, applet.loadImage("Images/Category/lake.png"));
+        images.put(ImageName.CATEGORY_ISLANDS, applet.loadImage("Images/Category/island.png"));
 
         images.put(ImageName.LEVEL_EASY, applet.loadImage("Images/Level/easy.png"));
         images.put(ImageName.LEVEL_HARD, applet.loadImage("Images/Level/hard.png"));
@@ -113,6 +115,15 @@ public class ImageMap {
         images.put(ImageName.ARROW_LEFT, applet.loadImage("Images/arrow_left.png"));
         images.put(ImageName.ARROW_RIGHT, applet.loadImage("Images/arrow_right.png"));
 
+        images.put(ImageName.RIGHT, applet.loadImage("Images/right.png"));
+        images.put(ImageName.LEFT, applet.loadImage("Images/left.png"));
+
+        images.put(ImageName.SHOW_BACKGROUND, applet.loadImage("Images/show_background.png"));
+        images.put(ImageName.SAVE, applet.loadImage("Images/save.png"));
+
+        images.put(ImageName.READ, applet.loadImage("Images/read.png"));
+
+        images.put(ImageName.OVERVIEW, applet.loadImage("Images/overview.png"));
 
         return images;
     }

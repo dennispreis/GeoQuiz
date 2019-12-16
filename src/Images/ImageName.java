@@ -12,6 +12,12 @@ public enum ImageName
     ARROW_RIGHT,
     GO,
     SETTING,
+    RIGHT,
+    LEFT,
+    SHOW_BACKGROUND,
+    SAVE,
+    READ,
+    OVERVIEW,
     //STUDENT IMAGES
     STUDENT_WORK,
     STUDENT_PRACTISE,
@@ -25,6 +31,9 @@ public enum ImageName
     CATEGORY_MOUNTAINS,
     CATEGORY_RIVERS,
     CATEGORY_WORLD,
+    CATEGORY_LAKES,
+    CATEGORY_ISLANDS,
+
     //ACHIEVEMENT IMAGES
     ACHIEV_0,
     ACHIEV_1,

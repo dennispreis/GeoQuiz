@@ -25,15 +25,12 @@ public class SoundManager {
         this.minim = minim;
         this.soundMenu = soundMenu;
         sounds = new HashMap<>();
-        //loadSounds();
         languages = new HashMap<>();
-        //loadLanguages();
         backgroundPlayer = loadBackgroundSound("background.mp3");
-        //backgroundPlayer.loop();
+        backgroundPlayer.loop();
         this.isBackgroundPlaying = true;
         this.volume = 60;
     }
-
 
     public ControlP5 getSoundMenu() {
         return this.soundMenu;
@@ -108,20 +105,29 @@ public class SoundManager {
     //---------LANGUAGE SOUNDS
 
     public void loadLanguages() {
-
         languages.put(Language.GERMAN, new HashMap<>());
         languages.put(Language.ENGLISH, new HashMap<>());
-
-        //35 == number of questions overall
-        for (int i = 0; i < 36; i++) {
-            languages.get(Language.ENGLISH).put(i, loadEnglishLanguageFile("test.mp3"));
+        languages.put(Language.FRENCH, new HashMap<>());
+        for (int i = 4; i < 36; i++) {
             try {
-                languages.get(Language.GERMAN).put(i, loadGermanLanguageFile(i+".mp3"));
+                languages.get(Language.GERMAN).put(i, loadGermanLanguageFile(i + ".mp3"));
             } catch (Exception ignore) {
                 languages.get(Language.GERMAN).put(i, loadGermanLanguageFile("default.mp3"));
             }
-        }
 
+            try {
+                languages.get(Language.ENGLISH).put(i, loadEnglishLanguageFile(i + ".mp3"));
+            } catch (Exception ignore) {
+                languages.get(Language.GERMAN).put(i, loadGermanLanguageFile("default.mp3"));
+            }
+
+            try {
+                //languages.get(Language.FRENCH).put(i, loadFrenchLanguageFile(i + ".mp3"));
+            } catch (Exception ignore) {
+                //languages.get(Language.GERMAN).put(i, loadGermanLanguageFile("default.mp3"));
+            }
+
+        }
     }
 
     public void triggerLanguageAudio() {
@@ -139,6 +145,10 @@ public class SoundManager {
 
     private AudioSample loadEnglishLanguageFile(String filename) {
         return minim.loadSample("Sound/Sounds/Questions/english/" + filename);
+    }
+
+    private AudioSample loadFrenchLanguageFile(String filename) {
+        return minim.loadSample("Sound/Sounds/Questions/french/" + filename);
     }
 
 

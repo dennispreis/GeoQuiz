@@ -64,8 +64,8 @@ public class GameManager {
                 new ChooseAble(applet, 275, 200, ImageName.CATEGORY_MOUNTAINS, Category.MOUNTAINS).setText("Mountains"),
                 new ChooseAble(applet, 375, 200, ImageName.CATEGORY_RIVERS, Category.RIVERS).setText("Rivers"),
                 new ChooseAble(applet, 475, 200, ImageName.CATEGORY_WORLD, Category.WORLD).setText("World"),
-                new ChooseAble(applet, 575, 200, ImageName.PLACEHOLDER_SMALL, Category.ISLANDS).setText("Islands"),
-                new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
+                new ChooseAble(applet, 575, 200, ImageName.CATEGORY_ISLANDS, Category.ISLANDS).setText("Islands"),
+                new ChooseAble(applet, 675, 200, ImageName.CATEGORY_LAKES, Category.LAKES).setText("Lakes"),
         });
         categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
       
@@ -106,8 +106,8 @@ public class GameManager {
                         new ChooseAble(applet, 275, 200, ImageName.CATEGORY_MOUNTAINS, Category.MOUNTAINS).setText("Mountains"),
                         new ChooseAble(applet, 375, 200, ImageName.CATEGORY_RIVERS, Category.RIVERS).setText("Rivers"),
                         new ChooseAble(applet, 475, 200, ImageName.CATEGORY_WORLD, Category.WORLD).setText("World"),
-                        new ChooseAble(applet, 575, 200, ImageName.PLACEHOLDER_SMALL, Category.ISLANDS).setText("Islands"),
-                        new ChooseAble(applet, 675, 200, ImageName.PLACEHOLDER_SMALL, Category.LAKES).setText("Lakes"),
+                        new ChooseAble(applet, 575, 200, ImageName.CATEGORY_ISLANDS, Category.ISLANDS).setText("Islands"),
+                        new ChooseAble(applet, 675, 200, ImageName.CATEGORY_LAKES, Category.LAKES).setText("Lakes"),
                 });
         categoryChooser.updateActiveElement(categoryChooser.getElements()[0]);
     }
