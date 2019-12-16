@@ -412,10 +412,10 @@ public class UIManager
             cp5.addButton("Admin_Students")
             .setPosition(255, 240)
             .setSize(400, 50)
-            .setLabel(GeoQuiz.getLanguageManager().getString("student"))
+            .setLabel(GeoQuiz.getLanguageManager().getString("Change_Student"))
             .onClick(callbackEvent -> 
             {
-                GeoQuiz.switchScreen(Screen.ADMIN_STUDENTS);
+                GeoQuiz.switchScreen(Screen.CHANGE_PASSWORD_STUDENT_ADMIN);
             }),
             cp5.addButton("View_Student_Progress")
             .setPosition(255, 300)
