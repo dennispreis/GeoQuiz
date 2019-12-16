@@ -356,7 +356,7 @@ public class UIManager {
                         .onClick(callbackEvent -> {
                     GeoQuiz.switchScreen(Screen.SHOW_STUDENT_PROGRESS);
                 }),
-                
+
                 cp5.addButton("View_Student_Test")
                         .setPosition(255, 440)
                         .setSize(400, 50)
@@ -370,7 +370,7 @@ public class UIManager {
                         .setSize(400, 50)
                         .setLabel("Create Tests")
                         .onClick(callbackEvent -> {
-                            GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().updateActiveElement(GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().getElements()[0]);
+                    GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().updateActiveElement(GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().getElements()[0]);
                     GeoQuiz.switchScreen(Screen.CREATE_NEW_TEST);
                 }),
 
@@ -468,30 +468,29 @@ public class UIManager {
     }
 
     private void uielementsCreateStudentWork() {
-        
+
         TestDaoInterface ITestDao = new MyTestDao();
         List<Test> testList = ITestDao.getAllTest();
-        Controller[] controlArray = new Controller[testList.size()+1];
+        Controller[] controlArray = new Controller[testList.size() + 1];
         controlArray[0] = cp5.addButton("Work_Student_Back").setPosition(20, 20).setSize(100, 100).
-                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
-                    switchScreen(Screen.MAIN_MENU_STUDENT);
-                });
+                setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+            switchScreen(Screen.MAIN_MENU_STUDENT);
+        });
         int id = GeoQuiz.getUser().getId();
-        for(int i = 0 ; i < testList.size();i++)
-        {
+        for (int i = 0; i < testList.size(); i++) {
             int test_id = testList.get(i).getTest_id();
-            controlArray[i+1] = cp5.addButton("Attempt"+i).setPosition(650,200+30*i).setSize(15,15).setLabel(" ").onClick(
-            callBackEvent ->{
-                    GeoQuiz.getGameManager().setChoosenCategory();        
-                    GeoQuiz.getGameManager().createQuestions(id,test_id);
-                    GeoQuiz.getGameManager().setPlaying(true);
-                    GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
-                    changeQuestionLanguage();
-                    switchScreen(Screen.PLAYING);
-            }
+            controlArray[i + 1] = cp5.addButton("Attempt" + i).setPosition(650, 200 + 30 * i).setSize(15, 15).setLabel(" ").onClick(
+                    callBackEvent -> {
+                        GeoQuiz.getGameManager().setChoosenCategory();
+                        GeoQuiz.getGameManager().createQuestions(id, test_id);
+                        GeoQuiz.getGameManager().setPlaying(true);
+                        GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
+                        changeQuestionLanguage();
+                        switchScreen(Screen.PLAYING);
+                    }
             );
         }
-        
+
         controller.put(Screen.WORK_STUDENT, controlArray);
 
     }
@@ -510,24 +509,24 @@ public class UIManager {
                 cp5.addButton("Profile_Show_Background").setPosition(770, 100).setSize(50, 50).
                         setLabel("Map").onClick(callbackEvent -> {
                     switchScreen(Screen.PROFILE_SHOW_BACKGROUND);
-                }).setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL)),
+                }).setImage(ImageMap.getImage(ImageName.SHOW_BACKGROUND)),
 
                 cp5.addButton("Profile_History_Next").setPosition(770, 375).setSize(50, 50)
-                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .setImage(ImageMap.getImage(ImageName.RIGHT))
                         .onClick(callbackEvent -> {
                     Student stu = (Student) GeoQuiz.getUser();
                     if ((stu.getProfileHistory().getActualPage() < stu.getProfileHistory().getMaxPages()))
                         stu.getProfileHistory().increaseRange();
                 }),
                 cp5.addButton("Profile_History_Last").setPosition(630, 375).setSize(50, 50)
-                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .setImage(ImageMap.getImage(ImageName.LEFT))
                         .onClick(callbackEvent -> {
                     Student stu = (Student) GeoQuiz.getUser();
                     if (stu.getProfileHistory().getStart() != 0) stu.getProfileHistory().decreaseRange();
                 }),
 
                 cp5.addButton("Profile_Student_Nickname_Change").setPosition(700, 100).setSize(50, 50)
-                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .setImage(ImageMap.getImage(ImageName.SAVE))
                         .onClick(callbackEvent -> {
                     Textfield tf = (Textfield) cp5.get("Profile_Student_Nickname");
                     ((Student) GeoQuiz.getUser()).setNickname(tf.getText());
@@ -717,13 +716,13 @@ public class UIManager {
                     switchScreen(Screen.MAIN_MENU_STUDENT);
                 }),
                 cp5.addButton("Pratice_Student_Read_Question").setPosition(840, 70).setSize(50, 50).
-                        setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        setImage(ImageMap.getImage(ImageName.READ))
                         .onClick(callbackEvent -> {
                     GeoQuiz.getSoundManager().triggerLanguageAudio();
                 }),
 
                 cp5.addButton("Practise_Student_Playing_Next").setPosition(775, 275).setSize(100, 100)
-                        .setImage(ImageMap.getImage(ImageName.ARROW_RIGHT))
+                        .setImage(ImageMap.getImage(ImageName.RIGHT))
                         .onClick(callbackEvent -> {
                     if (!GeoQuiz.getGameManager().nextQuestion()) {
                         switchScreen(Screen.PRACTISE_STUDENT_GAME_FEEDBACK);
@@ -820,7 +819,7 @@ public class UIManager {
                 cp5.addTextfield("Admin_Create_Test_TestName").setPosition(100, 75).setSize(300, 50)
                         .setLabel("Test name").setAutoClear(false),
                 cp5.addButton("Admin_Create_Test_CreateTest").setPosition(425, 75).setSize(50, 50)
-                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .setImage(ImageMap.getImage(ImageName.SAVE))
                         .onClick(callbackEvent -> {
                     Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
                     if (GeoQuiz.getTeacherManager().getTestManager().getMarkedQuestions().size() == 10 && !tf.getText().isEmpty()) {
@@ -851,55 +850,52 @@ public class UIManager {
         Teacher teach = (Teacher) GeoQuiz.getUser();
         Controller[] controlArray = new Controller[teach.getClassList().size() + 3];
         controlArray[0] = cp5.addButton("Admin_Show_Student_Progress").setPosition(20, 20).setSize(100, 100).
-                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
-                    switchScreen(Screen.MAIN_MENU_ADMIN);
-                });
-        controlArray[1] =  cp5.addButton("Profile_History_Next ").setPosition(770, 520).setSize(50, 50)
-                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-                        .onClick(callbackEvent -> {
-                        
-                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
-                    {   
+                setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+            switchScreen(Screen.MAIN_MENU_ADMIN);
+        });
+        controlArray[1] = cp5.addButton("Profile_History_Next ").setPosition(770, 520).setSize(50, 50)
+                .setImage(ImageMap.getImage(ImageName.RIGHT))
+                .onClick(callbackEvent -> {
+
+                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages())) {
                         teach.getProfileHistory().increaseRange();
                     }
                 });
         controlArray[2] = cp5.addButton("Profile_History_Last ").setPosition(630, 520).setSize(50, 50)
-                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-                        .onClick(callbackEvent -> {
+                .setImage(ImageMap.getImage(ImageName.LEFT))
+                .onClick(callbackEvent -> {
                     if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
                 });
-        for(int i = 0 ; i < teach.getClassList().size();i++)
-        {
+        for (int i = 0; i < teach.getClassList().size(); i++) {
             String class_name = teach.getClassList().get(i).getName();
-            controlArray[i+3] = cp5.addButton(class_name+" ").setPosition(85+100*i,75).setSize(80,40).onClick(
-            callbackEvent -> {
-                System.out.println("Class "+class_name+" Selected");
-                teach.setProfileHistory(class_name);
-            }
+            controlArray[i + 3] = cp5.addButton(class_name + " ").setPosition(85 + 100 * i, 75).setSize(80, 40).onClick(
+                    callbackEvent -> {
+                        System.out.println("Class " + class_name + " Selected");
+                        teach.setProfileHistory(class_name);
+                    }
             );
         }
-        
+
         controller.put(Screen.SHOW_STUDENT_PROGRESS, controlArray);
     }
-    
+
     private void uielementsCreateShowStudent_Test() {
-        Teacher teach = (Teacher)GeoQuiz.getUser();
-        Controller[] controlArray = new Controller[teach.getClassList().size()+3];
+        Teacher teach = (Teacher) GeoQuiz.getUser();
+        Controller[] controlArray = new Controller[teach.getClassList().size() + 3];
         controlArray[0] = cp5.addButton("Admin_Show_Student_Test").setPosition(20, 20).setSize(100, 100).
-                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
-                    switchScreen(Screen.MAIN_MENU_ADMIN);
-                });
-        controlArray[1] =  cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
-                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-                        .onClick(callbackEvent -> {
-                        
-                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
-                    {   
+                setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+            switchScreen(Screen.MAIN_MENU_ADMIN);
+        });
+        controlArray[1] = cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
+                .setImage(ImageMap.getImage(ImageName.RIGHT))
+                .onClick(callbackEvent -> {
+
+                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages())) {
                         teach.getProfileHistory().increaseRange();
                     }
                 });
         controlArray[2] = cp5.addButton("Profile_History_Last").setPosition(630, 520).setSize(50, 50)
-                .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                .setImage(ImageMap.getImage(ImageName.LEFT))
                 .onClick(callbackEvent -> {
                     if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
                 });
@@ -913,10 +909,10 @@ public class UIManager {
             );
         }
 
-        
+
         controller.put(Screen.SHOW_STUDENT_TEST, controlArray);
 
     }
-    
+
 
 }
