@@ -6,6 +6,7 @@ import DTOs.Questions.ChoosePicture_Question;
 import DTOs.Questions.DragAndDrop_Question;
 import DTOs.Questions.Multiplichoice_Question;
 import DTOs.Questions.TrueOrFalse_Question;
+import Feedback.Feedback;
 import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
 import Feedback.PasscodeNotFoundFeedback;
@@ -30,6 +31,7 @@ import java.util.*;
 import java.util.List;
 
 import Images.ImageMap;
+import Teacher.TestManager.TestQuestionList;
 import processing.event.MouseEvent;
 
 import java.time.LocalDateTime;
@@ -51,9 +53,8 @@ public class GeoQuiz extends PApplet
     private static UIManager uiManager;
     private static PApplet applet;
     private static TeacherManager teacherManager;
-
     private static ImageName backgroundImage;
-
+    private static TestQuestionList testQuestionList;
     //------------------------------------Inner classes
     public class Settings
     {
@@ -149,7 +150,8 @@ public class GeoQuiz extends PApplet
         uiManager = new UIManager(cp5);
         switchScreen(Screen.LOGIN);
         settings.setLoadingApplication(false);
-        //  thread("loadSounds");
+        testQuestionList = new TestQuestionList(applet,cp5);
+   //     thread("loadSounds");
     }
 
     public void loadSounds()
@@ -181,7 +183,19 @@ public class GeoQuiz extends PApplet
                 showChangePasswordBackground();
                 break;
             case VIEW_STUDENT_PROGRESS_ADMIN:
-                showStudentPracticeView();
+                showStudentPracticeTemplete();  
+                break;
+            case VIEW_STUDENT_PROGRESS_CLASS:
+                showAdminStudentProccess();
+                break;
+            case TEST_LIST:
+                showAdminTestList();
+                break;
+            case SHOW_ONE_TEST:
+                showOneTest();
+                break;
+            case SHOW_ONE_RECORD:
+                showOneRecord();
                 break;
             case PROFILE_STUDENT:
                 showStudentProfile();
@@ -204,10 +218,16 @@ public class GeoQuiz extends PApplet
             case CREATE_NEW_TEST:
                 showNewTestBackground();
                 break;
+            case CREATE_NEW_QUESTION:
+                showNewQuestionBackground();
+                break;
             case SHOW_STUDENT_PROGRESS:
                 showAdminStudentProccess();
                 break;
             case SHOW_STUDENT_TEST:
+                showAdminStudentTest();
+                break;
+            case SHOW_STUDENT_TEST_CLASS:
                 showAdminStudentTest();
                 break;
             case ADMIN_STUDENTS:
@@ -502,14 +522,13 @@ public class GeoQuiz extends PApplet
                 ID = IStudentDao.getAccountId(name, password);
                 if (ID == -1)
                 {
-
                 }
                 else
                 {
                     createUserInstance(ID, false);
                     user.setTeacher(false);
                     uiManager.createStudentElements();
-                    gameManager = new GameManager(applet, cp5);
+                    gameManager = new GameManager(applet, cp5,ID);
                     switchScreen(Screen.MAIN_MENU_STUDENT);
                 }
             }
@@ -690,21 +709,19 @@ public class GeoQuiz extends PApplet
         stroke(255);
         line(365, 205, 820, 205);
         text(languageManager.getString("category"), 380, 200);
-        text(languageManager.getString("level"), 525, 200);
+        text(languageManager.getString("score"), 525, 200);
         text(languageManager.getString("date"), 665, 200);
 
         Student stu = (Student) user;
 
         List<HistoryRecord> history = stu.getProfileHistory().getHistoryRecord();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        try
-        {
-            for (int i = stu.getProfileHistory().getStart(), historyIndex = 0; i < stu.getProfileHistory().getEnd(); i++, historyIndex++)
-            {
-                if (history.get(i) != null)
-                {
+        try {
+            for (int i = stu.getProfileHistory().getStart(), historyIndex = 0; i < stu.getProfileHistory().getEnd(); i++, historyIndex++) {
+                    int recordId = history.get(i).getRecord_id();
+                if (history.get(i) != null) {
                     text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 380, 225 + 30 * historyIndex);
-                    text(languageManager.getString(history.get(i).getLevel().name().toLowerCase()), 525, 225 + 30 * historyIndex);
+                    text(history.get(i).getScore(), 525, 225 + 30 * historyIndex);
                     text((formatter.format(history.get(i).getDate())), 665, 225 + 30 * historyIndex);
                 }
             }
@@ -768,8 +785,30 @@ public class GeoQuiz extends PApplet
         text("GeoQuiz!", 450, 110);
     }
 
-    private void showAdminStudentProccess()
-    {
+    private void showStudentPracticeTemplete(){
+   background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CORNER);
+        rect(10, 120, width - 15, height - 200);
+
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("Student_Practice_List--Class"), 200, 50);
+
+        textSize(25);
+        stroke(255);
+        line(12, 180, width - 8, 180);
+        text(languageManager.getString("student_name"), 50, 170);
+        text(languageManager.getString("category"), 250, 170);
+         text(languageManager.getString("score"), 450, 170);
+        text(languageManager.getString("date"), 650, 170);
+        textSize(20);       
+    }
+    
+    private void showAdminStudentProccess() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
         fill(100, 120);
         stroke(0);
@@ -787,9 +826,8 @@ public class GeoQuiz extends PApplet
         line(12, 180, width - 8, 180);
         text(languageManager.getString("student_name"), 50, 170);
         text(languageManager.getString("category"), 250, 170);
-        text(languageManager.getString("level"), 410, 170);
-        text(languageManager.getString("score"), 550, 170);
-        text(languageManager.getString("date"), 665, 170);
+         text(languageManager.getString("score"), 450, 170);
+        text(languageManager.getString("date"), 650, 170);
         textSize(20);
 
         Teacher teach = (Teacher) user;
@@ -804,13 +842,12 @@ public class GeoQuiz extends PApplet
                 {
                     if (history.get(i) != null)
                     {
-                        text(history.get(i).getStudent_name(), 50, 215 + 30 * historyIndex);
-                        text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 250, 215 + 30 * historyIndex);
-                        text(languageManager.getString(history.get(i).getLevel().name().toLowerCase()), 410, 215 + 30 * historyIndex);
-                        text(history.get(i).getScore(), 550, 215 + 30 * historyIndex);
-                        text((formatter.format(history.get(i).getDate())), 665, 215 + 30 * historyIndex);
-                    }
+                   text(history.get(i).getStudent_name(),50,215 + 30*historyIndex);
+                    text(languageManager.getString(history.get(i).getCategory().name().toLowerCase()), 250, 215 + 30 * historyIndex);
+                     text(history.get(i).getScore(),450,215+30*historyIndex);
+                    text((formatter.format(history.get(i).getDate())), 650, 215 + 30 * historyIndex);
 
+                    }
                 }
             }
             catch (IndexOutOfBoundsException ignore)
@@ -873,9 +910,70 @@ public class GeoQuiz extends PApplet
             text((teach.getProfileHistory().getActualPage() + 1) + " / " + (teach.getProfileHistory().getMaxPages() + 1), 725, 540);
         }
     }
+    
+    private void showAdminTestList(){
+          background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        fill(100, 120);
+        stroke(0);
+        strokeWeight(2);
+        rectMode(CORNER);
+        rect(10, 120, width - 15, height - 200);
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("TestList"), 200, 50);
 
-    private void showStudentWork()
-    {
+        textSize(25);
+        stroke(255);
+        line(12, 180, width - 8, 180);
+        text(languageManager.getString("test_id"), 50, 170);
+        text(languageManager.getString("test_name"), 250, 170);
+        text(languageManager.getString("date_close"), 410, 170);
+        text(languageManager.getString("show"), 650, 170);
+        textSize(20);
+        TestDaoInterface ITestDao = new MyTestDao();
+        List<Test> testList =  ITestDao.getAllTest();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        try
+        {
+            for (int i = 0;i< testList.size(); i++)
+            {
+                if (testList.get(i) != null)
+                {
+                    text(testList.get(i).getTest_id(),50,215 + 30*i);
+                    text(testList.get(i).getTest_name(), 250, 215 + 30 * i);
+                    text("Date",410,215+30*i);
+                }
+            }
+            
+            
+            
+        } catch (IndexOutOfBoundsException ignore)
+        {
+        }
+        textAlign(CENTER, CENTER);
+        
+    }
+
+    private void showOneTest(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+         textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("QuestionList"), 200, 50);
+        testQuestionList.show();
+    }
+    
+    private void showOneRecord(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+        textSize(30);
+        fill(255);
+        textAlign(CORNER);
+        text(languageManager.getString("QuestionList"), 200, 50);
+        testQuestionList.showAnswer();
+    }
+    
+    private void showStudentWork() {
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
         fill(100, 120);
         stroke(0);
@@ -984,6 +1082,10 @@ public class GeoQuiz extends PApplet
         background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
         teacherManager.getTestManager().show();
     }
+    
+    private void showNewQuestionBackground(){
+        background(ImageMap.getImage(ImageName.BACKGROUND_GREEN));
+    }
 
     //-------------------------------------Get Instances
     public static PImage getImage(ImageName name)
@@ -1032,8 +1134,11 @@ public class GeoQuiz extends PApplet
         return teacherManager;
     }
 
-    public static ControlP5 getCP5()
-    {
+    public static TestQuestionList getTestQuestionList(){
+        return testQuestionList;
+    }
+    
+    public static ControlP5 getCP5() {
         return cp5;
     }
 

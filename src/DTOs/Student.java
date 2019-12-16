@@ -58,5 +58,10 @@ public class Student extends User {
     public void attemptTest(PApplet applet,int test_id){
         ITestDao.attemptTest(applet, this.getId(), test_id);
     }
+    public void updateProfileHistory()
+    {
+         profileHistory = IPracticeDao.getProfileHistory(this.getId());
+         profileHistory.setMaxPages();
+    }
 }
 

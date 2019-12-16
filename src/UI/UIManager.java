@@ -1,7 +1,9 @@
 package UI;
 
 import DAOs.MyPaperDao;
+import DAOs.MyQuestionDao;
 import DAOs.MyTestDao;
+import DAOs.QuestionDaoInterface;
 import DAOs.TestDaoInterface;
 import DTOs.HistoryRecord;
 import DTOs.ProfileHistory;
@@ -13,6 +15,7 @@ import Feedback.FeedbackAble;
 import Feedback.NamePasswordNotFoundFeedBack;
 import GameManager.Category;
 import GameManager.ChooseAble;
+import GameManager.TypeChooser;
 import Images.ImageMap;
 import Images.ImageName;
 import Languages.Language;
@@ -113,6 +116,7 @@ public class UIManager
         uielementsCreateStudentWork();
         uielementsCreateStudentPractise();
         uielementsCreateStudentProfile();
+        uielementsCreateShowOneRecord();
         uielementsHideAll();
     }
 
@@ -124,6 +128,10 @@ public class UIManager
         uielementsCreateShowStudent_Test();
         uielementsCreateCreateNewTest();
         uielementsCreateChangeStudentPassword();
+        uielementsCreateCreateNewQuestion();
+        uielementsCreateShowTestList();
+        uielementsCreateShowOneTest();
+        uielementsCreateShowOneRecordTeacher();
         uielementsHideAll();
     }
 
@@ -344,101 +352,98 @@ public class UIManager
         tf.getCaptionLabel().setPaddingY(-90);
     }
 
-    private void uielementsCreateStudentMainMenu()
-    {
-        
-        controller.put(Screen.MAIN_MENU_STUDENT, new Controller[]
-        {
-            cp5.addButton("Main_Menu_Student_Work").
-            setPosition(100, 200).
-            setSize(200, 200).
-            setLabel("Test").
-            setImage(ImageMap.getImage(ImageName.STUDENT_WORK)).onClick(callbackEvent ->
-            {
-                switchScreen(Screen.WORK_STUDENT);
-            }),
-            cp5.addButton("Main_Menu_Student_Practise").
-            setPosition(350, 200).
-            setSize(200, 200).
-            setLabel("Practise").
-            setImage(ImageMap.getImage(ImageName.STUDENT_PRACTISE)).onClick(callbackEvent ->
-            {
-                switchScreen(Screen.PRACTISE_STUDENT);
-            }),
-            cp5.addButton("Main_Menu_Student_Profile").
-            setPosition(600, 200).
-            setSize(200, 200).
-            setLabel("Profile").
-            setImage(ImageMap.getImage(ImageName.STUDENT_PROFILE)).onClick(callbackEvent ->
-            {
-                switchScreen(Screen.PROFILE_STUDENT);
-            }),
-            cp5.addButton("Main_Menu_Student_Logout").
-            setPosition(20, 20).
-            setSize(200, 50).
-            setImage(ImageMap.getImage(ImageName.LOGOUT))
-            .onClick(callbackEvent ->
-            {
-                GeoQuiz.switchScreen(Screen.LOGIN);
-            })
-            
+    private void uielementsCreateStudentMainMenu() {
+
+        controller.put(Screen.MAIN_MENU_STUDENT, new Controller[]{
+                cp5.addButton("Main_Menu_Student_Work").
+                        setPosition(100, 200).
+                        setSize(200, 200).
+                        setLabel("Test").
+                        setImage(ImageMap.getImage(ImageName.STUDENT_WORK)).onClick(callbackEvent -> {
+                    switchScreen(Screen.WORK_STUDENT);
+                }),
+                cp5.addButton("Main_Menu_Student_Practise").
+                        setPosition(350, 200).
+                        setSize(200, 200).
+                        setLabel("Practise").
+                        setImage(ImageMap.getImage(ImageName.STUDENT_PRACTISE)).onClick(callbackEvent -> {
+                    switchScreen(Screen.PRACTISE_STUDENT);
+                }),
+                cp5.addButton("Main_Menu_Student_Profile").
+                        setPosition(600, 200).
+                        setSize(200, 200).
+                        setLabel("Profile").
+                        setImage(ImageMap.getImage(ImageName.STUDENT_PROFILE)).onClick(callbackEvent -> {
+                            ((Student)GeoQuiz.getUser()).updateProfileHistory();
+                    switchScreen(Screen.PROFILE_STUDENT);
+                }),
+                cp5.addButton("Main_Menu_Student_Logout").
+                        setPosition(20, 20).
+                        setSize(200, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.LOGIN);
+                })
         });
     }
 
-    private void uielementsCreateAdminMainMenu()
-    {
-        controller.put(Screen.MAIN_MENU_ADMIN, new Controller[]
-        {
+    private void uielementsCreateAdminMainMenu() {
+        controller.put(Screen.MAIN_MENU_ADMIN, new Controller[]{
 
-            cp5.addButton("Change_Password")
-            .setPosition(255, 200)
-            .setSize(400, 50)
-            .setLabel(GeoQuiz.getLanguageManager().getString("Change_Password"))
-            .onClick(callbackEvent ->
-            {
-                GeoQuiz.switchScreen(Screen.CHANGE_PASSWORD_ADMIN_PASSCODE);
-            }),
-            cp5.addButton("Admin_Students")
-            .setPosition(255, 280)
-            .setSize(400, 50)
-            .setLabel(GeoQuiz.getLanguageManager().getString("Change_Student"))
-            .onClick(callbackEvent ->
-            {
-                GeoQuiz.switchScreen(Screen.CHANGE_PASSWORD_STUDENT_ADMIN);
-            }),
-            cp5.addButton("View_Student_Progress")
-            .setPosition(255, 360)
-            .setSize(400, 50)
-            .setLabel(GeoQuiz.getLanguageManager().getString("View_Student_Progress"))
-            .onClick(callbackEvent ->
-            {
-                GeoQuiz.switchScreen(Screen.SHOW_STUDENT_PROGRESS);
-            }),
-            cp5.addButton("View_Student_Test")
-            .setPosition(255, 440)
-            .setSize(400, 50)
-            .setLabel(GeoQuiz.getLanguageManager().getString("View_Student_Test"))
-            .onClick(callbackEvent ->
-            {
-                GeoQuiz.switchScreen(Screen.SHOW_STUDENT_TEST);
-            }),
-            cp5.addButton("Create_New_Test")
-            .setPosition(255, 520)
-            .setSize(400, 50)
-            .setLabel("Create Tests")
-            .onClick(callbackEvent ->
-            {
-                GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().updateActiveElement(GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().getElements()[0]);
-                GeoQuiz.switchScreen(Screen.CREATE_NEW_TEST);
-            }),
-            cp5.addButton("Main_Menu_Admin_Logout")
-            .setPosition(20, 20)
-            .setSize(200, 50)
-            .setImage(ImageMap.getImage(ImageName.LOGOUT))
-            .onClick(callbackEvent ->
-            {
-                GeoQuiz.switchScreen(Screen.LOGIN);
-            })
+                cp5.addButton("Change_Password")
+                        .setPosition(255, 180)
+                        .setSize(400, 50)
+                        .setLabel(GeoQuiz.getLanguageManager().getString("Change_Password"))
+                        .onClick(callbackEvent -> {
+                    GeoQuiz.switchScreen(Screen.CHANGE_PASSWORD_ADMIN_PASSCODE);
+                }),
+
+                cp5.addButton("Admin_Students")
+                        .setPosition(255, 240)
+                        .setSize(400, 50)
+                        .setLabel(GeoQuiz.getLanguageManager().getString("student"))
+                        .onClick(callbackEvent -> {
+                    GeoQuiz.switchScreen(Screen.ADMIN_STUDENTS);
+                }),
+
+                cp5.addButton("View_Student_Progress")
+                        .setPosition(255, 300)
+                        .setSize(400, 50)
+                        .setLabel(GeoQuiz.getLanguageManager().getString("View_Student_Progress"))
+                        .onClick(callbackEvent -> {
+                    GeoQuiz.switchScreen(Screen.SHOW_STUDENT_PROGRESS);
+                }),
+                
+                cp5.addButton("View_Student_Test")
+                        .setPosition(255, 360)
+                        .setSize(400, 50)
+                        .setLabel(GeoQuiz.getLanguageManager().getString("View_Student_Test"))
+                        .onClick(callbackEvent -> {
+                    GeoQuiz.switchScreen(Screen.SHOW_STUDENT_TEST);
+                }),
+
+                cp5.addButton("Create_New_Test")
+                        .setPosition(255, 420)
+                        .setSize(400, 50)
+                        .setLabel("Create Tests")
+                        .onClick(callbackEvent -> {
+                              try{GeoQuiz.getTeacherManager().updateQuestionList();}catch(NullPointerException e){}
+                            GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().updateActiveElement(GeoQuiz.getTeacherManager().getTestManager().getTypeChooser().getElements()[0]);
+                    GeoQuiz.switchScreen(Screen.CREATE_NEW_TEST);
+                }),
+                cp5.addButton("Create_New_Question")
+                        .setPosition(255, 480)
+                        .setSize(400, 50)
+                        .setLabel("Create Question")
+                        .onClick(callbackEvent -> {
+                     GeoQuiz.switchScreen(Screen.CREATE_NEW_QUESTION);
+                }),
+                cp5.addButton("Main_Menu_Admin_Logout")
+                        .setPosition(20, 20)
+                        .setSize(200, 50)
+                        .setImage(ImageMap.getImage(ImageName.LOGOUT))
+                        .onClick(callbackEvent -> {
+                    GeoQuiz.switchScreen(Screen.LOGIN);
+                })
         });
     }
 
@@ -608,15 +613,14 @@ public class UIManager
         for (int i = 0; i < testList.size(); i++)
         {
             int test_id = testList.get(i).getTest_id();
-            controlArray[i + 1] = cp5.addButton("Attempt" + i).setPosition(650, 200 + 30 * i).setSize(15, 15).setLabel(" ").onClick(
-                    callBackEvent ->
-            {
-                GeoQuiz.getGameManager().setChoosenCategory();
-                GeoQuiz.getGameManager().createQuestions(id, test_id);
-                GeoQuiz.getGameManager().setPlaying(true);
-                GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
-                changeQuestionLanguage();
-                switchScreen(Screen.PLAYING);
+            controlArray[i+1] = cp5.addButton("Attempt"+i).setPosition(650,200+30*i).setSize(15,15).setLabel(" ").onClick(
+            callBackEvent ->{
+                    GeoQuiz.getGameManager().setChoosenCategory();
+                    GeoQuiz.getGameManager().createQuestions(id,test_id);
+                    GeoQuiz.getGameManager().setPlaying(true);
+                    GeoQuiz.getSoundManager().updateBackgroundPlaying(false);
+                    changeQuestionLanguage();
+                    switchScreen(Screen.PLAYING);
             }
             );
         }
@@ -625,13 +629,17 @@ public class UIManager
 
     }
 
-    private void uielementsCreateStudentProfile()
-    {
 
-        Student stu = (Student) GeoQuiz.getUser();
-        Controller[] controlArray = new Controller[33];
 
-        String practiceText = "";
+    private void uielementsCreateStudentProfile() {
+        
+        Student student = (Student) GeoQuiz.getUser();
+        student.updateProfileHistory();
+        ProfileHistory profileHistory = student.getProfileHistory();
+        Controller[] controlArray = new Controller[33+profileHistory.getHistoryRecord().size()];
+//        Controller[] controlArray = new Controller[33];
+        //---------General ui elements
+          String practiceText = "";
 
         String mountainsText = "";
         String riversText = "";
@@ -995,11 +1003,74 @@ public class UIManager
             ((Student) GeoQuiz.getUser()).setAvatar(ImageName.AVATAR_PENGUIN.name());
             GeoQuiz.getIStudentDao().saveStudentAvatar((Student) GeoQuiz.getUser());
         });
-
+        for(int i = 0 ; i < profileHistory.getHistoryRecord().size();i++)
+        {
+            int practice_id = profileHistory.getHistoryRecord().get(i).getRecord_id();
+            controlArray[i+33] = cp5.addButton("check"+i).setPosition(800,210+30*i).setSize(15,15).setLabel(" ").onClick(
+            callBackEvent ->{
+                    GeoQuiz.getTestQuestionList().setQuestionPracticeListWithAnswer(practice_id);
+                    System.out.println("Sout" +practice_id);
+                    changeQuestionLanguage();
+                    switchScreen(Screen.SHOW_ONE_RECORD);
+            }
+            );
+        }
+        
         controller.put(Screen.PROFILE_STUDENT, controlArray);
-
     }
 
+  
+      private void uielementsCreateShowTestList(){
+        TestDaoInterface ITestDao = new MyTestDao();
+        List<Test> testList = ITestDao.getAllTest();
+        Controller[] controlArray = new Controller[testList.size()+1];
+        controlArray[0] = cp5.addButton("Test_List_Back").setPosition(20, 20).setSize(100, 100).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.CREATE_NEW_TEST);
+                });
+        int id = GeoQuiz.getUser().getId();
+        for(int i = 0 ; i < testList.size();i++)
+        {
+            int test_id = testList.get(i).getTest_id();
+            controlArray[i+1] = cp5.addButton("Attempt"+i).setPosition(650,200+30*i).setSize(15,15).setLabel(" ").onClick(
+            callBackEvent ->{
+                    GeoQuiz.getTestQuestionList().setQuestionTestList(test_id);;
+                    changeQuestionLanguage();
+                    switchScreen(Screen.SHOW_ONE_TEST);
+            }
+            );
+        }
+        
+        controller.put(Screen.TEST_LIST, controlArray);
+    }
+    
+    private void uielementsCreateShowOneTest(){
+      controller.put(Screen.SHOW_ONE_TEST, new Controller[]{
+                cp5.addButton("Admin_Show_One_Logout").setPosition(20, 20).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.CREATE_NEW_TEST);
+                })
+        });
+    }
+    
+    private void uielementsCreateShowOneRecord(){
+           controller.put(Screen.SHOW_ONE_RECORD, new Controller[]{
+                cp5.addButton("Admin_Show_One_Record_Logout").setPosition(20, 20).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.PROFILE_STUDENT);
+                })
+        });
+    }
+    
+    private void uielementsCreateShowOneRecordTeacher(){
+           controller.put(Screen.SHOW_ONE_RECORD, new Controller[]{
+                cp5.addButton("Admin_Show_One_Record_Teacher_Logout").setPosition(20, 20).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.VIEW_STUDENT_PROGRESS_CLASS);
+                })
+        });
+    }
+  
     private void uielementsCreateStudentPractise()
     {
         String[] cats = new String[Category.values().length];
@@ -1163,34 +1234,41 @@ public class UIManager
         });
     }
 
-    private void uielementsCreateCreateNewTest()
-    {
-        controller.put(Screen.CREATE_NEW_TEST, new Controller[]
-        {
-            cp5.addButton("Admin_Create_Test_Logout").setPosition(20, 20).setSize(50, 50).
-            setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent ->
-            {
-                switchScreen(Screen.MAIN_MENU_ADMIN);
-            }),
-            cp5.addTextfield("Admin_Create_Test_TestName").setPosition(100, 75).setSize(300, 50)
-            .setLabel("Test name").setAutoClear(false),
-            cp5.addButton("Admin_Create_Test_CreateTest").setPosition(425, 75).setSize(50, 50)
-            .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-            .onClick(callbackEvent ->
-            {
-                Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
-                if (GeoQuiz.getTeacherManager().getTestManager().getMarkedQuestions().size() == 10 && !tf.getText().isEmpty())
-                {
-                    MyTestDao myDao = new MyTestDao();
-                    myDao.addTest(tf.getText(), GeoQuiz.getTeacherManager().getTestManager().getQuestionList());
+    private void uielementsCreateCreateNewTest() {
+      
+        controller.put(Screen.CREATE_NEW_TEST, new Controller[]{
+                cp5.addButton("Admin_Create_Test_Logout").setPosition(20, 20).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                }),
+                cp5.addTextfield("Admin_Create_Test_TestName").setPosition(100, 75).setSize(300, 50)
+                        .setLabel("Test name").setAutoClear(false),
+                cp5.addButton("Admin_Create_Test_CreateTest").setPosition(425, 75).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
+                    if (GeoQuiz.getTeacherManager().getTestManager().getMarkedQuestions().size() == 10 && !tf.getText().isEmpty()) {
+                        MyTestDao myDao = new MyTestDao();
+                        myDao.addTest(tf.getText(), GeoQuiz.getTeacherManager().getTestManager().getQuestionList());
+                        cp5.addButton("dslkdjsalkdjsadjsaklj").setPosition(225,150).setSize(450,300).setLabel("Test Created")
+                                .onClick(callBackEvent->{
+                        cp5.getController("dslkdjsalkdjsadjsaklj").remove();
+                        ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
+                        GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
+                    });
+                    }
+                }),
+                cp5.addButton("Admin_Create_Test_resetTest").setPosition(500, 75).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                        ((Textfield)cp5.get("Admin_Create_Test_TestName")).setText("");
+                    GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
+                }),
+                cp5.addButton("TestList").setPosition(725,75).setSize(100,50).onClick(
+                callbackEvent -> {
+                       GeoQuiz.switchScreen(Screen.TEST_LIST);
                 }
-            }),
-            cp5.addButton("Admin_Create_Test_resetTest").setPosition(500, 75).setSize(50, 50)
-            .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-            .onClick(callbackEvent ->
-            {
-                GeoQuiz.getTeacherManager().getTestManager().resetMarkedQuestions();
-            }),
+                )
         });
         Textfield tf = (Textfield) cp5.get("Admin_Create_Test_TestName");
         tf.getCaptionLabel().setPaddingY(-90);
@@ -1244,49 +1322,115 @@ public class UIManager
             {
                 System.out.println("Class " + class_name + " Selected");
                 teach.setProfileHistory(class_name);
+                uielementsCreateShowStudent_ProgressClass();
+                GeoQuiz.switchScreen(Screen.VIEW_STUDENT_PROGRESS_CLASS);
             }
             );
         }
-
         controller.put(Screen.SHOW_STUDENT_PROGRESS, controlArray);
     }
-
-    private void uielementsCreateShowStudent_Test()
-    {
+    
+    private void uielementsCreateShowStudent_ProgressClass(){
         Teacher teach = (Teacher) GeoQuiz.getUser();
-        Controller[] controlArray = new Controller[teach.getClassList().size() + 3];
-        controlArray[0] = cp5.addButton("Admin_Show_Student_Test").setPosition(20, 20).setSize(100, 100).
-                setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent ->
-        {
-            switchScreen(Screen.MAIN_MENU_ADMIN);
-        });
-        controlArray[1] = cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
-                .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-                .onClick(callbackEvent ->
-                {
-
+        ProfileHistory profileHistory = teach.getProfileHistory();
+        Controller[] controlArray = new Controller[teach.getProfileHistory().getHistoryRecord().size() + 3];
+        controlArray[0] = cp5.addButton("Admin_Show_Student_Progress_Class").setPosition(20, 20).setSize(100, 100).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.SHOW_STUDENT_PROGRESS);
+                });
+        controlArray[1] =  cp5.addButton("Profile_History_Next  ").setPosition(770, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                        
                     if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
+                    {   
+                        teach.getProfileHistory().increaseRange();
+                    }
+                });
+        controlArray[2] = cp5.addButton("Profile_History_Last  ").setPosition(630, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
+                });
+        for(int i = 0 ; i < profileHistory.getHistoryRecord().size();i++)
+        {
+            int practice_id = profileHistory.getHistoryRecord().get(i).getRecord_id();
+            controlArray[i+3] = cp5.addButton("checkTeacher"+i).setPosition(800,210+30*i).setSize(15,15).setLabel(" ").onClick(
+            callBackEvent ->{
+                    GeoQuiz.getTestQuestionList().setQuestionPracticeListWithAnswer(practice_id);
+                    changeQuestionLanguage();
+                    switchScreen(Screen.SHOW_ONE_RECORD);
+            }
+            );
+        }
+        controller.put(Screen.VIEW_STUDENT_PROGRESS_CLASS, controlArray);
+    }
+    
+     private void uielementsCreateShowStudentTestClass(){
+        Teacher teach = (Teacher) GeoQuiz.getUser();
+        ProfileHistory profileHistory = teach.getProfileHistory();
+        Controller[] controlArray = new Controller[teach.getProfileHistory().getHistoryRecord().size() + 3];
+        controlArray[0] = cp5.addButton("Admin_Show_Student_Test_Class").setPosition(20, 20).setSize(100, 100).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.SHOW_STUDENT_PROGRESS);
+                });
+        controlArray[1] =  cp5.addButton("Profile_History_Next   ").setPosition(770, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                        
+                    if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
+                    {   
+                        teach.getProfileHistory().increaseRange();
+                    }
+                });
+        controlArray[2] = cp5.addButton("Profile_History_Last   ").setPosition(630, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
+                });
+        for(int i = 0 ; i < profileHistory.getHistoryRecord().size();i++)
+        {
+            int test_id = profileHistory.getHistoryRecord().get(i).getRecord_id();
+            controlArray[i+3] = cp5.addButton("checkTeacherTest"+i).setPosition(800,210+30*i).setSize(15,15).setLabel(" ").onClick(
+            callBackEvent ->{
+                    GeoQuiz.getTestQuestionList().setQuestionTestListWithAnswer(test_id);
+                    changeQuestionLanguage();
+                    switchScreen(Screen.SHOW_ONE_RECORD);
+            }
+            );
+        }
+        controller.put(Screen.SHOW_STUDENT_TEST_CLASS, controlArray);
+    }
+    
+    private void uielementsCreateShowStudent_Test() {
+        Teacher teach = (Teacher)GeoQuiz.getUser();
+          ProfileHistory profileHistory = teach.getProfileHistory();
+        Controller[] controlArray = new Controller[teach.getClassList().size()+3];
+        controlArray[0] = cp5.addButton("Admin_Show_Student_Test").setPosition(20, 20).setSize(100, 100).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                });
+        controlArray[1] =  cp5.addButton("Profile_History_Next").setPosition(770, 520).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.ARROW_RIGHT))
+                        .onClick(callbackEvent -> {
+                                            if ((teach.getProfileHistory().getActualPage() < teach.getProfileHistory().getMaxPages()))
                     {
                         teach.getProfileHistory().increaseRange();
                     }
                 });
         controlArray[2] = cp5.addButton("Profile_History_Last").setPosition(630, 520).setSize(50, 50)
-                .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
-                .onClick(callbackEvent ->
-                {
-                    if (teach.getProfileHistory().getStart() != 0)
-                    {
-                        teach.getProfileHistory().decreaseRange();
-                    }
+                .setImage(ImageMap.getImage(ImageName.ARROW_LEFT))
+                .onClick(callbackEvent -> {
+                    if (teach.getProfileHistory().getStart() != 0) teach.getProfileHistory().decreaseRange();
                 });
         for (int i = 0; i < teach.getClassList().size(); i++)
         {
             String class_name = teach.getClassList().get(i).getName();
             controlArray[i + 3] = cp5.addButton(class_name).setPosition(85 + 100 * i, 75).setSize(80, 40).onClick(
-                    callbackEvent ->
-            {
-                System.out.println("Class " + class_name + " Selected");
-                teach.setProfileHistory(class_name);
+                    callBackEvent ->{  
+                     teach.setProfileHistoryTest(class_name);
+                    uielementsCreateShowStudentTestClass();
+                    GeoQuiz.switchScreen(Screen.SHOW_STUDENT_TEST_CLASS);
             }
             );
         }
@@ -1294,5 +1438,132 @@ public class UIManager
         controller.put(Screen.SHOW_STUDENT_TEST, controlArray);
 
     }
+    private void uielementsCreateCreateNewQuestion(){
+        int choice =0;    
+                     
+        controller.put(Screen.CREATE_NEW_QUESTION, new Controller[]{
+                cp5.addButton("Admin_Create_Question_Logout").setPosition(20, 20).setSize(50, 50).
+                        setImage(ImageMap.getImage(ImageName.LOGOUT)).onClick(callbackEvent -> {
+                      this.clearQuestionButton();
+                    switchScreen(Screen.MAIN_MENU_ADMIN);
+                }),
+                cp5.addTextfield("Admin_Create_Question_QuestionText").setPosition(100, 75).setSize(700, 50)
+                        .setLabel("Question Text").setAutoClear(false),
+                cp5.addButton("Admin_Create_Question_MultipleChoice").setPosition(75,400).setSize(300,50).setLabel("MultipleChoice")
+                    .onClick(callBackEvent->{
+                        this.clearQuestionButton();
+                       cp5.addTextfield("Tf1").setPosition(400,200).setSize(300,50).setLabel("Answer 1");
+                        cp5.addTextfield("Tf2").setPosition(400,300).setSize(300,50).setLabel("Answer 2");
+                        cp5.addTextfield("Tf3").setPosition(400,400).setSize(300,50).setLabel("Answer 3");
+                        cp5.addTextfield("Tf4").setPosition(400,500).setSize(300,50).setLabel("Answer 4");
+                        cp5.addRadioButton("Ca1").setPosition(725,200).setSize(50,50).addItem("√",1).addItem("√ ",2).addItem("√  ",3).addItem("√   ",4).setSpacingRow(50);
+                    }),
+                cp5.addButton("Admin_Create_Question_TrueORFalse").setPosition(75,250).setSize(300,50).setLabel("TrueFalse")
+                    .onClick(callBackEvent->{
+                        
+                        this.clearQuestionButton();
+                        cp5.addRadioButton("Tf9").setPosition(400,200).setSize(100,100).addItem("TRUE", 1).addItem("FALSE",2);
+                    }),
+                cp5.addButton("Admin_Create_Question_Drag And Drop").setPosition(75,325).setSize(300,50).setLabel("DragAndDrop")
+                    .onClick(callBackEvent->{
+                        
+                        this.clearQuestionButton();
+                        cp5.addTextfield("Tf5").setPosition(400,200).setSize(300,50).setLabel("Answer 1");
+                        cp5.addTextfield("Tf6").setPosition(400,300).setSize(300,50).setLabel("Answer 2");
+                        cp5.addTextfield("Tf7").setPosition(400,400).setSize(300,50).setLabel("Answer 3");
+                        cp5.addTextfield("Tf8").setPosition(400,500).setSize(300,50).setLabel("Answer 4");
+                        cp5.addRadioButton("Ca2").setPosition(725,200).setSize(50,50).addItem("√ ",1).addItem("√  ",2).addItem("√   ",3).addItem("√",4).setSpacingRow(50); 
+                    }),
+                cp5.addButton("Admin_Create_Question_CreateQuestion").setPosition(825, 75).setSize(50, 50)
+                        .setImage(ImageMap.getImage(ImageName.PLACEHOLDER_SMALL))
+                        .onClick(callbackEvent -> {
+                    Textfield tf = (Textfield) cp5.get("Admin_Create_Question_QuestionText");
+                    Textfield a1=null,a2=null,a3=null,a4=null;
+                    String correct_answer = "";
+                    int questionType=0;
+                    try{
+                        a1 = (Textfield) cp5.get("Tf1");
+                        a2 = (Textfield) cp5.get("Tf2");
+                        a3 = (Textfield) cp5.get("Tf3");
+                        a4 = (Textfield) cp5.get("Tf4");
+                        for(int i = 1 ; i <= 5;i++)
+                        {
+                            if(((RadioButton)cp5.get("Ca1")).getState(i))
+                            {
+                                correct_answer = Integer.toString(i);
+                            }
+                        }
+                        questionType = 1;
+                    }catch(NullPointerException e)
+                    {
+                        try{
+                            a1 = (Textfield) cp5.get("Tf5");
+                            a2 = (Textfield) cp5.get("Tf6");
+                            a3 = (Textfield) cp5.get("Tf7");
+                            a4 = (Textfield) cp5.get("Tf8");
+                             for(int i = 1 ; i <= 5;i++)
+                            {
+                            if(((RadioButton)cp5.get("Ca2")).getState(i))
+                            {
+                                correct_answer =  ((Textfield) cp5.get("Tf"+(4+i))).getText();
+                            }
+                            }
+                              questionType = 2;
+                        }
+                        catch(NullPointerException e1)
+                        {
+                             correct_answer = Boolean.toString(((RadioButton) cp5.get("Tf9")).getState("TRUE"));
+                             questionType = 3;
+                        }
+                    }
+                    finally{
+                        if (!tf.getText().isEmpty()) 
+                        {
+                            QuestionDaoInterface IQuestionDao = new MyQuestionDao();
+                            switch(questionType)
+                            {
+                                case 1:
+                                    IQuestionDao.addMCQuestion("world", "World", tf.getText(), correct_answer, a1.getText(), a2.getText(), a3.getText(), a4.getText());
+                                    break;
+                                case 2:    
+                                    IQuestionDao.addDDQuestion("world", "World", tf.getText(), correct_answer, a1.getText(), a2.getText(), a3.getText(), a4.getText());
+                                    break;
+                                case 3:
+                                    IQuestionDao.addTFQuestion("world", "World", tf.getText(), correct_answer);
+                                    break;
+                            }
+                            cp5.addButton("vnueuhdhasdskjsahdsakj").setPosition(225,150).setSize(450,300).setLabel("Question Created")
+                                .onClick(callBackEvent->{
+                            cp5.getController("vnueuhdhasdskjsahdsakj").remove();
+                            });
+                    }
+                        else{
+                            cp5.addButton("cuqwqhejnd").setPosition(225,150).setSize(450,300).setLabel("Please input QuestionText")
+                                .onClick(callBackEvent->{
+                            cp5.getController("cuqwqhejnd").remove();
+                            });
+                        }
+                    }
+                    }),
+                
+        });
+        Textfield tf = (Textfield) cp5.get("Admin_Create_Question_QuestionText");
+        tf.getCaptionLabel().setPaddingY(-90);
+    }
 
+    private void clearQuestionButton(){
+
+        try{cp5.getController("Tf1").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf2").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf3").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf4").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf5").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf6").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf7").remove();}catch(NullPointerException e){}
+        try{cp5.getController("Tf8").remove();}catch(NullPointerException e){}
+        try{cp5.getGroup("Tf9").remove();}catch(NullPointerException e){}
+        try{cp5.getGroup("Ca1").remove();}catch(NullPointerException e){}
+        try{cp5.getGroup("Ca2").remove();}catch(NullPointerException e){}
+        
+    }
 }

@@ -141,7 +141,7 @@ public class NewTestManager {
         markedQuestions.clear();
     }
 
-    private void loadPages() {
+    public void loadPages() {
         MyQuestionDao myQuestionDao = new MyQuestionDao();
         pages.put(Category.CITIES, new MarkableQuestionList(applet, myQuestionDao.getAllQuestionByType(applet, "cities")));
         pages.put(Category.MOUNTAINS, new MarkableQuestionList(applet, myQuestionDao.getAllQuestionByType(applet, "mountains")));

@@ -7,8 +7,10 @@ package DAOs;
 
 import DTOs.HistoryRecord;
 import DTOs.Paper;
+import DTOs.Practice;
 import DTOs.ProfileHistory;
 import DTOs.Question;
+import DTOs.Test;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -27,100 +29,131 @@ import processing.core.PApplet;
  */
 public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
 {
-
     CategoryMap cm = new CategoryMap();
     LevelMap lm = new LevelMap();
     private PaperDaoInterface IPaperDao = new MyPaperDao();
 
     @Override
-    public List<Question> getPractice(PApplet applet, int id, String category, String level)
+    public Practice getPractice(PApplet applet, int id, String category)
     {
         Connection con = null;
         PreparedStatement ps = null;
-        Paper p = IPaperDao.getRandPaper(applet);
+        Paper p = IPaperDao.getPaperByType(applet,category);
+        int insertId = 0;
         try
         {
             con = this.getConnection();
-            String query = "INSERT INTO practices (paper_id,student_id,category,level) VALUES (?,?,?,?)";
-            ps = con.prepareStatement(query);
+            String query = "INSERT INTO practices (paper_id,student_id,category) VALUES (?,?,?)";
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getId());
             ps.setInt(2, id);
             ps.setString(3, category);
-            ps.setString(4, level);
             ps.executeUpdate();
+            
+            
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    insertId = generatedKeys.getInt(1);
+                }
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        return (new Practice(insertId,p));
     }
 
-    public List<Question> getPracticeByType(PApplet applet, String type, int id, String category, String level)
+    public Practice getPracticeByType(PApplet applet, String type, int id, String category)
     {
         Connection con = null;
         PreparedStatement ps = null;
         Paper p = IPaperDao.getPaperByType(applet, type);
+         int insertId = 0;
         try
         {
             con = this.getConnection();
-            String query = "INSERT INTO practices (paper_id,student_id,category,level) VALUES (?,?,?,?)";
-            ps = con.prepareStatement(query);
+            String query = "INSERT INTO practices (paper_id,student_id,category) VALUES (?,?,?)";
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getId());
             ps.setInt(2, id);
             ps.setString(3, category);
-            ps.setString(4, level);
             ps.executeUpdate();
+            
+            
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    insertId = generatedKeys.getInt(1);
+                }
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        return (new Practice(insertId,p));
     }
 
     @Override
-    public List<Question> getPracticeByRegion(PApplet applet, String region, int id, String category, String level)
+    public Practice getPracticeByRegion(PApplet applet, String region, int id, String category)
     {
         Connection con = null;
         PreparedStatement ps = null;
         Paper p = IPaperDao.getPaperByRegion(applet, region);
+        int insertId = 0;
         try
         {
             con = this.getConnection();
-            String query = "INSERT INTO practices (paper_id,student_id,category,level) VALUES (?,?,?,?)";
-            ps = con.prepareStatement(query);
+            String query = "INSERT INTO practices (paper_id,student_id,category) VALUES (?,?,?)";
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getId());
             ps.setInt(2, id);
             ps.setString(3, category);
-            ps.setString(4, level);
             ps.executeUpdate();
+            
+            
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    insertId = generatedKeys.getInt(1);
+                }
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        return (new Practice(insertId,p));
     }
 
     @Override
-    public List<Question> getPracticeByTypeRegion(PApplet applet, String type, String region, int id, String category, String level)
+    public Practice getPracticeByTypeRegion(PApplet applet, String type, String region, int id, String category)
     {
         Connection con = null;
         PreparedStatement ps = null;
         Paper p = IPaperDao.getPaperByTypeRegion(applet, type, region);
+         int insertId = 0;
         try
         {
             con = this.getConnection();
-            String query = "INSERT INTO practices (paper_id,student_id,category,level) VALUES (?,?,?,?)";
-            ps = con.prepareStatement(query);
+            String query = "INSERT INTO practices (paper_id,student_id,category) VALUES (?,?,?)";
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, p.getId());
             ps.setInt(2, id);
             ps.setString(3, category);
-            ps.setString(4, level);
             ps.executeUpdate();
+            
+            
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    insertId = generatedKeys.getInt(1);
+                }
+            }
+            
         } catch (Exception e)
         {
             e.printStackTrace();
         }
-        return p.getQuestions();
+        return (new Practice(insertId,p));
     }
 
     @Override
@@ -135,7 +168,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             {
                 //Get connection object using the methods in the super class (MySqlDao.java)...
                 con = this.getConnection();
-                String query = "SELECT category,level,score,data_attempt FROM practices WHERE student_id = ? ORDER BY data_attempt DESC";
+                String query = "SELECT practice_id,category,score,data_attempt FROM practices WHERE student_id = ? ORDER BY data_attempt DESC";
                 ps = con.prepareStatement(query);
                 ps.setInt(1, id);
                 //Using a PreparedStatement to execute SQL...
@@ -143,19 +176,19 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
                 int idx = 0;
                 while (rs.next())
                 {
-
+                    int practice_id = rs.getInt("practice_id");
                     String category = rs.getString("category");
-                    String level = rs.getString("level");
                     int score = rs.getInt("score");
                     Date date_attempt = rs.getDate("data_attempt");
 
-                    HistoryRecord h = new HistoryRecord(idx, cm.getCategory(category.toLowerCase()), lm.getLevel(level.toLowerCase()), score, date_attempt);
+                    HistoryRecord h = new HistoryRecord(practice_id, cm.getCategory(category.toLowerCase()), score, date_attempt);
                     ph.getHistoryRecord().add(h);
                     idx++;
                 }
 
             } catch (SQLException e)
             {
+                e.printStackTrace();
             } finally
             {
                 try
@@ -191,7 +224,7 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
         {
             //Get connection object using the methods in the super class (MySqlDao.java)...
             con = this.getConnection();
-            String query = "SELECT `class_name`, `student_name`, `practice_id`, `category`, `level`, `score`, `data_attempt` FROM `class_view_practice` WHERE class_name = ? ORDER BY data_attempt DESC";
+            String query = "SELECT `class_name`, `student_name`, `practice_id`, `category`, `score`, `data_attempt` FROM `class_view_practice` WHERE class_name = ? ORDER BY data_attempt DESC";
             ps = con.prepareStatement(query);
             ps.setString(1, className);
             //Using a PreparedStatement to execute SQL...
@@ -201,17 +234,18 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             {
                 String studentName = rs.getString("student_name");
                 String category = rs.getString("category");
-                String level = rs.getString("level");
+                int practice_id = rs.getInt("practice_id");
                 int score = rs.getInt("score");
                 Date date_attempt = rs.getDate("data_attempt");
 
-                HistoryRecord h = new HistoryRecord(studentName, idx, cm.getCategory(category.toLowerCase()), lm.getLevel(level.toLowerCase()), score, date_attempt);
+                HistoryRecord h = new HistoryRecord(studentName, practice_id, cm.getCategory(category.toLowerCase()),  score, date_attempt);
                 ph.getHistoryRecord().add(h);
                 idx++;
             }
 
         } catch (SQLException e)
         {
+               e.printStackTrace();
         } finally
         {
             try
@@ -236,20 +270,18 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
     }
 
     @Override
-    public boolean updateScore(int id, int score,String[] answers)
+    public boolean updateScore(int id, int score)
     {
         Connection conn = null;
         PreparedStatement ps = null;
         boolean success = false;
         try
         {
-
             conn = this.getConnection();
-            String query = "UPDATE practices SET score = ?,answers = ? WHERE practice_id = ?";
+            String query = "UPDATE practices SET score = ? WHERE practice_id = ?";
             ps = conn.prepareStatement(query);
             ps.setInt(1, score);
-            ps.setString(2, answers.toString());
-            ps.setInt(3, id);
+            ps.setInt(2, id);
             return (ps.executeUpdate() == 1);
 
         } catch (Exception e)
@@ -257,5 +289,36 @@ public class MyPracticeDao extends MySqlDao implements PracticeDaoInterface
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public Practice getPracticeByID(PApplet applet, int id)
+    {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try
+        {
+            con = this.getConnection();
+            String query = "SELECT `practice_id`, `paper_id` FROM `practices` WHERE practice_id = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            
+            
+            while (rs.next())
+            {
+                int practice_id = rs.getInt("practice_id");
+                int paper_id = rs.getInt("paper_id");
+                Paper p = IPaperDao.getPaperByID(applet, paper_id);
+                Practice practice = new Practice(practice_id,p);
+                return practice;
+            }
+            
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

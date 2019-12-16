@@ -19,6 +19,7 @@ public class RadioButton implements GameElement
         };
         activeElement = null;
     }
+    
     public void selectElement(RadioButtonElement ele) {
         if (this.activeElement == null) {
             if (ele != null) {
@@ -47,5 +48,4 @@ public class RadioButton implements GameElement
             ele.show();
         }
     }
-
 }

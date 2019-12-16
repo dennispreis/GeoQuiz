@@ -20,13 +20,13 @@ public interface TestDaoInterface
 
     public ProfileHistory getProfileHistory(String class_name);
 
-    public boolean updateScore(int id, int score,String[] answers);
+    public boolean updateScore(int id, int score,int student_id);
 
     public void addTest(String test_name,List<Question> questionList);
     
     public List<Test> getAllTest();
     
-    public List<Question> attemptTest(PApplet applet,int student_id,int test_id);
+    public Test attemptTest(PApplet applet,int student_id,int test_id);
     
     public Test getTestObjectById(int test_id);
 }
